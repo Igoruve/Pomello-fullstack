@@ -4,7 +4,7 @@ import { isLoggedInAPI } from "../middlewares/authMiddleware.js";
 
 const router = Router();
 
-router.get("/",isLoggedInAPI,listController.getList);
+router.get("/",isLoggedInAPI,listController.getLists);
 router.get("/:id",isLoggedInAPI,listController.getListById);
 router.post("/",isLoggedInAPI,listController.createList);
 router.put("/:id",isLoggedInAPI,listController.updateList);

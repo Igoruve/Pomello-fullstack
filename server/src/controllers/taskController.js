@@ -4,7 +4,7 @@ const createTask = async (req,res) => {
     const taskCreated = await taskModel.create(req.body);
     res.json(taskCreated);
 }
-const getTask = async (req,res) => {
+const getTasks = async (req,res) => {
     const tasks = await taskModel.find();
     res.json(tasks);
 }
@@ -26,7 +26,7 @@ const deleteTask = async (req,res) => {
 
 export default {
     createTask,
-    getTask,
+    getTasks,
     getTaskbyId,
     updateTask,
     deleteTask

@@ -5,7 +5,7 @@ const createList = async (req,res) => {
     const listCreated = await listModel.create(req.body);
     res.json(listCreated);
 }
-const getList = async (req,res) => {
+const getLists = async (req,res) => {
     const lists = await listModel.find();
     res.json(lists);
 }
@@ -25,4 +25,4 @@ const deleteList = async (req,res) => {
     res.json(listDeleted);
 }
 
-export default {createList,getList,getListById,updateList,deleteList};
+export default {createList,getLists,getListById,updateList,deleteList};
