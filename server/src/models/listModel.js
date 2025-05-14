@@ -29,9 +29,10 @@ const listSchema = new mongoose.Schema({
         required: true,
         default: false
     },
-    task: {
+    project: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Task",
+        ref: "Project",
+        required: true
     }
 });
 

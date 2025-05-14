@@ -19,13 +19,12 @@ const projectSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    list: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "List",
+        ref: "User",
+        required: true
     }
 });
-
-
 
 export default mongoose.model("Project",projectSchema);
 
