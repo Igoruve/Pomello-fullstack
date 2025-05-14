@@ -4,12 +4,12 @@ import { Router } from "express";
 
 const router = Router();
 
-// router.use("/api",apiRouter);
-
-// router.use("/",viewRouter);
-
 router.get("/",(req,res)=>{
     res.send("Hola pomello")
 })
+
+
+router.use("/",viewRouter);
+
 
 export default router
