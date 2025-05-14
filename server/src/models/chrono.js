@@ -1,33 +1,37 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 
-const listSchema = new mongoose.Schema({
-    start: {
-        type: Date,
-        timezone: "UTC",
-        required: true,
-        default: Date.now
-    },
-    end: {
-        type: Date,
-        timezone: "UTC",
-        required: true,
-        default: Date.now
-    },
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-    },
-    project: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Project",
-    },
-    isCompleted: {
-        type: Boolean,
-        required: true,
-        default: false
-    },
-    task: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Task",
-    }
+const ChronoSchema = new mongoose.Schema({
+  userId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User', 
+    required: true 
+  },
+  focusDuration: { 
+    type: Number, 
+    required: true 
+  }, 
+  breakDuration: { 
+    type: Number, 
+    required: true 
+  }, 
+  chronostarted: { 
+    type: Date, 
+    default: Date.now,
+    required: true 
+  },
+  chronostopped: {
+    type: Date, 
+    default: Date.now,
+    required: true
+  }, 
+  sessionsCompleted: { 
+    type: Number, 
+    default: 0 
+  },
+  createdAt: { 
+    type: Date, 
+    default: Date.now 
+  } 
 });
+
+module.exports = mongoose.model('Chrono', ChronoSchema);
