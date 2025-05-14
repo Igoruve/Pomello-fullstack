@@ -8,6 +8,8 @@ router.post("/", isLoggedInAPI, taskController.createTask);
 
 router.get("/", isLoggedInAPI,taskController.getTasks);
 
+router.get("/list/:listId", isLoggedInAPI, taskController.getTasksByList);
+
 router.get("/:id", isLoggedInAPI,taskController.getTaskbyId);
 
 router.put("/:id", isLoggedInAPI,taskController.updateTask);

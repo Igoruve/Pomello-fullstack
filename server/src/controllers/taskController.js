@@ -14,6 +14,15 @@ const getTaskbyId = async (req,res) => {
     res.json(taskFound);
 }
 
+const getTasksByList = async (req, res) => {
+  try {
+    const tasks = await taskModel.find({ list: req.params.listId });
+    res.json(tasks);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const updateTask = async (req,res) => {
     const taskUpdated = await taskModel.findByIdAndUpdate(req.params.id,req.body);
     res.json(taskUpdated);
@@ -29,5 +38,6 @@ export default {
     getTasks,
     getTaskbyId,
     updateTask,
-    deleteTask
+    deleteTask,
+    getTasksByList
 }

@@ -15,6 +15,15 @@ const getListById = async (req,res) => {
     res.json(listFound);
 }
 
+const getListsByProject = async (req, res) => {
+  try {
+    const lists = await listModel.find({ project: req.params.projectId });
+    res.json(lists);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const updateList = async (req,res) => {
     const listUpdated = await listModel.findByIdAndUpdate(req.params.id,req.body);
     res.json(listUpdated);
@@ -25,4 +34,4 @@ const deleteList = async (req,res) => {
     res.json(listDeleted);
 }
 
-export default {createList,getLists,getListById,updateList,deleteList};
+export default {createList,getListsByProject,getLists,getListById,updateList,deleteList};

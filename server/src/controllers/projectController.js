@@ -20,7 +20,14 @@ const getProjectbyId = async (req,res) => {
     res.json(projectFound);
 }
 
- 
+const getProjectsByUser = async (req, res) => {
+    try {
+      const projects = await projectModel.find({ user: req.params.userId });
+      res.json(projects);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
 
 const updateProject = async (req, res) => {
     try
@@ -45,4 +52,4 @@ const deleteProject = async (req,res) => {
     const projectDeleted = await projectModel.findByIdAndDelete(req.params.id);
     res.json(projectDeleted);
 }
-export default {createProject,getProjects,updateProject,deleteProject,getProjectbyId}
+export default {createProject,getProjects,getProjectsByUser,updateProject,deleteProject,getProjectbyId}

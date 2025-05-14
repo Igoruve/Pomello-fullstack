@@ -8,6 +8,8 @@ const router = Router();
 
 router.post("/", isLoggedInAPI,projectController.createProject);
 
+router.get("/user/:userId", isLoggedInAPI, projectController.getProjectsByUser);
+
 router.get("/",isLoggedInAPI, projectController.getProjects);
 
 router.get("/:id", isLoggedInAPI,projectController.getProjectbyId);
