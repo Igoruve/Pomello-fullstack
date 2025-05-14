@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const listSchema = new mongoose.Schema({
+const projectSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
@@ -15,24 +15,16 @@ const listSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    position: {
-        type: Number,
-        required: true,
-        default: 0
-    },
-    project: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Project",
-    },
-    isCompleted: {
+    isFavorite: {
         type: Boolean,
-        required: true,
         default: false
     },
-    task: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Task",
+        ref: "User",
+        required: true
     }
 });
 
-export default mongoose.model("List",listSchema);
+export default mongoose.model("Project",projectSchema);
+

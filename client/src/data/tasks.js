@@ -1,0 +1,206 @@
+[
+    // Por hacer
+    {
+      "title": "Investigar requerimientos",
+      "description": "Recopilar información para iniciar el proyecto",
+      "position": 0,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f1"
+    },
+    {
+      "title": "Revisar documentación previa",
+      "description": "Analizar documentos existentes",
+      "position": 1,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f1"
+    },
+    {
+      "title": "Definir entregables",
+      "description": "Listar resultados esperados",
+      "position": 2,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f1"
+    },
+    {
+      "title": "Armar equipo",
+      "description": "Asignar roles a los miembros",
+      "position": 3,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f1"
+    },
+    {
+      "title": "Preparar entorno de desarrollo",
+      "description": "Configurar herramientas y repositorios",
+      "position": 4,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f1"
+    },
+    {
+      "title": "Crear wireframes",
+      "description": "Diseño inicial de interfaz",
+      "position": 5,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f1"
+    },
+    {
+      "title": "Validar alcance",
+      "description": "Revisar límites y objetivos del proyecto",
+      "position": 6,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f1"
+    },
+  
+    // En progreso
+    {
+      "title": "Desarrollar componente de login",
+      "description": "Implementar autenticación básica",
+      "position": 0,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f2"
+    },
+    {
+      "title": "Conectar a base de datos",
+      "description": "Integrar MongoDB al backend",
+      "position": 1,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f2"
+    },
+    {
+      "title": "Crear endpoints de usuario",
+      "description": "GET, POST, PUT, DELETE",
+      "position": 2,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f2"
+    },
+    {
+      "title": "Validar formularios",
+      "description": "Evitar datos inválidos",
+      "position": 3,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f2"
+    },
+    {
+      "title": "Diseñar dashboard",
+      "description": "Diseño inicial en frontend",
+      "position": 4,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f2"
+    },
+    {
+      "title": "Sincronizar tareas y listas",
+      "description": "Asociar correctamente en la base de datos",
+      "position": 5,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f2"
+    },
+    {
+      "title": "Crear menú lateral",
+      "description": "Navegación entre vistas",
+      "position": 6,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f2"
+    },
+  
+    // Revisión
+    {
+      "title": "Revisar código del login",
+      "description": "Verificar buenas prácticas",
+      "position": 0,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f3"
+    },
+    {
+      "title": "Test de integración",
+      "description": "Pruebas entre componentes",
+      "position": 1,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f3"
+    },
+    {
+      "title": "Verificar validaciones",
+      "description": "Pruebas de formularios",
+      "position": 2,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f3"
+    },
+    {
+      "title": "Control de calidad UI",
+      "description": "Revisar consistencia visual",
+      "position": 3,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f3"
+    },
+    {
+      "title": "Documentación técnica",
+      "description": "Revisar guías para desarrolladores",
+      "position": 4,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f3"
+    },
+    {
+      "title": "Revisión de endpoints",
+      "description": "Revisar seguridad y funcionalidad",
+      "position": 5,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f3"
+    },
+    {
+      "title": "Pruebas de carga",
+      "description": "Simular usuarios concurrentes",
+      "position": 6,
+      "isCompleted": false,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f3"
+    },
+  
+    // Completado
+    {
+      "title": "Login funcional",
+      "description": "Autenticación completa y validada",
+      "position": 0,
+      "isCompleted": true,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f4"
+    },
+    {
+      "title": "Diseño responsivo aplicado",
+      "description": "Se adapta a móviles y tablets",
+      "position": 1,
+      "isCompleted": true,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f4"
+    },
+    {
+      "title": "CRUD de tareas operativo",
+      "description": "Alta, baja, modificación, lectura",
+      "position": 2,
+      "isCompleted": true,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f4"
+    },
+    {
+      "title": "Despliegue en staging",
+      "description": "Subido a entorno de pruebas",
+      "position": 3,
+      "isCompleted": true,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f4"
+    },
+    {
+      "title": "Configuración del linter",
+      "description": "Reglas ESLint aplicadas",
+      "position": 4,
+      "isCompleted": true,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f4"
+    },
+    {
+      "title": "Integración con API externa",
+      "description": "Llamadas a servicio externo exitosas",
+      "position": 5,
+      "isCompleted": true,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f4"
+    },
+    {
+      "title": "Pruebas automatizadas",
+      "description": "Jest configurado y ejecutado",
+      "position": 6,
+      "isCompleted": true,
+      "list": "65f3c2d3e4f5a6b7c8d9e0f4"
+    }
+  ]
+  

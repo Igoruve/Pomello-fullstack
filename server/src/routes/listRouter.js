@@ -1,0 +1,13 @@
+import { Router } from "express";
+import listController from "../controllers/listController.js";
+import { isLoggedInAPI } from "../middlewares/authMiddleware.js";
+
+const router = Router();
+
+router.get("/",isLoggedInAPI,listController.getList);
+router.get("/:id",isLoggedInAPI,listController.getListById);
+router.post("/",isLoggedInAPI,listController.createList);
+router.put("/:id",isLoggedInAPI,listController.updateList);
+router.delete("/:id",isLoggedInAPI,listController.deleteList);
+
+export default router
