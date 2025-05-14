@@ -1,6 +1,8 @@
 import { Router } from "express";
-// import apiRouter from "./api/apiRouter.js";
-// import viewRouter from "./views/viewRouter.js";
+import listRouter from "./listRouter.js";
+import authRouter from "./authRouter.js";
+import projectRouter from "./projectRouter.js";
+import taskRouter from "./taskRouter.js";
 
 const router = Router();
 
@@ -9,7 +11,10 @@ router.get("/",(req,res)=>{
 })
 
 
-router.use("/",viewRouter);
+router.use("/",authRouter);
+router.use("/list", listRouter);
+router.use("/project", projectRouter);
+router.use("/task", taskRouter);
 
 
 export default router
