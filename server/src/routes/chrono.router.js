@@ -1,4 +1,4 @@
-imporrt express from 'express';
+import express from 'express';
 import router from 'express-promise-router';
 import chronoController from '../controllers/chrono.controller';
 import authMiddleware from '../middleware/auth.middleware';
