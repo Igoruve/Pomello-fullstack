@@ -20,10 +20,27 @@ const getProjectbyId = async (req,res) => {
     res.json(projectFound);
 }
 
-const updateProject = async (req,res) => {
-    const projectUpdated = await projectModel.findByIdAndUpdate(req.params.id,req.body);
-    res.json(projectUpdated);
-}
+ 
+
+const updateProject = async (req, res) => {
+    try
+    {
+        const projectUpdated = await projectModel.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true } 
+         );
+    
+        if (!projectUpdated) {
+            return res.status(404).json({ message: "Proyecto no encontrado" });
+         }
+    
+        res.json(projectUpdated);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 const deleteProject = async (req,res) => {
     const projectDeleted = await projectModel.findByIdAndDelete(req.params.id);
     res.json(projectDeleted);
