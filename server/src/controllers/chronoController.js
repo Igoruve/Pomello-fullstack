@@ -4,9 +4,12 @@ import Chrono from '../models/chrono.model.js';
 const startChrono = async (req, res) => {
   try {
     const { focusDuration, breakDuration } = req.body;
+    const activeSession = await Chrono.findOne({userId: req.user.id, chronostopped: null});
 
     if (typeof focusDuration !== 'number' || focusDuration <= 0 || typeof breakDuration !== 'number' || breakDuration <= 0) {
     return res.status(400).json({ message: 'Invalid duration values' });
+    } else if (activeSession) {
+      return res.status(400).json({ message: 'Chronometer is already running' });
     }
 
     const newSession = new Chrono({
