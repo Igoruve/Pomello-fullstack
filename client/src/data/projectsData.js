@@ -1,4 +1,4 @@
-[
+const projectsData =[
   {
     "_id": { "$oid": "65f2b1c3d4e5f6a7b8c9d0e1" },
     "title": "Rediseño Web Corporativa",
@@ -135,3 +135,5 @@
     "user": { "$oid": "65f1a1b3c4d2e3f4a5b6c7dc" }
   }
 ]
+
+export default projectsData;
