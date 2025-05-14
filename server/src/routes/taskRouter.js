@@ -1,23 +1,17 @@
 import { Router } from "express";
-import {
-    createTask,
-    getTasks,
-    getTaskById,
-    updateTask,
-    deleteTask,
-} from "../controllers/taskController.js";
+import taskController from "../controllers/taskController.js";
 import { isLoggedInAPI } from "../middlewares/authMiddleware.js";
 
 const router = Router();
 
-router.post("/", isLoggedInAPI,createTask);
+router.post("/", isLoggedInAPI, taskController.createTask);
 
-router.get("/", isLoggedInAPI,getTasks);
+router.get("/", isLoggedInAPI,taskController.getTask);
 
-router.get("/:id", isLoggedInAPI,getTaskById);
+router.get("/:id", isLoggedInAPI,taskController.getTaskbyId);
 
-router.put("/:id", isLoggedInAPI,updateTask);
+router.put("/:id", isLoggedInAPI,taskController.updateTask);
 
-router.delete("/:id", isLoggedInAPI,deleteTask);
+router.delete("/:id", isLoggedInAPI,taskController.deleteTask);
 
 export default router;

@@ -1,25 +1,19 @@
 import { Router } from "express";
-import {
-    createProject,
-    getProjects,
-    getProjectById,
-    updateProject,
-    deleteProject,
-} from "../controllers/projectController.js";
+import projectController from "../controllers/projectController.js";
 import { isLoggedInAPI } from "../middlewares/authMiddleware.js";
 
 
 
 const router = Router();
 
-router.post("/", isLoggedInAPI,createProject);
+router.post("/", isLoggedInAPI,projectController.createProject);
 
-router.get("/",isLoggedInAPI, getProjects);
+router.get("/",isLoggedInAPI, projectController.getProject);
 
-router.get("/:id", isLoggedInAPI,getProjectById);
+router.get("/:id", isLoggedInAPI,projectController.getProjectbyId);
 
-router.put("/:id",isLoggedInAPI, updateProject);
+router.put("/:id",isLoggedInAPI, projectController.updateProject);
 
-router.delete("/:id",isLoggedInAPI, deleteProject);
+router.delete("/:id",isLoggedInAPI, projectController.deleteProject);
 
 export default router;
