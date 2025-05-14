@@ -1,7 +1,14 @@
 import projectModel from "../models/projectModel.js";
 
 const createProject = async (req,res) => {
-    const projectCreated = await projectModel.create(req.body);
+    const data = req.body.map((item) => {
+        return{
+            ...item,
+            user: req.user._id
+        }
+    });
+    console.log(data);
+    const projectCreated = await projectModel.create(data);
     res.json(projectCreated);
 }
 const getProjects = async (req,res) => {
