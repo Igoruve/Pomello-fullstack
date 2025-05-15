@@ -13,4 +13,3 @@ router.post('/stop', isLoggedInAPI, chronoController.stopChrono);
 router.get('/stats', isLoggedInAPI, chronoController.getChronoStats);
 
 export default router;
-// import { Router } from 'express';
