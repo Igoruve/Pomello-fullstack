@@ -6,7 +6,9 @@ const router = Router();
 
 router.post("/", isLoggedInAPI, taskController.createTask);
 
-router.get("/", isLoggedInAPI,taskController.getTask);
+router.get("/", isLoggedInAPI,taskController.getTasks);
+
+router.get("/list/:listId", isLoggedInAPI, taskController.getTasksByList);
 
 router.get("/:id", isLoggedInAPI,taskController.getTaskbyId);
 
