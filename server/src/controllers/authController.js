@@ -27,26 +27,43 @@ const login = async (req, res) => {
   }
 };
 
-
 const register = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const user = await userModel.findOne({ email });
-    if (user) {
-      return res.status(400).json({ error: "El email ya está en uso" });
+    try {
+      const { email, password } = req.body;
+  
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({
+          error: "El email no tiene un formato válido.",
+        });
+      }
+  
+      const strongPasswordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,}$/;
+  
+      if (!strongPasswordRegex.test(password)) {
+        return res.status(400).json({
+          error:
+            "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.",
+        });
+      }
+  
+      const existingUser = await userModel.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ error: "El email ya está en uso" });
+      }
+  
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const newUser = new userModel({ email, password: hashedPassword });
+      await newUser.save();
+  
+      res.status(201).json({ message: "Usuario creado con éxito" });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new userModel({ email, password: hashedPassword });
-    await newUser.save();
-
-    res.status(201).json({ message: "Usuario creado con éxito" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
+  };
+  
+  
 
 const getUsers = async (req, res) => {
   try {
