@@ -5,6 +5,10 @@ function Lists() {
 
   if (!loaderData) return <div>Loading...</div>;
 
+  if (!Array.isArray(loaderData)) {
+    return <div className="text-white">Error: {loaderData?.message || "Unexpected error"}</div>;
+  }
+
   return (
     <section>
       {loaderData.map((list) => (
@@ -15,7 +19,7 @@ function Lists() {
           <h3 className="font-bold text-slate-100">{list.title}</h3>
           {list.tasks.map((task) => (
             <div className="bg-slate-700 rounded-2xl p-2 my-2">
-              <li key={task._id$oid} className="text-slate-100 list-none">{task.title}</li>
+              <li key={task._id} className="text-slate-100 list-none">{task.title}</li>
             </div>
           ))}
         </div>
