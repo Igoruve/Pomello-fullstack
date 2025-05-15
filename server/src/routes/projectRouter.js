@@ -18,4 +18,7 @@ router.put("/:id",/* isLoggedInAPI, */ projectController.updateProject);
 
 router.delete("/:id",/* isLoggedInAPI, */ projectController.deleteProject);
 
+router.get("/full/:userId", isLoggedInAPI, projectController.getFullUserData);
+
+
 export default router;
