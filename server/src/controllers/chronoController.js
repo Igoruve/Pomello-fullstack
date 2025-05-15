@@ -1,5 +1,4 @@
-import Chrono from '../models/chrono.model.js';
-//const Chrono = require('../models/chrono.model');
+import Chrono from '../models/chrono.js';
 
 const startChrono = async (req, res) => {
   try {
@@ -155,12 +154,12 @@ const getChronoStats = async (req, res) => {
   }
 };
 
-module.exports = {
+
+export default {
   startChrono,
   stopChrono,
   getChronoStats,
 };
-
 
 /*
 

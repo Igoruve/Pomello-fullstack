@@ -19,6 +19,5 @@ function isLoggedInAPI(req,res,next){
     }
 }
 
-export {
-    isLoggedInAPI
-}
+export {isLoggedInAPI}  
+export default isLoggedInAPI;

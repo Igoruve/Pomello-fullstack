@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const ChronoSchema = new mongoose.Schema({
   userId: { 
@@ -34,4 +34,4 @@ const ChronoSchema = new mongoose.Schema({
   } 
 });
 
-module.exports = mongoose.model('Chrono', ChronoSchema);
+export default mongoose.model('Chrono', ChronoSchema);
