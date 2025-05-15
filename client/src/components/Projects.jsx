@@ -1,4 +1,5 @@
 import { useLoaderData } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function ProjectList() {
   const loaderData = useLoaderData();
@@ -6,13 +7,21 @@ function ProjectList() {
   if (!loaderData) return <div>Loading...</div>;
 
   return (
-    <section>
-      {loaderData.map((project) => (
-        <div key={project._id.$oid}>
-          <h2>{project.title}</h2>
-          <p>{project.description}</p>
-        </div>
-      ))}
+    <section className="my-4">
+      <h2 className="text-xl font-bold mb-4 mx-4 text-slate-100 opacity-80">
+        Projects
+      </h2>
+      <section className="gap-4 px-4 grid grid-cols-2 ">
+        {loaderData.map((project) => (
+          <Link to={`/project/${project._id.$oid}`} key={project._id.$oid}>
+            <div
+              className="mb-2 bg-amber-200 h-24 rounded-2xl p-4 cursor-pointer hover:bg-amber-300  "
+            >
+              <p className="font-bold">{project.title}</p>
+            </div>
+          </Link>
+        ))}
+      </section>
     </section>
   );
 }
