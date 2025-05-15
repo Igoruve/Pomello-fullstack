@@ -48,9 +48,9 @@ const stopChrono = async (req, res) => {
     }
 
     await session.save();
-    res.status(200).json({ message: 'Cronómetro detenido', session });
+    res.status(200).json({ message: 'Stopped Chronometer', session });
   } catch (error) {
-    res.status(500).json({ message: 'Error al detener el cronómetro', error: error.message });
+    res.status(500).json({ message: 'Error stopping Chronometer', error: error.message });
   }
 };
 
