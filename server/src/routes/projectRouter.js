@@ -8,14 +8,14 @@ const router = Router();
 
 router.post("/", isLoggedInAPI,projectController.createProject);
 
-router.get("/user/:userId", isLoggedInAPI, projectController.getProjectsByUser);
+router.get("/user/:userId", /* isLoggedInAPI, */ projectController.getProjectsByUser);
 
-router.get("/",isLoggedInAPI, projectController.getProjects);
+router.get("/",/* isLoggedInAPI, */ projectController.getProjects);
 
-router.get("/:id", isLoggedInAPI,projectController.getProjectbyId);
+router.get("/:id", /* isLoggedInAPI, */projectController.getProjectbyId);
 
-router.put("/:id",isLoggedInAPI, projectController.updateProject);
+router.put("/:id",/* isLoggedInAPI, */ projectController.updateProject);
 
-router.delete("/:id",isLoggedInAPI, projectController.deleteProject);
+router.delete("/:id",/* isLoggedInAPI, */ projectController.deleteProject);
 
 export default router;

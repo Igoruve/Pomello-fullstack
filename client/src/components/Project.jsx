@@ -1,10 +1,13 @@
 import { useLoaderData } from "react-router-dom";
 
 function Project() {
-  const loaderData = useLoaderData(); 
+  const loaderData = useLoaderData();
 
   if (!loaderData) return <div className="text-white">Loading...</div>;
-  console.log(loaderData)
+
+  if (loaderData.error) {
+    return <div>Error: {loaderData.message || "Unexpected error"}</div>;
+  }
 
   return (
     <section>

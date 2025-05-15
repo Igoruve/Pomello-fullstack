@@ -1,18 +1,18 @@
 import FetchData from "./fetch.js";
 
 const getAllProjects = async () => {
-  const projects = await FetchData("/projects");
+  const projects = await FetchData("/project");
   return projects;
 };
 
-const getProjectById = async (id) => {
-  const project = await FetchData(`/projects/${id}`);
+const getProjectById = async (projectId) => {
+  const project = await FetchData(`/project/${projectId}`);
   return project;
 };
 
-const getProjectsByUserId = async (userId) => {
+const getProjectByUserId = async (userId) => {
   const userProjects = await FetchData(`/project/user/${userId}`);
   return userProjects;
 };
 
-export { getAllProjects, getProjectById, getProjectsByUserId };
+export { getAllProjects, getProjectById, getProjectByUserId };

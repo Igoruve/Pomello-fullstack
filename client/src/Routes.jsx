@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import { getProjectsByUserId, getProjectById } from "./utils/project.js";
+import { getProjectByUserId, getProjectById } from "./utils/project.js";
 import Projects from "./components/Projects.jsx";
 
 import Project from "./components/Project.jsx";
@@ -17,15 +17,15 @@ const router = createBrowserRouter([
         element: <HomePage />,
       }, */
       {
-        path: "/projects/user/:id",
+        path: "/project/user/:id",
         element: <Projects />,
-        loader: async ({ params }) => getProjectsByUserId(params.id),
+        loader: async ({ params }) => getProjectByUserId(params.id),
       },
       {
         path: "/project/:id",
-        element: <Project/>,
-        loader: async ({params}) => getProjectById(params.id),
-      }
+        element: <Project />,
+        loader: async ({ params }) => getProjectById(params.id),
+      },
     ],
   },
 ]);
