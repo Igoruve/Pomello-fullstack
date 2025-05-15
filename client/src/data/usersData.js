@@ -1,4 +1,4 @@
-[
+const usersData =[
   {
     "_id": { "$oid": "65f1a1b3c4d2e3f4a5b6c7d8" },
     "email": "maria.rodriguez@example.com",
@@ -55,3 +55,5 @@
     ]
   }
 ]
+
+export default usersData;

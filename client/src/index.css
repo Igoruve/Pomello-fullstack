@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+html {
+  @apply h-full;
+}
+
+body {
+  @apply h-full bg-slate-900;
+}
