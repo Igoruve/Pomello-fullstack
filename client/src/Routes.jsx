@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import { getProjectsByUserId, getProjectsFullInfo } from "./utils/project.js";
+import { getProjectById, getProjectsByUserId } from "./utils/project.js";
 import { login } from "./utils/auth.js";
 
 import Auth from "./pages/auth/Auth.jsx"; 
@@ -29,9 +29,9 @@ const router = createBrowserRouter([
         loader: async ({ params }) => getProjectsByUserId(params.id),
       },
       {
-        path: "/project/full/:user_id",
+        path: "/project/:id",
         element: <Project />,
-        loader: async ({ params }) => getProjectsFullInfo(params.user_id),
+        loader: async ({ params }) => getProjectById(params.id),
       }
     ],
   },

@@ -1,9 +1,8 @@
-import { useLoaderData, useParams } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 function ProjectList() {
   const loaderData = useLoaderData();
-  const { id: userId } = useParams(); // extraemos el userId desde la URL
 
   if (!loaderData) return <div>Loading...</div>;
   console.log(loaderData);
@@ -19,7 +18,7 @@ function ProjectList() {
       </h2>
       <section className="gap-4 px-4 grid grid-cols-2 ">
         {loaderData.map((project) => (
-          <Link to={`/project/full/${userId}`} key={project._id}>
+          <Link to={`/project/${project._id}`} key={project._id}>
             <div className="mb-2 bg-amber-200 h-24 rounded-2xl p-4 cursor-pointer hover:bg-amber-300">
               <p className="font-bold">{project.title}</p>
             </div>
