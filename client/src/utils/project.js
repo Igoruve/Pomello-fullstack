@@ -10,9 +10,14 @@ const getProjectById = async (projectId) => {
   return project;
 };
 
-const getProjectByUserId = async (userId) => {
+const getProjectsByUserId = async (userId) => {
   const userProjects = await FetchData(`/project/user/${userId}`);
   return userProjects;
 };
 
-export { getAllProjects, getProjectById, getProjectByUserId };
+const getProjectsFullInfo = async (userId) => {
+  const userProjects = await FetchData(`/project/full/${userId}`);
+  return userProjects;
+};
+
+export { getAllProjects, getProjectById, getProjectsByUserId, getProjectsFullInfo };
