@@ -24,7 +24,13 @@ const getTasksByList = async (req, res) => {
 };
 
 const updateTask = async (req,res) => {
-    const taskUpdated = await taskModel.findByIdAndUpdate(req.params.id,req.body);
+    const taskUpdated = await taskModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+      new: true,
+      runValidators: true
+      });
     res.json(taskUpdated);
 }
 

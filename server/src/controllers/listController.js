@@ -25,7 +25,14 @@ const getListsByProject = async (req, res) => {
 };
 
 const updateList = async (req,res) => {
-    const listUpdated = await listModel.findByIdAndUpdate(req.params.id,req.body);
+    const listUpdated = await listModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+      new: true,
+      runValidators: true
+      } 
+    );
     res.json(listUpdated);
 }
 
