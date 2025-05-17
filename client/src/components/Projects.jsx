@@ -1,5 +1,6 @@
 import { useLoaderData } from "react-router-dom";
 import { Link } from "react-router-dom";
+import NavbarProjects from "./navbar/NavbarProjects";
 
 function ProjectList() {
   const loaderData = useLoaderData();
@@ -16,6 +17,7 @@ function ProjectList() {
       <h2 className="text-xl font-bold mb-4 mx-4 text-slate-100 opacity-80">
         Projects
       </h2>
+      <NavbarProjects />
       <section className="gap-4 px-4 grid grid-cols-2 ">
         {loaderData.map((project) => (
           <Link to={`/project/${project._id}`} key={project._id}>

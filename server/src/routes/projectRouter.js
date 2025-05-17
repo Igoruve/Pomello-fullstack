@@ -6,7 +6,7 @@ import { isLoggedInAPI } from "../middlewares/authMiddleware.js";
 
 const router = Router();
 
-router.post("/", isLoggedInAPI,projectController.createProject);
+router.post("/", /* isLoggedInAPI, */ projectController.createProject);
 
 router.get("/user/:userId", /* isLoggedInAPI, */ projectController.getProjectsByUser);
 
