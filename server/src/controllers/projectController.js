@@ -4,16 +4,21 @@ import listModel from "../models/listModel.js";
 import taskModel from "../models/taskModel.js";
 
 const createProject = async (req, res) => {
-	const data = req.body.map((item) => {
-		return {
-			...item,
-			user: req.user._id
-		}
-	});
-	console.log(data);
-	const projectCreated = await projectModel.create(data);
-	res.json(projectCreated);
-}
+	try {
+		const data = {
+			...req.body,
+			user: req.user._id,
+		};
+
+		console.log(data);
+		const projectCreated = await projectModel.create(data);
+		res.json(projectCreated);
+	} catch (error) {
+		console.error("Error creating project: ", error);
+		res.status(500).json({ message: error.message });
+	}
+};
+
 const getProjects = async (req, res) => {
 	const projects = await projectModel.find();
 	res.json(projects);
