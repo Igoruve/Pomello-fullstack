@@ -20,8 +20,7 @@ function NavbarProjects() {
         e.preventDefault();
         const title = e.target.title.value;
         const description = e.target.description.value;
-        const result = await createProject({title, description});
-        const newProject = result[0];
+        const newProject = await createProject({title, description});
         navigate(`/project/${newProject._id}`);
     };
 

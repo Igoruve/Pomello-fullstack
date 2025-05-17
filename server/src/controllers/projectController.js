@@ -2,21 +2,23 @@ import projectModel from "../models/projectModel.js";
 
 import listModel from "../models/listModel.js";
 import taskModel from "../models/taskModel.js";
-
 const createProject = async (req, res) => {
-	try {
-		const data = {
-			...req.body,
-			user: req.user._id,
-		};
+  try {
+    // Si no existe req.user._id, simulamos uno (para pruebas)
+    const userId = req.user ? req.user._id : "682632fb9f8d463e135d1062"; // Simula un ID válido
 
-		console.log(data);
-		const projectCreated = await projectModel.create(data);
-		res.json(projectCreated);
-	} catch (error) {
-		console.error("Error creating project: ", error);
-		res.status(500).json({ message: error.message });
-	}
+    const data = {
+      ...req.body,
+      user: userId,
+    };
+
+    console.log(data);
+    const projectCreated = await projectModel.create(data);
+    res.json(projectCreated);
+  } catch (error) {
+    console.error("Error creating project: ", error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
 const getProjects = async (req, res) => {
