@@ -2,6 +2,9 @@ import projectModel from "../models/projectModel.js";
 import userModel from "../models/userModel.js";
 import { ProjectTitleNotProvided, ProjectDescriptionNotProvided, ProjectNotFound, UserNotFound } from "../utils/errors.js";
 
+import listModel from "../models/listModel.js";
+import taskModel from "../models/taskModel.js";
+
 const createProject = async (req, res) => {
     try {
         if (!req.body || !req.body.length) {
@@ -80,8 +83,46 @@ const getProjectsByUser = async (req, res) => {
     } catch (error) {
         res.status(error.statusCode || 500).json({ message: error.message });
     }
-};
+  };
 
+
+  
+  const getFullUserData = async (req, res) => {
+    try {
+
+      const userId = req.params.userId.trim();
+
+      const projects = await projectModel.find({ user: userId });
+  
+      const projectIds = projects.map((project) => project._id);
+      const lists = await listModel.find({ project: { $in: projectIds } });
+  
+      const listIds = lists.map((list) => list._id);
+      const tasks = await taskModel.find({ list: { $in: listIds } });
+  
+      const projectsWithListsAndTasks = projects.map((project) => {
+        const projectLists = lists.filter((list) => list.project.toString() === project._id.toString());
+  
+        const listsWithTasks = projectLists.map((list) => {
+          const listTasks = tasks.filter((task) => task.list.toString() === list._id.toString());
+          return {
+            ...list.toObject(),
+            tasks: listTasks,
+          };
+        });
+  
+        return {
+          ...project.toObject(),
+          lists: listsWithTasks,
+        };
+      });
+  
+      res.json(projectsWithListsAndTasks);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  
 const updateProject = async (req, res) => {
     try {
         // if (req.body.title === '') {
@@ -124,5 +165,6 @@ export default {
     getProjectsByUser,
     updateProject,
     deleteProject,
-    getProjectbyId
+    getProjectbyId,
+    getFullUserData
 }
