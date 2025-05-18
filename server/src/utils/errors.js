@@ -1,128 +1,145 @@
-/* 
-class StandNameNotProvided extends Error{
-    constructor(){
-        super("Stand name not provided");
+/**
+ * PROJECTS
+ */
+class ProjectTitleNotProvided extends Error {
+    constructor() {
+        super("Project title not provided");
         this.statusCode = 400;
     }
 }
 
-class IncorrectStandSize extends Error {
-    constructor(){
-        super("Stand size must be 'small', 'medium' or 'large'");
+class ProjectDescriptionNotProvided extends Error {
+    constructor() {
+        super("Project description not provided");
         this.statusCode = 400;
     }
 }
-class StandCategoryNotProvided extends Error{
-    constructor(){
-        super("stand_category_id not provided");
-        this.statusCode = 400;
-    }
-}
-class StandCategoryNotFound extends Error {
-    constructor(){
-        super("The stand category provided does not exist");
-        this.statusCode = 400;
-    }
-}
-class StandNotFound extends Error {
-    constructor(){
-        super("Stand not found");
+
+class ProjectNotFound extends Error {
+    constructor() {
+        super("Project not found");
         this.statusCode = 404;
     }
 }
 
-class ProductNameNotProvided extends Error{
-    constructor(){
-        super("Product name not provided");
+/**
+ * TASKS
+ */
+class TaskTitleNotProvided extends Error {
+    constructor() {
+        super("Task title not provided");
         this.statusCode = 400;
     }
 }
-class ProductPriceNotProvided extends Error{
-    constructor(){
-        super("Product price not provided");
-        this.statusCode = 400;
-    }
-}
-class ProductPriceNotValid extends Error{
-    constructor(){
-        super("Product price must be a number");
-        this.statusCode = 400;
-    }
-}
-class ProductStockNotProvided extends Error{
-    constructor(){
-        super("Product stock not provided");
-        this.statusCode = 400;
-    }
-}
-class ProductStockNotValid extends Error{
-    constructor(){
-        super("Product stock must be a number");
-        this.statusCode = 400;
-    }
-}
-class ProductNotFound extends Error{
-    constructor(){
-        super("Product not found");
+
+class TaskNotFound extends Error {
+    constructor() {
+        super("Task not found");
         this.statusCode = 404;
     }
 }
 
+/**
+ * LISTS
+ */
+class ListTitleNotProvided extends Error {
+    constructor() {
+        super("List title not provided");
+        this.statusCode = 400;
+    }
+}
 
+class ListNotFound extends Error {
+    constructor() {
+        super("List not found");
+        this.statusCode = 404;
+    }
+}
+
+/**
+ * CHRONO
+ */
+class FocusDurationNotProvided extends Error {
+    constructor() {
+        super("Focus duration not provided");
+        this.statusCode = 400;
+    }
+}
+
+class BreakDurationNotProvided extends Error {
+    constructor() {
+        super("Break duration not provided");
+        this.statusCode = 400;
+    }
+}
+
+class ChronoNotFound extends Error {
+    constructor() {
+        super("Chrono session not found");
+        this.statusCode = 404;
+    }
+}
+
+/**
+ * USERS
+ */
 class UserNameNotProvided extends Error {
-    constructor(){
+    constructor() {
         super("User name not provided");
         this.statusCode = 400;
     }
 }
 
 class UserEmailNotProvided extends Error {
-    constructor(){
+    constructor() {
         super("User email not provided");
         this.statusCode = 400;
     }
 }
+
 class UserPasswordNotProvided extends Error {
-    constructor(){
+    constructor() {
         super("User password not provided");
         this.statusCode = 400;
     }
 }
-class UserRoleIncorrect extends Error {
-    constructor(){
-        super("User role is not correct, it must be 'client' or 'seller'");
-        this.statusCode = 400;
-    }
-}
-class UserEmailAlreadyExists extends Error{
-    constructor(){
+
+class UserEmailAlreadyExists extends Error {
+    constructor() {
         super("User email already exists");
         this.statusCode = 400;
     }
 }
+
 class UserInvalidCredentials extends Error {
-    constructor(){
+    constructor() {
         super("Invalid credentials");
         this.statusCode = 401;
     }
 }
+
+class UserNotFound extends Error {
+    constructor() {
+        super("User not found");
+        this.statusCode = 404;
+    }
+}
+
 export {
-    StandNameNotProvided,
-    IncorrectStandSize,
-    StandCategoryNotProvided,
-    StandCategoryNotFound,
-    StandNotFound,
-    ProductNameNotProvided,
-    ProductPriceNotProvided,
-    ProductPriceNotValid,
-    ProductStockNotProvided,
-    ProductStockNotValid,
-    ProductNotFound,
+    ProjectTitleNotProvided, 
+    ProjectDescriptionNotProvided,
+    ProjectNotFound,
+    TaskTitleNotProvided,
+    TaskNotFound,
+    ListTitleNotProvided,
+    ListNotFound,
+    FocusDurationNotProvided,
+    BreakDurationNotProvided,
+    ChronoNotFound,
     UserNameNotProvided,
     UserEmailNotProvided,
     UserPasswordNotProvided,
-    UserRoleIncorrect,
     UserEmailAlreadyExists,
     UserInvalidCredentials,
-} 
-*/
+    UserNotFound
+};
