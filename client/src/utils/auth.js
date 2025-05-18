@@ -17,7 +17,7 @@ async function login (email, password) {
 }
 
 // REGISTRO
-async function register(username, email, password) {
+async function register(email, password) {
     // Control de errores
     if (!email || !email.includes("@")) {
         return { error: "Not valid email" };

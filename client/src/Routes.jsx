@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import { getProjectById, getProjectsByUserId } from "./utils/project.js";
-import { login } from "./utils/auth.js";
+import { login, register } from "./utils/auth.js";
 
 import Auth from "./pages/auth/Auth.jsx"; 
 import Homepage from "./pages/home/Homepage.jsx";
@@ -21,7 +21,7 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Auth />,
-        loader: login,
+        loader: login, register
       },
       {
         path: "/project/user/:id",
