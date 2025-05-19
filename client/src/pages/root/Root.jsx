@@ -6,7 +6,7 @@ function Root() {
 		<AuthProvider>
 			<header>
 			</header>
-			<main>
+			<main className="bg-gray-800">
 				<Outlet />
 			</main>
 			<footer>

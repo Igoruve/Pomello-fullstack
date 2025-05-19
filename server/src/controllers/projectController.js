@@ -4,7 +4,7 @@ import listModel from "../models/listModel.js";
 import taskModel from "../models/taskModel.js";
 const createProject = async (req, res) => {
   try {
-    // Si no existe req.user._id, simulamos uno (para pruebas)
+    // Si no existe req.user._id, simulamos uno (para pruebas) TODO cambiar cuando no haga falta
     const userId = req.user ? req.user._id : "682632fb9f8d463e135d1062"; // Simula un ID válido
 
     const data = {
