@@ -29,6 +29,7 @@ const router = createBrowserRouter([
       },
       {
         element: <Layout />,
+        loader: async ({ params }) => getProjectsByUserId(params.id),
         children: [
           {
             path: "/project/user/:id",
