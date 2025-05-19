@@ -1,7 +1,6 @@
 import projectModel from "../models/projectModel.js";
 import userModel from "../models/userModel.js";
 import { ProjectTitleNotProvided, ProjectDescriptionNotProvided, ProjectNotFound, UserNotFound } from "../utils/errors.js";
-
 import listModel from "../models/listModel.js";
 import taskModel from "../models/taskModel.js";
 
@@ -43,18 +42,39 @@ const getProjects = async (req, res) => {
 }
 
 const getProjectbyId = async (req, res) => {
-    try {
-        const projectFound = await projectModel.findById(req.params.id);
-        
-        if (!projectFound) {
-            throw new ProjectNotFound();
-        }
-        
-        res.json(projectFound);
-    } catch (error) {
-        res.status(error.statusCode || 500).json({ message: error.message });
-    }
-}
+  try {
+      const projectId = req.params.id.trim();
+  
+      const project = await projectModel.findById(projectId);
+      if (!project){
+        throw new ProjectNotFound();
+      }
+  
+      const lists = await listModel.find({ project: projectId });
+  
+      const listIds = lists.map(list => list._id);
+      const tasks = await taskModel.find({ list: { $in: listIds } });
+  
+      const listsWithTasks = lists.map(list => {
+          const listTasks = tasks.filter(task => task.list.toString() === list._id.toString());
+          return {
+              ...list.toObject(),
+              tasks: listTasks,
+            };
+      });
+  
+      // devolver el proyecto con listas y tareas
+      const projectWithListsAndTasks = {
+          ...project.toObject(),
+          lists: listsWithTasks,
+      };
+  
+      res.json(projectWithListsAndTasks);
+  
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+};
 
 const getProjectsByUser = async (req, res) => {
     try {
