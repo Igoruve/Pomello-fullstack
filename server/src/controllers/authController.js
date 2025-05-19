@@ -58,7 +58,7 @@ const register = async (req, res) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({
-        error: "El email no tiene un formato válido.",
+        error: "Invalid format email.",
       });
     }
 
@@ -68,7 +68,7 @@ const register = async (req, res) => {
     if (!strongPasswordRegex.test(password)) {
       return res.status(400).json({
         error:
-          "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.",
+          "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character.",
       });
     }
 
@@ -81,7 +81,7 @@ const register = async (req, res) => {
     const newUser = new userModel({ email, password: hashedPassword });
     await newUser.save();
 
-    res.status(201).json({ message: "Usuario creado con éxito" });
+    res.status(201).json({ message: "User created successfully." });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
@@ -133,7 +133,7 @@ const deleteUser = async (req, res) => {
       throw new UserNotFound();
     }
 
-    res.json({ message: "Usuario eliminado correctamente" });
+    res.json({ message: "User deleted successfully" });
   } catch (error) {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
