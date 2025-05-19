@@ -12,4 +12,9 @@ router.post('/stop', isLoggedInAPI, chronoController.stopChrono);
 
 router.get('/stats', isLoggedInAPI, chronoController.getChronoStats);
 
+router.post("/startPomellodoro", isLoggedInAPI, chronoController.startPomellodoroCycle);
+
+router.post("/stopPomellodoro", isLoggedInAPI, chronoController.stopPomellodoroCycle);
+
+
 export default router;

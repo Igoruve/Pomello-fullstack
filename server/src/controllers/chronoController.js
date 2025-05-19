@@ -155,11 +155,90 @@ const getChronoStats = async (req, res) => {
 };
 
 
+
+// Pomellodoro cycle control
+let pomellodoroActive = false;
+let pomellodoroTimeouts = [];
+
+const startPomellodoroCycle = async (req, res) => {
+  if (pomellodoroActive) {
+    return res.status(400).json({ message: "Pomellodoro cycle already running." });
+  }
+
+  pomellodoroActive = true;
+
+  const workDuration = 60 * 1000;       // 1 minute for testing
+  const breakDuration = 30 * 1000;      // 0.5 minute for testing
+  const cycles = 4;
+
+  const executeCycle = async (cycle) => {
+    if (!pomellodoroActive) return;
+
+    console.log(`➡️ Cycle ${cycle + 1} - startChrono`);
+
+    try {
+      await startChrono(req, res); // Start the chronometer
+    } catch (err) {
+      console.error("Error starting chrono:", err);
+    }
+
+    const workTimeout = setTimeout(async () => {
+      if (!pomellodoroActive) return;
+
+      console.log(`⏸️ Cycle ${cycle + 1} - stopChrono`);
+      try {
+        await stopChrono(req, res);
+      } catch (err) {
+        console.error("Error stopping chrono:", err);
+      }
+
+      if (cycle < cycles - 1) {
+        const breakTimeout = setTimeout(() => executeCycle(cycle + 1), breakDuration);
+        pomellodoroTimeouts.push(breakTimeout);
+      } else {
+        console.log("✅ Pomellodoro cycle completed");
+        pomellodoroActive = false;
+      }
+    }, workDuration);
+
+    pomellodoroTimeouts.push(workTimeout);
+  };
+
+  executeCycle(0);
+  res.status(200).json({ message: "Pomellodoro cycle started" });
+};
+
+const stopPomellodoroCycle = async (req, res) => {
+  if (!pomellodoroActive) {
+    return res.status(400).json({ message: "No Pomellodoro cycle is running." });
+  }
+
+  console.log("🛑 Interrumpiendo Pomellodoro...");
+  pomellodoroActive = false;
+
+  pomellodoroTimeouts.forEach(clearTimeout);
+  pomellodoroTimeouts = [];
+
+  try {
+    await stopChrono(req, res); // if were in a cycle, stop the chronometer
+  } catch (err) {
+    console.error("Error stopping chrono:", err);
+  }
+
+  res.status(200).json({ message: "Pomellodoro cycle stopped" });
+};
+
+
+
 export default {
   startChrono,
   stopChrono,
   getChronoStats,
+  startPomellodoroCycle,
+  stopPomellodoroCycle,
 };
+
+
 
 /*
 
