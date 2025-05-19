@@ -41,7 +41,7 @@ const AuthProvider = ({ children }) => {
                     saveToLocalStorage("userData", result.user);
                 }
 
-                navigate("/");
+                navigate(`/login`);
                 return null;
             }
         } catch (error) {
@@ -64,8 +64,7 @@ const AuthProvider = ({ children }) => {
             let finalUserData = result.user;
             setUserData(finalUserData);
             saveToLocalStorage("userData", finalUserData);
-            console.log("Login successful. Navigating to home...");
-            navigate("/");
+            navigate(`/project/user/${result.user._id}`);
             return null;
         }
     }

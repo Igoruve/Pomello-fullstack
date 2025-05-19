@@ -1,13 +1,8 @@
 import { useLoaderData } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-import NavbarProjects from "./NavbarProjects";
-
-function AsideNavbar() {
+function TopNavbar() {
   const loaderData = useLoaderData();
-
-  if (!loaderData) return <div>Loading...</div>;
-  console.log(loaderData);
 
   if (!Array.isArray(loaderData)) {
     return <div>Error: {loaderData?.message || "Unexpected error"}</div>;
@@ -16,13 +11,11 @@ function AsideNavbar() {
   return (
     <section className="my-4">
         <nav>
-            <p>Home</p>
-            <p>Stats</p>
-            
-            <NavbarProjects/>
+            <p>Browser</p>
+            <p>User</p>
         </nav>
     </section>
   );
 }
 
-export default AsideNavbar;
+export default TopNavbar;

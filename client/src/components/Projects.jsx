@@ -6,7 +6,6 @@ function ProjectList() {
   const loaderData = useLoaderData();
 
   if (!loaderData) return <div>Loading...</div>;
-  console.log(loaderData);
 
   if (!Array.isArray(loaderData)) {
     return <div>Error: {loaderData?.message || "Unexpected error"}</div>;

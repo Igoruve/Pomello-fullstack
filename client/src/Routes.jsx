@@ -20,7 +20,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/login",
-        element: <Auth />,
+        element: <Auth isRegister={false} />,
+      },
+      {
+        path: "/register",
+        element: <Auth isRegister={true}/>,
       },
       {
         path: "/project/user/:id",

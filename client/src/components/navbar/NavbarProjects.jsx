@@ -10,7 +10,6 @@ function NavbarProjects() {
     const navigate = useNavigate();
 
     if (!loaderData) return <div>Loading...</div>;
-    console.log(loaderData);
 
     if (!Array.isArray(loaderData)) {
         return <div>Error: {loaderData?.message || "Unexpected error"}</div>;
