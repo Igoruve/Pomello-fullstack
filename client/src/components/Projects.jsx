@@ -46,6 +46,7 @@ function ProjectList() {
 
 
   return (
+
     <section className="my-4">
       <h2 className="text-xl font-bold mb-4 mx-4 text-slate-100 opacity-80">
         Projects
@@ -57,7 +58,7 @@ function ProjectList() {
         </div>
 
         {projects.map((project) => (
-          <div className="flex flex-col justify-between h-42 mb-2 bg-gray-400 rounded-xl w-80 p-4 cursor-pointer hover:bg-orange-300 text-2xl">
+          <div className="flex flex-col justify-between h-42 mb-2 bg-gray-400 rounded-xl w-80 p-4 cursor-pointer hover:bg-orange-300 text-2xl" key={project._id}>
             <Link to={`/project/${project._id}`} key={project._id} className=" h-full ">
               <p className="font-bold">{project.title}</p>
             </Link>
@@ -78,19 +79,21 @@ function ProjectList() {
 
       </section>
       {expanded && (
-        <form onSubmit={handleCreateProject} className="flex flex-col gap-2 my-4 bg-gray-700 absolute z-10 top-24 left-[600px] rounded-xl h-96 w-64 p-4 font-bold text-white/80 justify-between">
-          <article className="flex flex-col">
-            <div className="gap-2 flex flex-col mb-6">
-              <label htmlFor="title">Title</label>
-              <input className="bg-gray-800 border border-white/50 rounded-sm" type="text" name="title" id="title" />
-            </div>
-            <div className="gap-4 flex flex-col ">
-              <label htmlFor="description">Description</label>
-              <textarea className="bg-gray-800 border border-white/50 rounded-sm" type="text" name="description" id="description" />
-            </div>
-          </article>
-          <button className="bg-amber-500 py-3 px-1.5 rounded-xl" type="submit">Create</button>
-        </form>
+        <div onClick={() => setExpanded(false)} className="h-full w-full bg-black/30 fixed inset-0">
+          <form onSubmit={handleCreateProject} className="flex flex-col gap-2 my-4 bg-gray-700 absolute z-10 top-24 left-[600px] rounded-xl h-96 w-64 p-4 font-bold text-white/80 justify-between">
+            <article className="flex flex-col">
+              <div className="gap-2 flex flex-col mb-6">
+                <label htmlFor="title">Title</label>
+                <input className="bg-gray-800 border border-white/50 rounded-sm" type="text" name="title" id="title" />
+              </div>
+              <div className="gap-4 flex flex-col ">
+                <label htmlFor="description">Description</label>
+                <textarea className="bg-gray-800 border border-white/50 rounded-sm" type="text" name="description" id="description" />
+              </div>
+            </article>
+            <button className="bg-amber-500 py-3 px-1.5 rounded-xl" type="submit">Create</button>
+          </form>
+        </div>
       )}
     </section>
   );

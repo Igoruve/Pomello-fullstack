@@ -1,4 +1,4 @@
-import { Navigate, useLoaderData, useNavigate } from "react-router-dom";
+import { Navigate, useLoaderData, useNavigate, useRevalidator } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
@@ -8,6 +8,7 @@ function NavbarProjects() {
     const loaderData = useLoaderData();
     const [expanded, setExpanded] = useState(false);
     const navigate = useNavigate();
+    const revalidator = useRevalidator();
 
     if (!Array.isArray(loaderData)) {
         return <div>Error: {loaderData?.message || "Unexpected error"}</div>;
@@ -18,6 +19,8 @@ function NavbarProjects() {
         const title = e.target.title.value;
         const description = e.target.description.value;
         const newProject = await createProject({ title, description });
+        //recargar datos del loader
+        revalidator.revalidate();
         navigate(`/project/${newProject._id}`);
     };
 
@@ -31,21 +34,22 @@ function NavbarProjects() {
 
             <section>
                 {expanded && (
-                    <form onSubmit={handleCreateProject} className="flex flex-col gap-2 my-4 bg-gray-700 absolute z-10 top-24 left-[600px] rounded-xl h-96 w-64 p-4 font-bold text-white/80 justify-between">
-                        <article className="flex flex-col">
-                            <div className="gap-2 flex flex-col mb-6">
-                                <label htmlFor="title">Title</label>
-                                <input className="bg-gray-800 border border-white/50 rounded-sm" type="text" name="title" id="title" />
-                            </div>
-                            <div className="gap-4 flex flex-col ">
-                                <label htmlFor="description">Description</label>
-                                <textarea className="bg-gray-800 border border-white/50 rounded-sm" type="text" name="description" id="description" />
-                            </div>
-                        </article>
-                        <button className="bg-amber-500 py-3 px-1.5 rounded-xl" type="submit">Create</button>
-                    </form>
-                )
-                }
+                    <div onClick={() => setExpanded(false)} className="h-full w-full bg-black/30 fixed inset-0">
+                        <form onSubmit={handleCreateProject} className="flex flex-col gap-2 my-4 bg-gray-700 absolute z-10 top-48 left-64 rounded-xl h-96 w-64 p-4 font-bold text-white/80 justify-between">
+                            <article className="flex flex-col">
+                                <div className="gap-2 flex flex-col mb-6">
+                                    <label htmlFor="title">Title</label>
+                                    <input className="bg-gray-800 border border-white/50 rounded-sm" type="text" name="title" id="title" />
+                                </div>
+                                <div className="gap-4 flex flex-col ">
+                                    <label htmlFor="description">Description</label>
+                                    <textarea className="bg-gray-800 border border-white/50 rounded-sm" type="text" name="description" id="description" />
+                                </div>
+                            </article>
+                            <button className="bg-amber-500 py-3 px-1.5 rounded-xl" type="submit">Create</button>
+                        </form>
+                    </div>
+                )}
             </section>
 
             <div>
