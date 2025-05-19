@@ -25,4 +25,9 @@ const createProject = async (data) => {
   return result;
 };
 
-export { getAllProjects, getProjectById, getProjectsByUserId, getProjectsFullInfo, createProject };
+const removeProject = async (projectId) => {
+  const result = await FetchData(`/project/${projectId}`, "DELETE");
+  return result;
+};
+
+export { getAllProjects, getProjectById, getProjectsByUserId, getProjectsFullInfo, createProject, removeProject };

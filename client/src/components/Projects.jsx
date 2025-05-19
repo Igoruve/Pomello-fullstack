@@ -2,12 +2,15 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-import { createProject } from "../utils/project.js";
+import { createProject, removeProject } from "../utils/project.js";
 
 function ProjectList() {
   const loaderData = useLoaderData();
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [projects, setProjects] = useState(loaderData);
+  const [error, setError] = useState(null);
 
   if (!loaderData) return <div>Loading...</div>;
 
@@ -23,6 +26,25 @@ function ProjectList() {
     navigate(`/project/${newProject._id}`);
   };
 
+  const handleRemoveProject = async (projectId) => {
+    try {
+      const result = await removeProject(projectId);
+      if (result.error) {
+        setError(`Error removing project: ${result.error}`);
+      } else {
+        setProjects(
+          projects.filter((project) => project._id !== projectId)
+        );
+        if (selectedProject && projectId === selectedProject._id) {
+          setSelectedProject(null);
+        }
+      }
+    } catch (error) {
+      setError(`Error removing project: ${error.message}`);
+    }
+  };
+
+
   return (
     <section className="my-4">
       <h2 className="text-xl font-bold mb-4 mx-4 text-slate-100 opacity-80">
@@ -34,12 +56,24 @@ function ProjectList() {
           New project
         </div>
 
-        {loaderData.map((project) => (
-          <Link to={`/project/${project._id}`} key={project._id} className="mb-2 bg-gray-400 h-42 rounded-xl w-80 p-4 cursor-pointer hover:bg-orange-300 text-2xl">
-            <div>
+        {projects.map((project) => (
+          <div className="flex flex-col justify-between h-42 mb-2 bg-gray-400 rounded-xl w-80 p-4 cursor-pointer hover:bg-orange-300 text-2xl">
+            <Link to={`/project/${project._id}`} key={project._id} className=" h-full ">
               <p className="font-bold">{project.title}</p>
-            </div>
-          </Link>
+            </Link>
+            <svg
+              viewBox="0 0 448 512"
+              fill="white"
+              height="24px"
+              width="24px"
+              className="self-end cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleRemoveProject(project._id);
+              }}
+            > <path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z" /></svg>
+          </div>
         ))}
 
       </section>
