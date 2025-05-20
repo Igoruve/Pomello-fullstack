@@ -37,7 +37,7 @@ function NavbarProjects() {
 
   return (
     <section className="my-4">
-      <div className="flex flex-row justify-between items-center mb-4">
+      <div className="flex flex-row justify-between items-center mb-8">
         <div className="flex flex-row gap-2 items-center">
           <svg
             height="16px"
@@ -93,7 +93,7 @@ function NavbarProjects() {
                 </div>
               </article>
               <button
-                className="bg-[#e84860] py-3 px-1.5 rounded-xl"
+                className="bg-[#f56b79] py-3 px-1.5 rounded-xl"
                 type="submit"
               >
                 Create
@@ -106,7 +106,7 @@ function NavbarProjects() {
       <div>
         {loaderData.map((project) => (
           <Link to={`/project/${project._id}`} key={project._id}>
-            <div className="mb-2 bg-gray-600 rounded-2xl p-4 cursor-pointer hover:bg-[#e84860]">
+            <div className="mb-4 bg-gray-600 rounded-2xl p-4 cursor-pointer hover:bg-[#f56b79] transition-colors duration-300 ease-in-out">
               <p className="truncate max-w-full whitespace-nowrap overflow-hidden">{project.title}</p>
             </div>
           </Link>
