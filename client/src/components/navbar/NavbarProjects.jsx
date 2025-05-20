@@ -107,7 +107,7 @@ function NavbarProjects() {
         {loaderData.map((project) => (
           <Link to={`/project/${project._id}`} key={project._id}>
             <div className="mb-2 bg-gray-600 rounded-2xl p-4 cursor-pointer hover:bg-[#e84860]">
-              <p>{project.title}</p>
+              <p className="truncate max-w-full whitespace-nowrap overflow-hidden">{project.title}</p>
             </div>
           </Link>
         ))}

@@ -69,7 +69,7 @@ function ProjectList() {
 
         {projects.map((project) => (
           <div
-            className="flex flex-col justify-between h-42 mb-2 bg-gray-400 rounded-xl w-80 p-4 cursor-pointer hover:bg-[#f56b79] text-2xl"
+            className="flex flex-col justify-between h-42 mb-2 bg-gray-400 rounded-xl w-80 p-4 cursor-pointer hover:bg-[#f56b79] text-2xl shadow-lg"
             key={project._id}
           >
             <Link
@@ -120,7 +120,7 @@ function ProjectList() {
               <div className="gap-4 flex flex-col ">
                 <label htmlFor="description">Description</label>
                 <textarea
-                  className="bg-gray-800 border border-white/50 rounded-sm"
+                  className="bg-gray-800 border border-white/50 rounded-sm h-32 overflow-y-auto resize-none"
                   type="text"
                   name="description"
                   id="description"
@@ -128,7 +128,7 @@ function ProjectList() {
               </div>
             </article>
             <button
-              className="bg-amber-500 py-3 px-1.5 rounded-xl"
+              className="bg-[#f56b79] py-3 px-1.5 rounded-xl"
               type="submit"
             >
               Create

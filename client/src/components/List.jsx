@@ -8,7 +8,6 @@ function List() {
     return (
         <div>
             <h1>{list.title}</h1>
-            <p>{list.description}</p>
         </div>
     );
 }
