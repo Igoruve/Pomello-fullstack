@@ -1,43 +1,35 @@
 import Chrono from '../models/chrono.js';
 
-// Start the chronometer session
+//start chrono session
 const startChrono = async (userId, focusDuration, breakDuration) => {
-  const focus = Number(focusDuration);
-  const rest = Number(breakDuration);
-
-  if (isNaN(focus) || focus!='number' || focus <= 0 || isNaN(rest) || rest <= 0) {
+  if (isNaN(focusDuration) || isNaN(breakDuration)) {
     throw new Error('Invalid duration values');
   }
 
-  const activeSession = await Chrono.findOne({ userId, chronostopped: null });
-  if (activeSession) {
-    throw new Error('Chronometer is already running');
-  }
+  const existing = await Chrono.findOne({ userId, chronostopped: null });
+  if (existing) throw new Error('Chronometer is already running');
 
-  const newSession = new Chrono({
+  const session = new Chrono({
     userId,
-    focusDuration: focus,
-    breakDuration: rest,
+    focusDuration,
+    breakDuration,
     chronostarted: new Date(),
     chronostopped: null,
     sessionsCompleted: 0,
   });
 
-  await newSession.save();
+  await session.save();
 };
 
 // Stop the chronometer session
 const stopChrono = async (userId) => {
   const session = await Chrono.findOne({ userId }).sort({ createdAt: -1 });
-  if (!session || session.chronostopped != null) {
-    throw new Error('No active chronometer session to stop');
-  }
+  if (!session || session.chronostopped) return;
 
   session.chronostopped = new Date();
-  const duration = (session.chronostopped - session.chronostarted) / 60000; // Duration in minutes
-
+  const duration = (session.chronostopped - session.chronostarted) / 60000;
   if (duration >= session.focusDuration) {
-    session.sessionsCompleted += 1; 
+    session.sessionsCompleted += 1;
   }
 
   await session.save();
@@ -150,25 +142,33 @@ let pomellodoroTimeouts = [];
 
 const startPomellodoroCycle = async (req, res) => {
   const userId = req.user.id;
-  const { focusDuration, breakDuration } = req.body;
+  const focus = Number(req.body.focusDuration);
+  const rest = Number(req.body.breakDuration);
 
   if (pomellodoroActive) {
-    return res.status(400).json({ message: "Pomellodoro already running" });
+    return res.status(400).json({ message: 'Pomellodoro already running' });
+  }
+
+  if (isNaN(focus) || isNaN(rest) || focus <= 0 || rest <= 0) {
+    return res.status(400).json({ message: 'Invalid duration values' });
   }
 
   pomellodoroActive = true;
+  res.status(200).json({ message: 'Pomellodoro started' });
+
   const cycles = 4;
-  const workMs = focusDuration * 60 * 1000;
-  const breakMs = breakDuration * 60 * 1000;
+  const workMs = focus * 60 * 1000;
+  const breakMs = rest * 60 * 1000;
 
   const runCycle = async (i) => {
     if (!pomellodoroActive) return;
 
     try {
-      await startChrono(userId, focusDuration, breakDuration);
+      await startChrono(userId, focus, rest);
     } catch (e) {
+      console.error(`❌ Error starting cycle ${i + 1}:`, e.message);
       pomellodoroActive = false;
-      return res.status(400).json({ message: `Error starting the Pomellodory Cycle ${i + 1}: ${e.message}` });
+      return;
     }
 
     const workTimeout = setTimeout(async () => {
@@ -177,54 +177,65 @@ const startPomellodoroCycle = async (req, res) => {
       try {
         await stopChrono(userId);
       } catch (e) {
+        console.error(`❌ Error stopping cycle ${i + 1}:`, e.message);
         pomellodoroActive = false;
-        return res.status(400).json({ message: `Error stopping the Pomellodory Cycle ${i + 1}: ${e.message}` });
+        return;
       }
 
       if (i < cycles - 1) {
-        const breakTimeout = setTimeout(() => runCycle(i + 1), breakMs);
-        pomellodoroTimeouts.push(breakTimeout);
+        const restTimeout = setTimeout(() => runCycle(i + 1), breakMs);
+        pomellodoroTimeouts.push(restTimeout);
       } else {
         pomellodoroActive = false;
+        console.log('✅ Pomellodoro finished');
       }
     }, workMs);
 
     pomellodoroTimeouts.push(workTimeout);
   };
 
-  await runCycle(0);
-  return res.status(200).json({ message: "Pomellodoro started" });
+  runCycle(0);
 };
 
-const stopPomellodoroCycle = async (req, res) => {
+export const stopPomellodoroCycle = async (req, res) => {
   const userId = req.user.id;
 
   if (!pomellodoroActive) {
-    return res.status(400).json({ message: "No Pomellodoro cycle is running" });
+    return res.status(400).json({ message: 'No Pomellodoro running' });
   }
 
+  // Cancel all timeouts
   pomellodoroTimeouts.forEach(clearTimeout);
   pomellodoroTimeouts = [];
   pomellodoroActive = false;
 
   try {
     await stopChrono(userId);
-  } catch (_) {
-    // silencioso
+  } catch (e) {
+    console.warn('No active chrono to stop or already stopped');
   }
 
-  return res.status(200).json({ message: "Pomellodoro cycle stopped" });
+  res.status(200).json({ message: 'Pomellodoro stopped' });
 };
 
+/*
+export const getPomellodoroStatus = async (req, res) => {
+  res.status(200).json({ running: pomellodoroActive });
+};*/
 
-const getPomellodoroStatus = () => {
-  return {
-    active: pomellodoroActive,
-    timeouts: pomellodoroTimeouts.length,
-  };
+const getPomellodoroStatus = (req, res) => {
+  try {
+    const status = {
+      active: pomellodoroActive,
+      timeouts: pomellodoroTimeouts.length,
+      sessions: pomellodoroTimeouts.filter(timeout => timeout !== null).length,
+    };
+    res.status(200).json(status);
+  } catch (error) {
+    res.status(500).json({ error: 'Error obtaining Pomellodoro status' });
+  }
 };
  
-
 export default {
   startChrono,
   stopChrono,
@@ -233,4 +244,4 @@ export default {
   stopPomellodoroCycle,
   getPomellodoroStatus
 };
-export { startChrono, stopChrono, getChronoStats, startPomellodoroCycle, stopPomellodoroCycle, getPomellodoroStatus };
+
