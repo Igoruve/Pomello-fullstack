@@ -2,8 +2,6 @@ import { Link } from "react-router-dom";
 
 import NavbarProjects from "./NavbarProjects";
 
-//TODO cambiar link a project/user/id
-
 function AsideNavbar() {
 
   return (

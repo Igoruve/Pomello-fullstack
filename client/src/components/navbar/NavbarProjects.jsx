@@ -13,6 +13,7 @@ function NavbarProjects() {
   const loaderData = useLoaderData();
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
+  const [projects, setProjects] = useState(loaderData);
   const revalidator = useRevalidator();
 
   if (!Array.isArray(loaderData)) {
@@ -23,15 +24,15 @@ function NavbarProjects() {
     e.preventDefault();
     const title = e.target.title.value;
     const description = e.target.description.value;
-    const newProject = await createProject({ title, description });
-    //recargar datos del loader
-    revalidator.revalidate();
 
     e.target.reset(); // Limpia el formulario
 
     setExpanded(false); // Cierra el formulario
 
-    navigate(`/project/${newProject._id}`);
+    const newProject = await createProject({ title, description });
+    console.log("newProject", newProject);
+    setProjects((prev) => [...prev, newProject[0]]);
+    navigate(`/project/${newProject[0]._id}`, { replace: true });
   };
 
   return (
