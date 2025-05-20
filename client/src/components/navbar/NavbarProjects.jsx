@@ -14,11 +14,11 @@ function NavbarProjects() {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
   const [projects, setProjects] = useState(loaderData);
-  const revalidator = useRevalidator();
 
   if (!Array.isArray(loaderData)) {
     return <div>Error: {loaderData?.message || "Unexpected error"}</div>;
   }
+  
 
   const handleCreateProject = async (e) => {
     e.preventDefault();

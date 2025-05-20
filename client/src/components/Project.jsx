@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLoaderData, useParams } from "react-router-dom";
+import { useLoaderData, useParams, useRevalidator } from "react-router-dom";
 import { updateProject } from "../utils/project.js";
 
 function Project() {
@@ -7,43 +7,61 @@ function Project() {
   const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(project.title);
+  const revalidator = useRevalidator();
+
+  const handleBlur = () => {
+    setIsEditing(false);
+    updateProject(id, { title: editedTitle }).then(() => {
+      revalidator.revalidate();
+    });
+  };
 
   useEffect(() => {
-    setEditedTitle(project.title);
-  }, [project.title]);
+    if (project?.title) {
+      setEditedTitle(project.title);
+    }
+  }, [project?.title, id]);
 
   const handleTitleChange = (e) => {
     const newValue = e.target.value;
-    const textarea = e.target;
-    textarea.style.height = "auto";
-    textarea.style.height = `${textarea.scrollHeight}px`;
     setEditedTitle(newValue);
   };
 
   return (
-    <section>
-      {isEditing ? (
-        <textarea
-          value={editedTitle}
-          onChange={handleTitleChange}
-          onBlur={() => {
-            setIsEditing(false);
-            updateProject(id, { title: editedTitle });
-          }}
-          name="title"
-          id="title"
-          required
-          className="w-[80%] max-w-xl text-white/80 text-2xl font-bold text-center pt-16 block mx-auto bg-transparent resize-none outline-none overflow-hidden"
-          autoFocus
-        />
-      ) : (
-        <h2
-          onClick={() => setIsEditing(true)}
-          className="text-white/80 text-2xl font-bold text-center py-16 cursor-pointer"
-        >
-          {editedTitle}
-        </h2>
-      )}
+    <section className="py-4 px-4 h-full w-full bg-linear-65 from-[#fcab51] to-[#f56b79]">
+      <div className="max-w-xl w-full mx-6 mb-6 h-[4.5rem] flex flex-col justify-center">
+        {isEditing ? (
+          <>
+            <textarea
+              value={editedTitle}
+              onChange={handleTitleChange}
+              onBlur={handleBlur}
+              name="title"
+              id="title"
+              required
+              maxLength={40}
+              className="w-full h-8 text-black/80 text-2xl font-bold bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter") e.preventDefault();
+              }}
+            />
+            <p className="text-sm text-black/60 text-right h-5">
+              {editedTitle.length} / 40
+            </p>
+          </>
+        ) : (
+          <>
+            <h2
+              onClick={() => setIsEditing(true)}
+              className="w-full text-black/80 text-2xl font-bold cursor-pointer break-words h-8 hover:bg-gray-500/20 rounded-xl leading-tight"
+            >
+              {editedTitle}
+            </h2>
+            <div className="h-5" />
+          </>
+        )}
+      </div>
 
       <section className="text-white max-w-64 bg-gray-900 rounded-xl p-4 mx-6 shadow-md">
         {project.lists &&

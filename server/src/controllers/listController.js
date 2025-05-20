@@ -4,7 +4,7 @@ import { ListTitleNotProvided, ListNotFound, ProjectNotFound } from "../utils/er
 
 const createList = async (req, res) => {
     try {
-         if (!req.body) {
+         if (!req.body.title) {
              throw new ListTitleNotProvided();
          }
 
