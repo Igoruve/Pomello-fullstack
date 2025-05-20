@@ -4,6 +4,7 @@ import { Chart } from "chart.js/auto";
 const SessionChart = ({ data }) => {
   const doughnutChartRef = useRef(null);
   const barChartRef = useRef(null);
+  const weeklyChartRef = useRef(null);
 
   useEffect(() => {
     if (!data) return;
@@ -14,7 +15,7 @@ const SessionChart = ({ data }) => {
       doughnutChartRef.current.chartInstance.destroy();
     }
     doughnutChartRef.current.chartInstance = new Chart(doughnutCtx, {
-      type: "doughnut",
+      type: "pie",
       data: {
         labels: ["Completed", "Interrupted"],
         datasets: [
@@ -85,12 +86,87 @@ const SessionChart = ({ data }) => {
         },
       },
     });
+
+    // Weekly Chart
+    const weeklyCtx = weeklyChartRef.current.getContext("2d");
+    if (weeklyChartRef.current.chartInstance) {
+      weeklyChartRef.current.chartInstance.destroy();
+    }
+
+    // Get the start and end of the current week (Monday to Sunday)
+    const now = new Date();
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Set to Monday
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6); // Set to Sunday
+    endOfWeek.setHours(23, 59, 59, 999);
+
+    // Filter sessions for the current week
+    const currentWeekSessions = data.sessions.filter((session) => {
+      const sessionDate = new Date(session.createdAt);
+      return sessionDate >= startOfWeek && sessionDate <= endOfWeek;
+    });
+
+    // Group sessions by day of the week (Monday to Sunday)
+    const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const weeklyData = Array(7).fill(0); // Initialize array for 7 days
+
+    currentWeekSessions.forEach((session) => {
+      const day = (new Date(session.createdAt).getDay() + 6) % 7; // Adjust day to start from Monday (0 = Monday, 6 = Sunday)
+      weeklyData[day] += 1; // Increment session count for the day
+    });
+
+    weeklyChartRef.current.chartInstance = new Chart(weeklyCtx, {
+      type: "line",
+      data: {
+        labels: daysOfWeek,
+        datasets: [
+          {
+            label: "Sessions per Day",
+            data: weeklyData,
+            borderColor: "#4CAF50",
+            backgroundColor: "rgba(76, 175, 80, 0.2)",
+            fill: true,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: "Day of the Week",
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: "Number of Sessions",
+            },
+            beginAtZero: true,
+          },
+        },
+      },
+    });
   }, [data]);
 
   return (
     <div>
-      <canvas ref={doughnutChartRef}></canvas>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", height: "350px" }}>
+        <div style={{ width: "350px", height: "350px" }}>
+          <canvas ref={doughnutChartRef} style={{ width: "100%", height: "100%" }}></canvas>
+        </div>
+      </div>
       <canvas ref={barChartRef} style={{ marginTop: "20px" }}></canvas>
+      <canvas ref={weeklyChartRef} style={{ marginTop: "20px" }}></canvas>
     </div>
   );
 };
