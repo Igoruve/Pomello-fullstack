@@ -1,36 +1,92 @@
-import taskModel from "../models/taskModel.js"
+import taskModel from "../models/taskModel.js";
+import listModel from "../models/listModel.js"; // Importar el modelo de listas
+import { TaskTitleNotProvided, TaskNotFound, ListNotFound } from "../utils/errors.js";
 
-const createTask = async (req,res) => {
-    const taskCreated = await taskModel.create(req.body);
-    res.json(taskCreated);
-}
-const getTasks = async (req,res) => {
-    const tasks = await taskModel.find();
-    res.json(tasks);
+const createTask = async (req, res) => {
+    try {
+        if (!req.body.title) {
+            throw new TaskTitleNotProvided();
+        }
+
+        // Validar si la lista existe
+        const listExists = await listModel.findById(req.body.list);
+        if (!listExists) {
+            throw new ListNotFound();
+        }
+
+        const taskCreated = await taskModel.create(req.body);
+        res.json(taskCreated);
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ message: error.message });
+    }
 }
 
-const getTaskbyId = async (req,res) => {
-    const taskFound = await taskModel.findById(req.params.id);
-    res.json(taskFound);
+const getTasks = async (req, res) => {
+    try {
+        const tasks = await taskModel.find();
+        res.json(tasks);
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ message: error.message });
+    }
+}
+
+const getTaskbyId = async (req, res) => {
+    try {
+        const taskFound = await taskModel.findById(req.params.id);
+        
+        if (!taskFound) {
+            throw new TaskNotFound();
+        }
+        
+        res.json(taskFound);
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ message: error.message });
+    }
 }
 
 const getTasksByList = async (req, res) => {
-  try {
-    const tasks = await taskModel.find({ list: req.params.listId });
-    res.json(tasks);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    try {
+        const tasks = await taskModel.find({ list: req.params.listId });
+        res.json(tasks);
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ message: error.message });
+    }
 };
 
-const updateTask = async (req,res) => {
-    const taskUpdated = await taskModel.findByIdAndUpdate(req.params.id,req.body);
-    res.json(taskUpdated);
+const updateTask = async (req, res) => {
+    try {
+        if (req.body.title === '') {
+            throw new TaskTitleNotProvided();
+        }
+        
+        const taskUpdated = await taskModel.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
+        
+        if (!taskUpdated) {
+            throw new TaskNotFound();
+        }
+        
+        res.json(taskUpdated);
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ message: error.message });
+    }
 }
 
-const deleteTask = async (req,res) => {
-    const taskDeleted = await taskModel.findByIdAndDelete(req.params.id);
-    res.json(taskDeleted);
+const deleteTask = async (req, res) => {
+    try {
+        const taskDeleted = await taskModel.findByIdAndDelete(req.params.id);
+        
+        if (!taskDeleted) {
+            throw new TaskNotFound();
+        }
+        
+        res.json(taskDeleted);
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ message: error.message });
+    }
 }  
 
 export default {
