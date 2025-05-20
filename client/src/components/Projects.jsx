@@ -10,11 +10,12 @@ function ProjectList() {
   const [expanded, setExpanded] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [projects, setProjects] = useState(loaderData);
-  const [error, setError] = useState(null);
+  const [setError] = useState(null);
 
   if (!loaderData) return <div>Loading...</div>;
 
   if (!Array.isArray(loaderData)) {
+    console.log("loaderData", loaderData);
     return <div>Error: {loaderData?.message || "Unexpected error"}</div>;
   }
 
@@ -28,7 +29,9 @@ function ProjectList() {
     setExpanded(false); // Cierra el formulario
 
     const newProject = await createProject({ title, description });
-    navigate(`/project/${newProject._id}`);
+    console.log("newProject", newProject);
+    setProjects((prev) => [...prev, newProject[0]]);
+    navigate(`/project/${newProject[0]._id}`, { replace: true });
   };
 
   const handleRemoveProject = async (projectId) => {
@@ -41,6 +44,7 @@ function ProjectList() {
         if (selectedProject && projectId === selectedProject._id) {
           setSelectedProject(null);
         }
+        navigate("/project/user", { replace: true });
       }
     } catch (error) {
       setError(`Error removing project: ${error.message}`);

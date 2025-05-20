@@ -64,7 +64,7 @@ const AuthProvider = ({ children }) => {
             let finalUserData = result.user;
             setUserData(finalUserData);
             saveToLocalStorage("userData", finalUserData);
-            navigate(`/project/user/${result.user._id}`);
+            navigate(`/project/user/`);
             return null;
         }
     }
