@@ -1,7 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import { getProjectById, getProjectsByUserId } from "./utils/project.js";
-import { login, register } from "./utils/auth.js";
 
 import Auth from "./pages/auth/Auth.jsx";
 import Homepage from "./pages/home/Homepage.jsx";
@@ -29,10 +28,11 @@ const router = createBrowserRouter([
       },
       {
         element: <Layout />,
-        loader: async ({ params }) => getProjectsByUserId(params.id),
+        loader: async () => getProjectsByUserId(),
+        shouldRevalidate: () => true,
         children: [
           {
-            path: "/project/user/:id",
+            path: "/project/user",
             element: <Projects />,
             loader: async ({ params }) => getProjectsByUserId(params.id),
           },
@@ -40,9 +40,9 @@ const router = createBrowserRouter([
             path: "/project/:id",
             element: <Project />,
             loader: async ({ params }) => getProjectById(params.id),
-          }
+          },
         ],
-      }
+      },
     ],
   },
 ]);

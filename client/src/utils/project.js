@@ -10,8 +10,8 @@ const getProjectById = async (projectId) => {
   return project;
 };
 
-const getProjectsByUserId = async (userId) => {
-  const userProjects = await FetchData(`/project/user/${userId}`);
+const getProjectsByUserId = async () => {
+  const userProjects = await FetchData(`/project/user`);
   return userProjects;
 };
 
@@ -21,7 +21,7 @@ const getProjectsFullInfo = async (userId) => {
 };
 
 const createProject = async (data) => {
-  const result = await FetchData("/project", "POST", data);
+  const result = await FetchData("/project", "POST", [data]);
   return result;
 };
 
