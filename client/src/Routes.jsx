@@ -9,6 +9,7 @@ import Projects from "./components/Projects.jsx";
 import Project from "./components/Project.jsx";
 import Root from "./pages/root/Root";
 import Layout from "./components/layout/Layout";
+import Dashboard from "./pages/Dashboard.jsx"; // Importar el componente Dashboard
 
 const router = createBrowserRouter([
   {
@@ -40,9 +41,13 @@ const router = createBrowserRouter([
             path: "/project/:id",
             element: <Project />,
             loader: async ({ params }) => getProjectById(params.id),
-          }
+          },
+          {
+            path: "/dashboard", // Nueva ruta para el dashboard
+            element: <Dashboard />,
+          },
         ],
-      }
+      },
     ],
   },
 ]);
