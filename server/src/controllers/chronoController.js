@@ -1,13 +1,17 @@
 import Chrono from '../models/chrono.js';
+import Errors from "../utils/errors.js"; // ✅ Importación correcta
 
 //start chrono session
 const startChrono = async (userId, focusDuration, breakDuration) => {
-  if (isNaN(focusDuration) || isNaN(breakDuration)) {
-    throw new Error('Invalid duration values');
+  if (
+    typeof focusDuration !== 'number' || focusDuration <= 0 ||
+    typeof breakDuration !== 'number' || breakDuration <= 0
+  ) {
+    throw new InvalidDurationValue();
   }
 
   const existing = await Chrono.findOne({ userId, chronostopped: null });
-  if (existing) throw new Error('Chronometer is already running');
+  if (existing) throw new ChronoAlreadyRunning();
 
   const session = new Chrono({
     userId,
@@ -19,35 +23,48 @@ const startChrono = async (userId, focusDuration, breakDuration) => {
   });
 
   await session.save();
+  return session;
 };
+
 
 // Stop the chronometer session
 const stopChrono = async (userId) => {
-  const session = await Chrono.findOne({ userId }).sort({ createdAt: -1 });
-  if (!session || session.chronostopped) return;
+  const session = await Chrono.findOne({ userId, chronostopped: null }).sort({ createdAt: -1 });
+
+  if (!session) throw new ActiveChronoNotFound();
 
   session.chronostopped = new Date();
+
   const duration = (session.chronostopped - session.chronostarted) / 60000;
   if (duration >= session.focusDuration) {
     session.sessionsCompleted += 1;
   }
 
   await session.save();
+  return session;
 };
 
 
 // Get statistics of the chronometer sessions to use with the chart
+const {
+  ChronoStatsError,
+  PomellodoroStatsEmpty
+} = Errors;
+
 const getChronoStats = async (req, res) => {
   try {
     const sessions = await Chrono.find({ userId: req.user.id });
 
+    if (!sessions.length) throw new PomellodoroStatsEmpty();
+
     const today = new Date();
+
     const stats = sessions.reduce((acc, session) => {
-      const { chronostarted, chronostopped, breakDuration, sessionsCompleted } = session;
+      const { chronostarted, chronostopped, breakDuration = 0, sessionsCompleted = 0 } = session;
 
       if (!chronostarted || !chronostopped) return acc;
 
-      const focusTime = (chronostopped - chronostarted) / 60000; // in minutes
+      const focusTime = (new Date(chronostopped) - new Date(chronostarted)) / 60000;
 
       acc.totalSessions += 1;
       acc.totalFocusTime += focusTime;
@@ -96,18 +113,20 @@ const getChronoStats = async (req, res) => {
       dailySessions
     } = stats;
 
+    const safeDiv = (num, den) => den ? num / den : 0;
+
     const totalTime = totalFocusTime + totalBreakTime;
-    const averageFocusTime = totalFocusTime / totalSessions || 0;
-    const averageBreakTime = totalBreakTime / totalSessions || 0;
-    const averageTime = totalTime / totalSessions || 0;
-    const averageSessionsCompleted = totalSessionsCompleted / totalSessions || 0;
-    const averageSessionsInterrupted = interruptedSessions / totalSessions || 0;
-    const averageSessionsCompletedPercentage = (completedSessions / totalSessions) * 100 || 0;
-    const averageSessionsInterruptedPercentage = (interruptedSessions / totalSessions) * 100 || 0;
-    const averageSessionsCompletedTime = totalCompletedFocusTime / completedSessions || 0;
-    const averageSessionsInterruptedTime = totalInterruptedFocusTime / interruptedSessions || 0;
-    const averageSessionsTime = totalFocusTime / totalSessions || 0;
-    const averageSessionsCompletedTimePercentage = (averageSessionsCompletedTime / averageSessionsTime) * 100 || 0;
+    const averageFocusTime = safeDiv(totalFocusTime, totalSessions);
+    const averageBreakTime = safeDiv(totalBreakTime, totalSessions);
+    const averageTime = safeDiv(totalTime, totalSessions);
+    const averageSessionsCompleted = safeDiv(totalSessionsCompleted, totalSessions);
+    const averageSessionsInterrupted = safeDiv(interruptedSessions, totalSessions);
+    const averageSessionsCompletedPercentage = safeDiv(completedSessions * 100, totalSessions);
+    const averageSessionsInterruptedPercentage = safeDiv(interruptedSessions * 100, totalSessions);
+    const averageSessionsCompletedTime = safeDiv(totalCompletedFocusTime, completedSessions);
+    const averageSessionsInterruptedTime = safeDiv(totalInterruptedFocusTime, interruptedSessions);
+    const averageSessionsTime = safeDiv(totalFocusTime, totalSessions);
+    const averageSessionsCompletedTimePercentage = safeDiv(averageSessionsCompletedTime * 100, averageSessionsTime);
 
     res.status(200).json({
       totalSessions,
@@ -130,8 +149,12 @@ const getChronoStats = async (req, res) => {
       averageSessionsCompletedTimePercentage,
       dailySessions
     });
+
   } catch (error) {
-    res.status(500).json({ message: 'Error obtaining statistics', error: error.message });
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({ error: error.message });
+    }
+    res.status(500).json({ error: new ChronoStatsError().message });
   }
 };
 
@@ -151,6 +174,13 @@ const startPomellodoroCycle = async (req, res) => {
 
   if (isNaN(focus) || isNaN(rest) || focus <= 0 || rest <= 0) {
     return res.status(400).json({ message: 'Invalid duration values' });
+  }
+
+  // 🔧 Cierre forzado de posibles sesiones previas
+  try {
+    await stopChrono(userId);
+  } catch (e) {
+    // Ignoramos si no hay ninguna sesión previa
   }
 
   pomellodoroActive = true;
@@ -197,31 +227,32 @@ const startPomellodoroCycle = async (req, res) => {
   runCycle(0);
 };
 
-export const stopPomellodoroCycle = async (req, res) => {
+const {
+  PomellodoroNotRunning,
+  pomellodoroStopError
+} = Errors;
+
+const stopPomellodoroCycle = async (req, res) => {
   const userId = req.user.id;
 
-  if (!pomellodoroActive) {
-    return res.status(400).json({ message: 'No Pomellodoro running' });
-  }
-
-  // Cancel all timeouts
-  pomellodoroTimeouts.forEach(clearTimeout);
-  pomellodoroTimeouts = [];
-  pomellodoroActive = false;
-
   try {
-    await stopChrono(userId);
-  } catch (e) {
-    console.warn('No active chrono to stop or already stopped');
+    if (!pomellodoroActive) throw new PomellodoroNotRunning();
+
+    pomellodoroTimeouts.forEach(clearTimeout);
+    pomellodoroTimeouts = [];
+    pomellodoroActive = false;
+
+    try {
+      await stopChrono(userId);
+    } catch (e) {
+      console.warn('No active chrono to stop or already stopped');
+    }
+
+    res.status(200).json({ message: "🍊✅ Pomellodoro stopped" });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({ error: error.message || new pomellodoroStopError().message });
   }
-
-  res.status(200).json({ message: 'Pomellodoro stopped' });
 };
-
-/*
-export const getPomellodoroStatus = async (req, res) => {
-  res.status(200).json({ running: pomellodoroActive });
-};*/
 
 const getPomellodoroStatus = (req, res) => {
   try {
@@ -244,4 +275,6 @@ export default {
   stopPomellodoroCycle,
   getPomellodoroStatus
 };
+
+
 
