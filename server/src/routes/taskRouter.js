@@ -4,16 +4,16 @@ import { isLoggedInAPI } from "../middlewares/authMiddleware.js";
 
 const router = Router();
 
-router.post("/", isLoggedInAPI, taskController.createTask);
+router.post("/", /* isLoggedInAPI, */ taskController.createTask);
 
-router.get("/", isLoggedInAPI,taskController.getTasks);
+router.get("/", /* isLoggedInAPI, */taskController.getTasks);
 
-router.get("/list/:listId", isLoggedInAPI, taskController.getTasksByList);
+router.get("/list/:listId", /* isLoggedInAPI, */ taskController.getTasksByList);
 
-router.get("/:id", isLoggedInAPI,taskController.getTaskbyId);
+router.get("/:id", /* isLoggedInAPI, */taskController.getTaskbyId);
 
-router.put("/:id", isLoggedInAPI,taskController.updateTask);
+router.put("/:id", /* isLoggedInAPI, */taskController.updateTask);
 
-router.delete("/:id", isLoggedInAPI,taskController.deleteTask);
+router.delete("/:id", /* isLoggedInAPI, */taskController.deleteTask);
 
 export default router;
