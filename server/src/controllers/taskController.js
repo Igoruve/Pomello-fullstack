@@ -1,6 +1,13 @@
 import taskModel from "../models/taskModel.js";
-import listModel from "../models/listModel.js"; // Importar el modelo de listas
-import { TaskTitleNotProvided, TaskNotFound, ListNotFound } from "../utils/errors.js";
+import listModel from "../models/listModel.js";
+import Errors from "../utils/errors.js"; // ✅ Importación del default export
+
+const {
+  TaskTitleNotProvided,
+  TaskNotFound,
+  ListNotFound
+} = Errors;
+
 
 const createTask = async (req, res) => {
     try {

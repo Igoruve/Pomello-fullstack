@@ -1,6 +1,13 @@
 import listModel from "../models/listModel.js";
-import projectModel from "../models/projectModel.js"; // Importar el modelo de proyectos
-import { ListTitleNotProvided, ListNotFound, ProjectNotFound } from "../utils/errors.js";
+import projectModel from "../models/projectModel.js";
+import Errors from "../utils/errors.js"; // ✅ Importación correcta
+
+const {
+  ListTitleNotProvided,
+  ListNotFound,
+  ProjectNotFound
+} = Errors;
+
 
 const createList = async (req, res) => {
     try {
