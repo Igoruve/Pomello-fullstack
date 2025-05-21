@@ -4,7 +4,7 @@ import NavbarProjects from "./NavbarProjects";
 
 function AsideNavbar() {
   return (
-    <section className="flex flex-col h-screen bg-gray-800 border border-r-gray-100/5  ">
+    <section className="flex flex-col bg-gray-800 border border-r-gray-100/5  ">
       <nav className="h-full flex flex-col w-64 opacity-90 text-white/80 text-lg px-6 gap-4 pt-6">
         <section className="border-b border-gray-200/20 pb-4 flex flex-col gap-4">
           <NavLink

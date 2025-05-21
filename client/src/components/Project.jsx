@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLoaderData, useParams, useRevalidator } from "react-router-dom";
 import { updateProject } from "../utils/project.js";
+import NewList from "./list/NewList.jsx";
 
 function Project() {
   const project = useLoaderData();
@@ -63,10 +64,13 @@ function Project() {
         )}
       </div>
 
-      <section className="text-white max-w-64 bg-gray-900 rounded-xl p-4 mx-6 shadow-md">
+      <section className="flex flex-row gap-8">
         {project.lists &&
           project.lists.map((list) => (
-            <div key={list._id}>
+            <div
+              key={list._id}
+              className="text-white w-64 bg-gray-900 rounded-xl p-4 shadow-md"
+            >
               <h3 className="text-white/80 font-bold mb-6">{list.title}</h3>
               <ul className="list-none text-white/80 flex flex-col gap-2">
                 {list.tasks &&
@@ -81,6 +85,9 @@ function Project() {
               </ul>
             </div>
           ))}
+      <div>
+        <NewList />
+      </div>
       </section>
     </section>
   );

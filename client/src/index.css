@@ -3,3 +3,15 @@
 :root{
     --color-accent: #f56b79;
 }
+
+@layer utilities {
+    .no-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+  }
+  
+  /* Pseudo-element DEBE estar fuera del layer */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }

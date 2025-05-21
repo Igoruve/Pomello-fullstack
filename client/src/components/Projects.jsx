@@ -58,13 +58,13 @@ function ProjectList() {
 
   return (
     <section className="py-4 px-4 h-full w-full bg-gray-800">
-      <h2 className="text-xl font-bold mb-4 mx-4 text-slate-100 opacity-80">
+      <h2 className="text-2xl font-bold mb-4 mx-4 text-slate-100 opacity-80">
         Projects
       </h2>
       <section className="gap-6 px-4 grid grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1">
         <div
           onClick={() => setExpanded(!expanded)}
-          className="flex flex-row text-white gap-4 text-lg mb-2 bg-gray-500 h-42 rounded-xl w-80 p-4 cursor-pointer hover:bg-gray-400 transition-colors duration-300 ease-in-out shadow-lg hover:scale-105"
+          className="flex flex-row text-white gap-4 text-lg mb-2 bg-gray-500/50 h-42 rounded-xl w-80 p-4 cursor-pointer hover:bg-gray-500/60 transition-colors duration-300 ease-in-out shadow-lg hover:scale-105"
         >
           <svg viewBox="0 0 448 512" fill="white" height="24px" width="24px">
             <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
@@ -74,7 +74,7 @@ function ProjectList() {
 
         {projects.map((project) => (
           <div
-            className="flex flex-col justify-between h-42 mb-2 bg-gray-600 rounded-xl w-80 p-4 cursor-pointer text-2xl shadow-lg hover:scale-105 text-white/80 transition-transform duration-200 ease-in-out"
+            className="flex flex-col justify-between h-42 mb-2 bg-linear-65 from-[#fcab51] to-[#f56b79] rounded-xl w-80 p-4 cursor-pointer text-2xl shadow-lg hover:scale-105 text-white/80 transition-transform duration-200 ease-in-out"
             key={project._id}
           >
             <Link
@@ -109,12 +109,12 @@ function ProjectList() {
       {expanded && (
         <div
           onClick={() => setExpanded(false)}
-          className="fixed inset-0 bg-black/30 flex items-center justify-center"
+          className="fixed inset-0 bg-black/40 flex items-center justify-center"
         >
           <form
             onSubmit={handleCreateProject}
             onClick={(e) => e.stopPropagation()}
-            className="flex flex-col gap-4 bg-gray-700 rounded-xl h-3/4 w-80 p-6 font-bold text-white/80 justify-between"
+            className="flex flex-col gap-4 bg-gray-700 rounded-xl h-3/4 w-80 p-6 font-bold text-white/80 justify-between border border-gray-600 shadow-lg"
           >
             <article className="flex flex-col">
               <div className="gap-2 flex flex-col mb-6">
@@ -134,7 +134,7 @@ function ProjectList() {
                     if (e.key === "Enter") e.preventDefault();
                   }}
                 />
-                <p className="text-base text-white/50 self-end">
+                <p className="text-sm text-white/50 self-end">
                   {titleInput.length}/40
                 </p>
               </div>
@@ -151,13 +151,13 @@ function ProjectList() {
                   value={descriptionInput}
                   onChange={(e) => setDescriptionInput(e.target.value)}
                 />
-                <p className="text-base text-white/50 self-end">
+                <p className="text-sm text-white/50 self-end">
                   {descriptionInput.length}/40
                 </p>
               </div>
             </article>
             <button
-              className="bg-[#f56b79] py-3 px-1.5 rounded-xl"
+              className="cursor-pointer bg-[#f56b79] hover:brightness-90 py-3 px-1.5 rounded-xl hover:"
               type="submit"
             >
               Create
