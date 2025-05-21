@@ -1,11 +1,7 @@
 import projectModel from "../models/projectModel.js";
 import userModel from "../models/userModel.js";
-import {
-  ProjectTitleNotProvided,
-  ProjectDescriptionNotProvided,
-  ProjectNotFound,
-  UserNotFound,
-} from "../utils/errors.js";
+import Errors from "../utils/errors.js"; // ✅ Importamos el default
+
 import listModel from "../models/listModel.js";
 import taskModel from "../models/taskModel.js";
 
