@@ -7,11 +7,18 @@ import { createList } from "../utils/list.js";
 function Project() {
   const project = useLoaderData();
   const { id } = useParams();
+
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(project.title);
-  const [lists, setLists] = useState(project.lists);
+
   const [showForm, setShowForm] = useState(false);
+
   const [newListTitle, setNewListTitle] = useState("");
+  const [lists, setLists] = useState(project.lists);
+
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [tasks, setTasks] = useState(lists.tasks);
+
   const revalidator = useRevalidator();
 
   const handleBlur = () => {
@@ -34,18 +41,32 @@ function Project() {
   const handleCreateList = async (e) => {
     e.preventDefault();
     if (!newListTitle.trim()) return;
-  
-    await createList({ title: newListTitle, project: id });
-  
+
+    const newList = await createList({ title: newListTitle, project: id });
+
+    setLists((prev) => [...prev, newList]);
     // Limpiar formulario
     setNewListTitle("");
     setShowForm(false);
-  
+
     // Usamos revalidator para traer los datos actualizados del backend
     revalidator.revalidate();
   };
-  
-  
+
+  const handleCreateTask = async (e) => {
+    e.preventDefault();
+    if (!newTaskTitle.trim()) return;
+
+    const newTask = await createTask({ title: newTaskTitle, list: id });
+
+    setTasks((prev) => [...prev, newTask]);
+    // Limpiar formulario
+    setNewTaskTitle("");
+    setShowForm(false);
+
+    // Usamos revalidator para traer los datos actualizados del backend
+    revalidator.revalidate();
+  };
 
   return (
     <section className="py-4 px-4 h-full w-full bg-linear-65 from-[#fcab51] to-[#f56b79]">
@@ -88,18 +109,23 @@ function Project() {
           lists.map((list) => (
             <div
               key={list._id}
-              className="text-white w-64 bg-gray-900 rounded-xl p-4 shadow-md"
+              className="text-white min-w-64 bg-gray-900 rounded-xl p-4 shadow-md"
             >
               <h3 className="text-white/80 font-bold mb-6">{list.title}</h3>
               <ul className="list-none text-white/80 flex flex-col gap-2">
                 {list.tasks &&
                   list.tasks.map((task) => (
-                    <li
-                      className="flex flex-row bg-gray-800 py-2 px-4 rounded-xl"
+                    <div
                       key={task._id}
+                      className="text-white min-w-64 bg-gray-800 rounded-xl p-4 shadow-md"
                     >
-                      {task.title}
-                    </li>
+                      <li
+                        className="flex flex-row bg-gray-700 py-2 px-4 rounded-xl"
+                        key={task._id}
+                      >
+                        {task.title}
+                      </li>
+                    </div>
                   ))}
               </ul>
             </div>
