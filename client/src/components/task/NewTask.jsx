@@ -3,70 +3,66 @@ import { useRevalidator } from "react-router-dom";
 import { createTask } from "../../utils/task.js";
 
 function NewTask({ listId, onTaskCreated }) {
-	const revalidator = useRevalidator();
-	const [showForm, setShowForm] = useState(false);
-	const [NewTaskTitle, setNewTaskTitle] = useState("");
+  const revalidator = useRevalidator();
+  const [showInput, setShowInput] = useState(false);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
-	const handleCreateTask = async (e) => {
-		e.preventDefault();
-		if (!NewTaskTitle.trim()) return;
+  const handleBlur = async () => {
+    const title = newTaskTitle.trim();
+    if (!title) {
+      // Si está vacío, simplemente ocultamos el input y reseteamos
+      setShowInput(false);
+      setNewTaskTitle("");
+      return;
+    }
+    setIsSaving(true);
+    try {
+      const newTask = await createTask({ title, list: listId });
+      onTaskCreated(newTask);
+      revalidator.revalidate();
+    } catch (error) {
+      console.error("Error creating task:", error);
+    } finally {
+      setIsSaving(false);
+      setShowInput(false);
+      setNewTaskTitle("");
+    }
+  };
 
-		const newTask = await createTask({ title: NewTaskTitle, list: listId });
-		console.log("newTask", newTask);
-		onTaskCreated(newTask);
-		setNewTaskTitle("");
-		setShowForm(false);
-		revalidator.revalidate();
-	};
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleBlur();
+    }
+  };
 
-	return (
-		<div>
-			{!showForm ? (
-				<div
-					onClick={() => setShowForm(true)}
-					className="flex flex-row text-white gap-4 text-lg mb-2 bg-gray-500/50 h-18 rounded-xl w-64 p-4 cursor-pointer hover:bg-gray-500/60 transition-colors duration-300 ease-in-out shadow-lg hover:scale-105"
-				>
-					<svg viewBox="0 0 448 512" fill="white" height="24px" width="24px">
-						<path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
-					</svg>
-					New Task
-				</div>
-			) : (
-				<form
-					onSubmit={handleCreateTask}
-					className="bg-gray-500/30 rounded-xl p-4 w-64 flex flex-col gap-2 shadow-md"
-				>
-					<input
-						type="text"
-						name="title"
-						value={NewTaskTitle}
-						onChange={(e) => setNewTaskTitle(e.target.value)}
-						placeholder="Task name"
-						className="px-3 py-2 rounded-lg text-black outline-none"
-						required
-					/>
-					<div className="flex justify-end gap-2">
-						<button
-							type="button"
-							onClick={() => {
-								setShowForm(false);
-								setNewTaskTitle("");
-							}}
-							className="text-sm bg-gray-500 text-white px-3 py-1 rounded-lg hover:bg-gray-600"
-						>
-							Cancel
-						</button>
-						<button
-							type="submit"
-							className="text-sm bg-[#f56b79] text-white px-3 py-1 rounded-lg"
-						>
-							Create
-						</button>
-					</div>
-				</form>
-			)}
-		</div>
-	);
+  return (
+    <div>
+      {!showInput ? (
+        <div
+          onClick={() => setShowInput(true)}
+          className="flex flex-row text-white gap-4 text-md mb-2 bg-gray-900 h-10 rounded-xl w-55 p-4 cursor-pointer hover:bg-gray-700/60 transition-colors duration-300 ease-in-out shadow-lg  items-center justify-between"
+        >
+          New Task
+          <svg viewBox="0 0 448 512" fill="white" height="16px" width="16px">
+            <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
+          </svg>
+        </div>
+      ) : (
+        <input
+          type="text"
+          autoFocus
+          onKeyDown={handleKeyDown}
+          value={newTaskTitle}
+          onChange={(e) => setNewTaskTitle(e.target.value)}
+          onBlur={handleBlur}
+          disabled={isSaving}
+          className="px-3 py-2 rounded-lg text-white outline-none w-64"
+        />
+      )}
+    </div>
+  );
 }
 
 export default NewTask;

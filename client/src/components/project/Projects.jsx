@@ -57,7 +57,7 @@ function ProjectList() {
   };
 
   return (
-    <section className="py-4 px-4 h-full w-full bg-gray-800">
+    <section className="min-h-screen w-screen bg-gray-800 px-72 py-24">
       <h2 className="text-2xl font-bold mb-4 mx-4 text-slate-100 opacity-80">
         Projects
       </h2>

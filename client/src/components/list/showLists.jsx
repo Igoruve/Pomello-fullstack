@@ -8,12 +8,13 @@ function ShowLists({ lists, onAddTask }) {
 			{lists.map((list) => (
 				<div
 					key={list._id}
-					className="text-white min-w-64 bg-gray-900 rounded-xl p-4 shadow-md"
+					className="text-white max-w-64 bg-gray-900 rounded-xl p-4 shadow-md"
 				>
 					<h3 className="text-white/80 font-bold mb-6">{list.title}</h3>
-					<div className="flex flex-col gap-2">
+					<div className="flex flex-col gap-2 relative">
 						<ShowTasks tasks={list.tasks} />
 						<NewTask
+						className="absolute bottom-0 left-0"
 							listId={list._id}
 							onTaskCreated={(newTask) => onAddTask(list._id, newTask)}
 						/>
