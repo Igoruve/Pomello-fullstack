@@ -1,33 +1,39 @@
-function ShowLists({ lists }) {
-    return (
-        <>
-            {lists &&
+import { useState } from "react";
+import ShowTasks from "../task/showTasks.jsx";
+import NewTask from "../task/NewTask.jsx";
 
-                lists.map((list) => (
-                    <div
-                        key={list._id}
-                        className="text-white min-w-64 bg-gray-900 rounded-xl p-4 shadow-md">
-                        <h3 className="text-white/80 font-bold mb-6">{list.title}</h3>
-                        <ul className="list-none text-white/80 flex flex-col gap-2">
-                            {list.tasks &&
-                                list.tasks.map((task) => (
-                                    <div
-                                        key={task._id}
-                                        className="text-white min-w-64 bg-gray-800 rounded-xl p-4 shadow-md"
-                                    >
-                                        <li
-                                            className="flex flex-row bg-gray-700 py-2 px-4 rounded-xl"
-                                            key={task._id}
-                                        >
-                                            {task.title}
-                                        </li>
-                                    </div>
-                                ))}
-                        </ul>
-                    </div>
-                ))}
-        </>
-    )
+function ShowLists({ lists }) {
+	const [allLists, setAllLists] = useState(lists);
+
+	const handleAddTask = (listId, newTask) => {
+		setAllLists(prevLists =>
+			prevLists.map(list =>
+				list._id === listId
+					? { ...list, tasks: [...list.tasks, newTask] }
+					: list
+			)
+		);
+	};
+
+	return (
+		<>
+			{allLists.map((list) => (
+				<div
+					key={list._id}
+					className="text-white min-w-64 bg-gray-900 rounded-xl p-4 shadow-md"
+				>
+					<h3 className="text-white/80 font-bold mb-6">{list.title}</h3>
+					<div className="flex flex-col gap-2">
+						<ShowTasks tasks={list.tasks} />
+						<NewTask
+							listId={list._id}
+							onTaskCreated={(newTask) => handleAddTask(list._id, newTask)}
+						/>
+					</div>
+				</div>
+			))}
+		</>
+	);
 }
 
 export default ShowLists;

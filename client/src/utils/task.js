@@ -36,4 +36,14 @@ const getTaskByListId = async (listId) => {
   });
 };
 
-export { getAllTasks, getTaskById, getTaskByListId };
+const createTask = async (task) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const newTask = { ...task, _id: { $oid: Date.now().toString() } };
+      tasksData.push(newTask);
+      resolve(newTask);
+    }, 500);
+  });
+};
+
+export { getAllTasks, getTaskById, getTaskByListId, createTask };
