@@ -1,4 +1,32 @@
-import Chrono from '../models/chrono.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: controllers/chronoController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: controllers/chronoController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Chrono from '../models/chrono.js';
 import Errors from "../utils/errors.js"; // ✅ Importación correcta
 
 // Start a new chrono session
@@ -10,7 +38,7 @@ import Errors from "../utils/errors.js"; // ✅ Importación correcta
  * @param {string} userId - The ID of the user starting the session.
  * @param {number|string} focusDurationValue - The focus duration in minutes.
  * @param {number|string} breakDurationValue - The break duration in minutes.
- * @returns {Promise<Object>} The created chrono session.
+ * @returns {Promise&lt;Object>} The created chrono session.
  * @throws {InvalidDurationValue} If durations are invalid.
  * @throws {ChronoAlreadyRunning} If a session is already active.
  */
@@ -20,7 +48,7 @@ const startChrono = async (userId, focusDurationValue, breakDurationValue) => {
   const breakDuration = Number(breakDurationValue);
 
   if (isNaN(focusDuration) || isNaN(breakDuration) ||
-      focusDuration <= 0 || breakDuration <= 0) {
+      focusDuration &lt;= 0 || breakDuration &lt;= 0) {
     throw new Errors.InvalidDurationValue();
   }
 
@@ -55,7 +83,7 @@ const startChrono = async (userId, focusDurationValue, breakDurationValue) => {
  * if the focus duration was met.
  *
  * @param {string} userId - The ID of the user.
- * @returns {Promise<Object>} The updated chrono session.
+ * @returns {Promise&lt;Object>} The updated chrono session.
  * @throws {ActiveChronoNotFound} If no active session is found.
  */
 
@@ -126,8 +154,8 @@ const getChronoStats = async (req, res) => {
 
       const sessionDate = new Date(chronostarted);
       if (
-        sessionDate.getDate() === today.getDate() &&
-        sessionDate.getMonth() === today.getMonth() &&
+        sessionDate.getDate() === today.getDate() &amp;&amp;
+        sessionDate.getMonth() === today.getMonth() &amp;&amp;
         sessionDate.getFullYear() === today.getFullYear()
       ) {
         acc.dailySessions.push(session);
@@ -231,7 +259,7 @@ const startPomellodoroCycle = async (req, res) => {
     return res.status(400).json({ message: '🍊✅ Pomellodoro already running' });
   }
 
-  if (isNaN(focus) || isNaN(rest) || focus <= 0 || rest <= 0) {
+  if (isNaN(focus) || isNaN(rest) || focus &lt;= 0 || rest &lt;= 0) {
     return res.status(400).json({ message: 'Invalid duration values' });
   }
 
@@ -243,7 +271,7 @@ const startPomellodoroCycle = async (req, res) => {
   }
 
   pomellodoroActive = true;
-  res.status(200).json({ message: '🍊✅ Pomellodoro started' });
+  res.status(200).json({ message: 'Pomellodoro started' });
 
   const cycles = 4;
   const workMs = focus * 60 * 1000;
@@ -271,7 +299,7 @@ const startPomellodoroCycle = async (req, res) => {
         return;
       }
 
-      if (i < cycles - 1) {
+      if (i &lt; cycles - 1) {
         const restTimeout = setTimeout(() => runCycle(i + 1), breakMs);
         pomellodoroTimeouts.push(restTimeout);
       } else {
@@ -317,7 +345,7 @@ const stopPomellodoroCycle = async (req, res) => {
     try {
       await stopChrono(userId);
     } catch (e) {
-      console.warn('🍊✅ No active chrono to stop or already stopped');
+      console.warn('No active chrono to stop or already stopped');
     }
 
     res.status(200).json({ message: "🍊✅ Pomellodoro stopped" });
@@ -354,7 +382,7 @@ const getPomellodoroStatus = (req, res) => {
     };
     res.status(200).json(status);
   } catch (error) {
-    res.status(500).json({ error: Errors.pomellodoroStatusError() });
+    res.status(500).json({ error: 'Error obtaining Pomellodoro status' });
   }
 };
  
@@ -369,3 +397,26 @@ export default {
 
 
 
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ListTitleNotProvided.html">ListTitleNotProvided</a></li><li><a href="ProjectTitleNotProvided.html">ProjectTitleNotProvided</a></li><li><a href="TaskTitleNotProvided.html">TaskTitleNotProvided</a></li><li><a href="UserNameNotProvided.html">UserNameNotProvided</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getPomellodoroStatus">getPomellodoroStatus</a></li><li><a href="global.html#startChrono">startChrono</a></li><li><a href="global.html#startPomellodoroCycle">startPomellodoroCycle</a></li><li><a href="global.html#stopChrono">stopChrono</a></li><li><a href="global.html#stopPomellodoroCycle">stopPomellodoroCycle</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed May 21 2025 12:00:07 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
