@@ -1,4 +1,5 @@
 import Chrono from '../models/chrono.js';
+import errors from '../utils/errors.js';
 import Errors from "../utils/errors.js"; // ✅ Importación correcta
 
 // Start a new chrono session
@@ -228,11 +229,11 @@ const startPomellodoroCycle = async (req, res) => {
   const rest = Number(req.body.breakDuration);
 
   if (pomellodoroActive) {
-    return res.status(400).json({ message: '🍊✅ Pomellodoro already running' });
+    return res.status(400).json({ Errors: new Errors.PomellodoroAlReadyRunning().message });
   }
 
   if (isNaN(focus) || isNaN(rest) || focus <= 0 || rest <= 0) {
-    return res.status(400).json({ message: 'Invalid duration values' });
+    return res.status(400).json({ Errors: new Errors.InvalidDurationValue().message });
   }
 
   // 🔧 Cierre forzado de posibles sesiones previas
@@ -255,7 +256,7 @@ const startPomellodoroCycle = async (req, res) => {
     try {
       await startChrono(userId, focus, rest);
     } catch (e) {
-      console.error(`❌ Error starting cycle ${i + 1}:`, e.message);
+      console.error(`🍅❌  Error starting cycle ${i + 1}:`, e.message);
       pomellodoroActive = false;
       return;
     }
@@ -266,7 +267,7 @@ const startPomellodoroCycle = async (req, res) => {
       try {
         await stopChrono(userId);
       } catch (e) {
-        console.error(`❌ Error stopping cycle ${i + 1}:`, e.message);
+        console.error(`🍅❌  Error stopping cycle ${i + 1}:`, e.message);
         pomellodoroActive = false;
         return;
       }
@@ -276,7 +277,7 @@ const startPomellodoroCycle = async (req, res) => {
         pomellodoroTimeouts.push(restTimeout);
       } else {
         pomellodoroActive = false;
-        console.log('✅ Pomellodoro finished');
+        console.log('🍊✅  Pomellodoro finished');
       }
     }, workMs);
 

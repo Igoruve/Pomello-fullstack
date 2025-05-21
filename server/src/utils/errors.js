@@ -170,7 +170,7 @@ class PomellodoroNotRunning extends Error {
   }
 }
 
-class pomellodoroStartError extends Error {
+class PomellodoroStartError extends Error {
   constructor() {
     super("🍅❌ Error starting Pomellodoro cycle");
     this.name = "PomellodoroStatsError";
@@ -209,6 +209,8 @@ class PomellodoroStatsEmpty extends Error {
   }
 }
 
+
+
 export default {
     ProjectTitleNotProvided, 
     ProjectDescriptionNotProvided,
@@ -231,7 +233,7 @@ export default {
     chonoStatsError,
     PomellodoroAlReadyRunning,
     PomellodoroNotRunning,
-    pomellodoroStartError,
+    PomellodoroStartError,
     pomellodoroStopError,
     pomellodoroStatusError,
     PomellodorotatsRetrievalError,
