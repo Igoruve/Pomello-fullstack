@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import { useLoaderData, useParams, useRevalidator } from "react-router-dom";
 import { updateProject } from "../utils/project.js";
 import NewList from "./list/NewList.jsx";
+import { createList } from "../utils/list.js";
 
 function Project() {
   const project = useLoaderData();
   const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(project.title);
+  const [lists, setLists] = useState(project.lists);
+  const [showForm, setShowForm] = useState(false);
+  const [newListTitle, setNewListTitle] = useState("");
   const revalidator = useRevalidator();
 
   const handleBlur = () => {
@@ -24,9 +28,24 @@ function Project() {
   }, [project?.title, id]);
 
   const handleTitleChange = (e) => {
-    const newValue = e.target.value;
-    setEditedTitle(newValue);
+    setEditedTitle(e.target.value);
   };
+
+  const handleCreateList = async (e) => {
+    e.preventDefault();
+    if (!newListTitle.trim()) return;
+  
+    await createList({ title: newListTitle, project: id });
+  
+    // Limpiar formulario
+    setNewListTitle("");
+    setShowForm(false);
+  
+    // Usamos revalidator para traer los datos actualizados del backend
+    revalidator.revalidate();
+  };
+  
+  
 
   return (
     <section className="py-4 px-4 h-full w-full bg-linear-65 from-[#fcab51] to-[#f56b79]">
@@ -65,8 +84,8 @@ function Project() {
       </div>
 
       <section className="flex flex-row gap-8">
-        {project.lists &&
-          project.lists.map((list) => (
+        {lists &&
+          lists.map((list) => (
             <div
               key={list._id}
               className="text-white w-64 bg-gray-900 rounded-xl p-4 shadow-md"
@@ -85,9 +104,45 @@ function Project() {
               </ul>
             </div>
           ))}
-      <div>
-        <NewList />
-      </div>
+
+        <div>
+          {!showForm ? (
+            <NewList onClick={() => setShowForm(true)} />
+          ) : (
+            <form
+              onSubmit={handleCreateList}
+              className="bg-gray-500/30 rounded-xl p-4 w-64 flex flex-col gap-2 shadow-md"
+            >
+              <input
+                type="text"
+                name="title"
+                value={newListTitle}
+                onChange={(e) => setNewListTitle(e.target.value)}
+                placeholder="Nombre de la lista"
+                className="px-3 py-2 rounded-lg text-black outline-none"
+                required
+              />
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowForm(false);
+                    setNewListTitle("");
+                  }}
+                  className="text-sm bg-gray-500 text-white px-3 py-1 rounded-lg hover:bg-gray-600"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="text-sm bg-[#f56b79] text-white px-3 py-1 rounded-lg"
+                >
+                  Crear
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
       </section>
     </section>
   );

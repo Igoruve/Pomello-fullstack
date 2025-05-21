@@ -15,4 +15,9 @@ const getListByProjectId = async (projectId) => {
   return lists;
 };
 
-export { getAllLists, getListById, getListByProjectId };
+const createList = async (list) => {
+  const newList = await FetchData("/list", "POST", list);
+  return newList;
+};
+
+export { getAllLists, getListById, getListByProjectId, createList };
