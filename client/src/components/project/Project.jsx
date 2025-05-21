@@ -33,6 +33,19 @@ function Project() {
 		setEditedTitle(e.target.value);
 	};
 
+	const handleAddTask = (listId, newTask) => {
+	setLists(prevLists =>
+		prevLists.map(list =>
+			list._id === listId
+				? { ...list, tasks: [...list.tasks, newTask] }
+				: list
+		)
+	);
+};
+
+
+
+
 	return (
 		<section className="py-4 px-4 h-full w-full bg-linear-65 from-[#fcab51] to-[#f56b79]">
 			<div className="max-w-xl w-full mx-6 mb-6 h-[4.5rem] flex flex-col justify-center">
@@ -70,8 +83,7 @@ function Project() {
 			</div>
 
 			<section className="flex flex-row gap-8">
-				<ShowLists lists={lists} />
-
+				<ShowLists lists={lists} onAddTask={handleAddTask} />
 				<NewList lists={lists} setLists={setLists} />
 			</section>
 		</section>
