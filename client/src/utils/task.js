@@ -1,5 +1,6 @@
 import listsData from "../data/listsData.js";
 import tasksData from "../data/tasksData.js";
+import FetchData from "./fetch.js";
 
 const getAllTasks = async () => {
   return new Promise((resolve) => {
@@ -37,13 +38,9 @@ const getTaskByListId = async (listId) => {
 };
 
 const createTask = async (task) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newTask = { ...task, _id: { $oid: Date.now().toString() } };
-      tasksData.push(newTask);
-      resolve(newTask);
-    }, 500);
-  });
+  const newTask = await FetchData("/task", "POST", task);
+  return newTask;
 };
+
 
 export { getAllTasks, getTaskById, getTaskByListId, createTask };

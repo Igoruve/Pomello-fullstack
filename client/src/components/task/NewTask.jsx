@@ -12,7 +12,8 @@ function NewTask({ listId, onTaskCreated }) {
 		if (!NewTaskTitle.trim()) return;
 
 		const newTask = await createTask({ title: NewTaskTitle, list: listId });
-		onTaskCreated(newTask); // ✅ Usamos callback para actualizar la lista correcta
+		console.log("newTask", newTask);
+		onTaskCreated(newTask);
 		setNewTaskTitle("");
 		setShowForm(false);
 		revalidator.revalidate();

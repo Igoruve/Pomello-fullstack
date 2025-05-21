@@ -29,6 +29,7 @@ function Project() {
 		}
 	}, [project?.title, project?.lists, id]);
 
+
 	const handleTitleChange = (e) => {
 		setEditedTitle(e.target.value);
 	};
@@ -42,9 +43,6 @@ function Project() {
 		)
 	);
 };
-
-
-
 
 	return (
 		<section className="py-4 px-4 h-full w-full bg-linear-65 from-[#fcab51] to-[#f56b79]">

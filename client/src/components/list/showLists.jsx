@@ -3,18 +3,6 @@ import ShowTasks from "../task/showTasks.jsx";
 import NewTask from "../task/NewTask.jsx";
 
 function ShowLists({ lists, onAddTask }) {
-/* 	const [allLists, setAllLists] = useState(lists);
-
-	const handleAddTask = (listId, newTask) => {
-		setAllLists(prevLists =>
-			prevLists.map(list =>
-				list._id === listId
-					? { ...list, tasks: [...list.tasks, newTask] }
-					: list
-			)
-		);
-	};
- */
 	return (
 		<>
 			{lists.map((list) => (
