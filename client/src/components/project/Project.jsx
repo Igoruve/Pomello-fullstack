@@ -11,14 +11,7 @@ function Project() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(project.title);
-  const [lists, setLists] = useState(project.lists) || [];
-
-  const handleBlur = () => {
-    setIsEditing(false);
-    updateProject(id, { title: editedTitle }).then(() => {
-      revalidator.revalidate();
-    });
-  };
+  const [lists, setLists] = useState(project.lists || []);
 
   useEffect(() => {
     if (project?.title) {
@@ -31,6 +24,16 @@ function Project() {
 
   const handleTitleChange = (e) => {
     setEditedTitle(e.target.value);
+  };
+
+  const handleSaveTitle = async () => {
+    await updateProject(id, { title: editedTitle });
+    setIsEditing(false);
+    revalidator.revalidate();
+  };
+
+  const handleBlur = async () => {
+    await handleSaveTitle(); // Asegura que el blur también guarda
   };
 
   const handleAddTask = (listId, newTask) => {
@@ -52,14 +55,14 @@ function Project() {
               value={editedTitle}
               onChange={handleTitleChange}
               onBlur={handleBlur}
-              name="title"
-              id="title"
-              required
               maxLength={40}
-              className="w-full h-8 text-black/80 text-2xl font-bold bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight"
               autoFocus
-              onKeyDown={(e) => {
-                if (e.key === "Enter") e.preventDefault();
+              className="w-full h-8 text-black/80 text-2xl font-bold bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight"
+              onKeyDown={async (e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  await handleSaveTitle(); // Guardar al presionar Enter
+                }
               }}
             />
             <p className="text-sm text-black/60 text-right h-5">

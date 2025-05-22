@@ -3,7 +3,7 @@ import { useRevalidator, useParams } from "react-router-dom";
 
 import { createList } from "../../utils/list.js";
 
-function NewList({ lists, setLists }) {
+function NewList({setLists }) {
   const revalidator = useRevalidator();
   const { id } = useParams();
 
