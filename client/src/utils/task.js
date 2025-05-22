@@ -42,5 +42,13 @@ const createTask = async (task) => {
   return newTask;
 };
 
+const removeTask = async (taskId) => {
+  await FetchData(`/task/${taskId}`, "DELETE");
+};
 
-export { getAllTasks, getTaskById, getTaskByListId, createTask };
+const updateTask = async (taskId, task) => {
+  await FetchData(`/task/${taskId}`, "PUT", task);
+};
+
+
+export { getAllTasks, getTaskById, getTaskByListId, createTask, removeTask, updateTask };
