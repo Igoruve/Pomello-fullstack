@@ -20,4 +20,14 @@ const createList = async (list) => {
   return newList;
 };
 
-export { getAllLists, getListById, getListByProjectId, createList };
+const removeList = async (listId) => {
+  const response = await FetchData(`/list/${listId}`, "DELETE");
+  return response;
+}
+
+const updateList = async (listId, list) => {
+  const updatedList = await FetchData(`/list/${listId}`, "PUT", list);
+  return updatedList;
+};
+
+export { getAllLists, getListById, getListByProjectId, createList, removeList, updateList };

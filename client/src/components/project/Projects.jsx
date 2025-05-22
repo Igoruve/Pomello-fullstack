@@ -5,6 +5,8 @@ import { useState } from "react";
 import { createProject, removeProject } from "../../utils/project.js";
 
 function ProjectList() {
+  const [projectToDelete, setProjectToDelete] = useState(null);
+
   const loaderData = useLoaderData();
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
@@ -26,12 +28,12 @@ function ProjectList() {
     const title = e.target.title.value;
     const description = e.target.description.value;
 
-    e.target.reset(); // Limpia el formulario
+    e.target.reset();
 
     setTitleInput("");
     setDescriptionInput("");
 
-    setExpanded(false); // Cierra el formulario
+    setExpanded(false);
 
     const newProject = await createProject({ title, description });
     console.log("newProject", newProject);
@@ -54,10 +56,12 @@ function ProjectList() {
     } catch (error) {
       setError(`Error removing project: ${error.message}`);
     }
+
+    setProjectToDelete(null);
   };
 
   return (
-    <section className="h-full max-w-screen bg-gray-800 ml-64 my-18 px-10 py-10">
+    <section className="h-full max-w-screen bg-gray-800 ml-64 mt-16 px-10 py-10">
       <h2 className="text-2xl font-bold mb-4 mx-4 text-slate-100 opacity-80">
         Projects
       </h2>
@@ -97,7 +101,7 @@ function ProjectList() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                handleRemoveProject(project._id);
+                setProjectToDelete(project); // 👈 mostrar el modal
               }}
             >
               {" "}
@@ -106,6 +110,37 @@ function ProjectList() {
           </div>
         ))}
       </section>
+      {projectToDelete && (
+        <div
+          onClick={() => setProjectToDelete(null)}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-gray-800 p-6 rounded-lg shadow-lg w-80 text-center"
+          >
+            <p className="text-gray-300 mb-6">
+              Are you sure you want to delete the project{" "}
+              <strong>{projectToDelete.title}</strong>?
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setProjectToDelete(null)}
+                className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleRemoveProject(projectToDelete._id)}
+                className="bg-[#f56b79] text-white px-4 py-2 rounded-lg hover:brightness-90 transition cursor-pointer"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {expanded && (
         <div
           onClick={() => setExpanded(false)}
