@@ -57,11 +57,11 @@ function ProjectList() {
   };
 
   return (
-    <section className="min-h-screen w-screen bg-gray-800 px-72 py-24">
+    <section className="h-full max-w-screen bg-gray-800 ml-64 my-18 px-10 py-10">
       <h2 className="text-2xl font-bold mb-4 mx-4 text-slate-100 opacity-80">
         Projects
       </h2>
-      <section className="gap-6 px-4 grid grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1">
+      <section className="gap-8 px-4 grid grid-cols-3">
         <div
           onClick={() => setExpanded(!expanded)}
           className="flex flex-row text-white gap-4 text-lg mb-2 bg-gray-500/50 h-42 rounded-xl w-80 p-4 cursor-pointer hover:bg-gray-500/60 transition-colors duration-300 ease-in-out shadow-lg hover:scale-105"
@@ -74,7 +74,7 @@ function ProjectList() {
 
         {projects.map((project) => (
           <div
-            className="flex flex-col justify-between h-42 mb-2 bg-linear-65 from-[#fcab51] to-[#f56b79] rounded-xl w-80 p-4 cursor-pointer text-2xl shadow-lg hover:scale-105 text-white/80 transition-transform duration-200 ease-in-out"
+            className="flex flex-col justify-between h-48 mb-2 bg-linear-65 from-[#fcab51] to-[#f56b79] rounded-xl w-80 p-4 cursor-pointer text-2xl shadow-lg hover:scale-105 text-white/80 transition-transform duration-200 ease-in-out"
             key={project._id}
           >
             <Link

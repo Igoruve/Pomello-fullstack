@@ -4,8 +4,8 @@ import NavbarProjects from "./NavbarProjects";
 
 function AsideNavbar() {
   return (
-    <section className="flex flex-col bg-gray-800 border border-r-gray-100/5  fixed top-18 left-0 h-full z-50 shadow-lg">
-      <nav className="h-full flex flex-col w-64 opacity-90 text-white/80 text-lg px-6 gap-4 pt-6">
+    <section className="flex flex-col bg-gray-800 border border-r-gray-100/5 fixed top-16 left-0 h-screen z-50 shadow-lg">
+      <nav className="h-screen flex flex-col w-64 opacity-90 text-white/80 text-lg px-6 gap-4 pt-6">
         <section className="border-b border-gray-200/20 pb-4 flex flex-col gap-4">
           <NavLink
             to="/project/user"
@@ -33,7 +33,12 @@ function AsideNavbar() {
               }`
             }
           >
-            <svg viewBox="0 0 448 512" fill="currentColor" height="16px" width="16px">
+            <svg
+              viewBox="0 0 448 512"
+              fill="currentColor"
+              height="16px"
+              width="16px"
+            >
               <path d="M160 80c0-26.5 21.5-48 48-48l32 0c26.5 0 48 21.5 48 48l0 352c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48l0-352zM0 272c0-26.5 21.5-48 48-48l32 0c26.5 0 48 21.5 48 48l0 160c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48L0 272zM368 96l32 0c26.5 0 48 21.5 48 48l0 288c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48z" />
             </svg>
             Stats
