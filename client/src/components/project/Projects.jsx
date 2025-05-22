@@ -37,7 +37,13 @@ function ProjectList() {
 
     const newProject = await createProject({ title, description });
     console.log("newProject", newProject);
-    setProjects((prev) => [...prev, newProject[0]]);
+    setProjects((prev) => {
+      const updated = [...prev, newProject[0]];
+      return updated.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+    });
+
     navigate(`/project/${newProject[0]._id}`, { replace: true });
   };
 
@@ -76,39 +82,42 @@ function ProjectList() {
           New project
         </div>
 
-        {projects.map((project) => (
-          <div
-            className="flex flex-col justify-between h-48 mb-2 bg-linear-65 from-[#fcab51] to-[#f56b79] rounded-xl w-80 p-4 cursor-pointer text-2xl shadow-lg hover:scale-105 text-white/80 transition-transform duration-200 ease-in-out"
-            key={project._id}
-          >
-            <Link
-              to={`/project/${project._id}`}
+        {projects
+          .slice()
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .map((project) => (
+            <div
+              className="flex flex-col justify-between h-48 mb-2 bg-linear-65 from-[#fcab51] to-[#f56b79] rounded-xl w-80 p-4 cursor-pointer text-2xl shadow-lg hover:scale-105 text-white/80 transition-transform duration-200 ease-in-out"
               key={project._id}
-              className=" h-full "
             >
-              <div className="max-w-full overflow-hidden">
-                <p className="font-bold overflow-hidden text-ellipsis whitespace-nowrap">
-                  {project.title}
-                </p>
-              </div>
-            </Link>
-            <svg
-              viewBox="0 0 448 512"
-              fill="white"
-              height="18px"
-              width="18px"
-              className="self-end cursor-pointer"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setProjectToDelete(project); // 👈 mostrar el modal
-              }}
-            >
-              {" "}
-              <path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z" />
-            </svg>
-          </div>
-        ))}
+              <Link
+                to={`/project/${project._id}`}
+                key={project._id}
+                className=" h-full "
+              >
+                <div className="max-w-full overflow-hidden">
+                  <p className="font-bold overflow-hidden text-ellipsis whitespace-nowrap">
+                    {project.title}
+                  </p>
+                </div>
+              </Link>
+              <svg
+                viewBox="0 0 448 512"
+                fill="white"
+                height="18px"
+                width="18px"
+                className="self-end cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setProjectToDelete(project); // 👈 mostrar el modal
+                }}
+              >
+                {" "}
+                <path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z" />
+              </svg>
+            </div>
+          ))}
       </section>
       {projectToDelete && (
         <div
