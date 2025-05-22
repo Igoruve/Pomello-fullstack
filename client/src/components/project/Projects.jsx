@@ -61,11 +61,11 @@ function ProjectList() {
   };
 
   return (
-    <section className="min-h-screen w-full bg-gray-800 px-10 py-10 mt-16 ml-64">
+    <section className="min-h-screen w-full bg-gray-800 px-10 py-10 mt-16 ml-64 overflow-x-hidden">
       <h2 className="text-2xl font-bold mb-4 mx-4 text-slate-100 opacity-80">
         Projects
       </h2>
-      <section className="gap-8 px-4 grid grid-cols-3">
+      <section className="gap-8 px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-full">
         <div
           onClick={() => setExpanded(!expanded)}
           className="flex flex-row text-white gap-4 text-lg mb-2 bg-gray-500/50 h-42 rounded-xl w-80 p-4 cursor-pointer hover:bg-gray-500/60 transition-colors duration-300 ease-in-out shadow-lg hover:scale-105"

@@ -59,7 +59,7 @@ function ShowLists({ lists: initialLists, onAddTask }) {
       {lists.map((list) => (
         <div
           key={list._id}
-          className="text-white max-w-64 bg-gray-900 rounded-xl p-4 shadow-md h-fit"
+          className="text-white max-w-64 bg-gray-900 rounded-xl p-4 shadow-md h-fit min-w-[300px] flex-shrink-0"
         >
           <div className="flex flex-row justify-between items-center mb-6">
             {editingListId === list._id ? (

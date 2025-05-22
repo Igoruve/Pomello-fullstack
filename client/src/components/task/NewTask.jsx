@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRevalidator } from "react-router-dom";
 import { createTask } from "../../utils/task.js";
 
@@ -7,6 +7,8 @@ function NewTask({ listId, onTaskCreated }) {
   const [showInput, setShowInput] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+
+  const textareaRef = useRef(null);
 
   const handleBlur = async () => {
     const title = newTaskTitle.trim();
@@ -36,12 +38,20 @@ function NewTask({ listId, onTaskCreated }) {
     }
   };
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"; // Reset para recalcular
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px";
+    }
+  }, [newTaskTitle]);
+
   return (
     <div>
       {!showInput ? (
         <div
           onClick={() => setShowInput(true)}
-          className="flex flex-row text-white gap-4 text-md mb-2 bg-gray-900 h-10 rounded-xl w-55 p-4 cursor-pointer hover:bg-gray-700/60 transition-colors duration-300 ease-in-out shadow-lg  items-center justify-between"
+          className="flex flex-row text-white gap-4 text-md mb-2 bg-gray-900 h-10 rounded-xl w-full p-4 cursor-pointer hover:bg-gray-700/60 transition-colors duration-300 ease-in-out  items-center justify-between"
         >
           New Task
           <svg viewBox="0 0 448 512" fill="white" height="16px" width="16px">
@@ -50,13 +60,16 @@ function NewTask({ listId, onTaskCreated }) {
         </div>
       ) : (
         <textarea
+          ref={textareaRef}
           autoFocus
           onKeyDown={handleKeyDown}
           value={newTaskTitle}
           onChange={(e) => setNewTaskTitle(e.target.value)}
           onBlur={handleBlur}
           disabled={isSaving}
-          className="px-3 py-2 rounded-lg text-white outline-none w-64 resize-none break-words overflow-hidden"
+          className="w-full text-white text-md bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight p-2 break-all"
+          style={{ height: "auto", overflow: "hidden" }}
+          maxLength={200}
         />
       )}
     </div>

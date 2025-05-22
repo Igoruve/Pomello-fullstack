@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+@layer utilities {
+  .scrollbar-thumb {
+    @apply bg-gray-400;
+  }
+  .scrollbar-track {
+    @apply bg-gray-200;
+  }
+  .scrollbar-thin {
+    @apply w-2;
+    @apply h-2;
+  }
+}
+
 :root {
   --color-accent: #f56b79;
 }
@@ -31,4 +44,3 @@ body,
   text-overflow: ellipsis;
   word-break: break-word;
 }
-
