@@ -1,8 +1,27 @@
-.rotating {
-  animation: rotation 2s linear infinite;
+.pomelo-chrono-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
 }
 
-@keyframes rotation {
+.pomelo-chrono-icon {
+  width: 150px;
+  height: 150px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.pomelo-chrono-icon:hover {
+  transform: scale(1.05);
+}
+
+.rotating {
+  animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
   from {
     transform: rotate(0deg);
   }
@@ -10,3 +29,16 @@
     transform: rotate(360deg);
   }
 }
+
+.chrono-message {
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: #ffecc7;
+  color: #d35400;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+

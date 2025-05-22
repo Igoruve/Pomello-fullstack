@@ -149,19 +149,6 @@ Edit
 
 ---
 
-¿Te lo genero también como archivo físico en el proyecto (contenido para `README.md`) o lo copiarás tú directamente?
-
-
-
-
-
-You said:
-La parte de Todo integrado en un solo archivo se te olvidó.
-
-
-ChatGPT said:
-Gracias por la precisión. Aquí tienes el contenido completo e integrado en un solo archivo README.md, listo para copiar directamente al proyecto Pomello (/server/ o como documentación del módulo chronoController):
-
 markdown
 Copy
 Edit
