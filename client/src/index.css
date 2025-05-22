@@ -1,21 +1,23 @@
 @import "tailwindcss";
 
-:root{
-    --color-accent: #f56b79;
+:root {
+  --color-accent: #f56b79;
 }
 
 @layer utilities {
-    .no-scrollbar {
-      -ms-overflow-style: none; 
-      scrollbar-width: none; 
-    }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
-  
-  .no-scrollbar::-webkit-scrollbar {
-    display: none; 
-  }
+}
 
-  html, body, #root {
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+html,
+body,
+#root {
   height: 100%;
   width: 100%;
   margin: 0;

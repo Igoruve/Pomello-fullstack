@@ -24,8 +24,7 @@ function NewList({ lists, setLists }) {
   };
 
   return (
-    <>
-      <div>
+      <div className="mr-16">
         {!showForm ? (
           <div
             onClick={() => setShowForm(true)}
@@ -71,7 +70,6 @@ function NewList({ lists, setLists }) {
           </form>
         )}
       </div>
-    </>
   );
 }
 

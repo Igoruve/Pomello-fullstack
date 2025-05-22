@@ -44,7 +44,7 @@ function Project() {
   };
 
   return (
-    <section className="min-h-screen w-screen bg-gradient-to-r from-[#fcab51] to-[#f56b79] px-72 py-24">
+    <section className="min-h-screen min-w-full bg-gradient-to-r from-[#fcab51] to-[#f56b79] px-72 py-24 overflow-auto">
       <div className="max-w-xl w-full mx-6 mb-6 h-[4.5rem] flex flex-col justify-center">
         {isEditing ? (
           <>
@@ -81,7 +81,9 @@ function Project() {
 
       <section className="flex flex-row gap-8">
         <ShowLists lists={lists} onAddTask={handleAddTask} />
-        <NewList lists={lists} setLists={setLists} />
+        <div className="mr-16">
+          <NewList lists={lists} setLists={setLists} />
+        </div>
       </section>
     </section>
   );
