@@ -11,7 +11,6 @@ function NewTask({ listId, onTaskCreated }) {
   const handleBlur = async () => {
     const title = newTaskTitle.trim();
     if (!title) {
-      // Si está vacío, simplemente ocultamos el input y reseteamos
       setShowInput(false);
       setNewTaskTitle("");
       return;
@@ -50,15 +49,14 @@ function NewTask({ listId, onTaskCreated }) {
           </svg>
         </div>
       ) : (
-        <input
-          type="text"
+        <textarea
           autoFocus
           onKeyDown={handleKeyDown}
           value={newTaskTitle}
           onChange={(e) => setNewTaskTitle(e.target.value)}
           onBlur={handleBlur}
           disabled={isSaving}
-          className="px-3 py-2 rounded-lg text-white outline-none w-64"
+          className="px-3 py-2 rounded-lg text-white outline-none w-64 resize-none break-words overflow-hidden"
         />
       )}
     </div>
