@@ -146,7 +146,7 @@ class ActiveChronoNotFound extends Error {
   }
 }
 
-class chonoStatsError extends Error {
+class ChronoStatsError extends Error {
   constructor() {
     super("🍅❌ Error obtaining chronometer statistics");
     this.name = "ChronoStatsError";
@@ -228,7 +228,7 @@ export default {
     InvalidDurationValue,
     ChronoAlreadyRunning,
     ActiveChronoNotFound,
-    chonoStatsError,
+    ChronoStatsError,
     PomellodoroAlReadyRunning,
     PomellodoroNotRunning,
     pomellodoroStartError,
