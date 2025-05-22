@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ShowTasks from "../task/showTasks.jsx";
 import NewTask from "../task/NewTask.jsx";
-import { removeList } from "../../utils/list.js";
+import { removeList, updateList } from "../../utils/list.js";
 import { useRevalidator } from "react-router-dom";
 
 function ShowLists({ lists: initialLists, onAddTask }) {
@@ -10,6 +10,9 @@ function ShowLists({ lists: initialLists, onAddTask }) {
   const [lists, setLists] = useState(initialLists);
   const [listToDelete, setListToDelete] = useState(null);
   const revalidator = useRevalidator();
+
+  const [editingListId, setEditingListId] = useState(null);
+  const [editedTitle, setEditedTitle] = useState("");
 
   useEffect(() => {
     setLists(initialLists);
@@ -35,6 +38,12 @@ function ShowLists({ lists: initialLists, onAddTask }) {
     setListToDelete(null);
   };
 
+  const handleTitleSave = async (listId) => {
+    await updateList(listId, { title: editedTitle });
+    setEditingListId(null);
+    revalidator.revalidate();
+  };
+
   return (
     <>
       {lists.map((list) => (
@@ -43,7 +52,33 @@ function ShowLists({ lists: initialLists, onAddTask }) {
           className="text-white max-w-64 bg-gray-900 rounded-xl p-4 shadow-md h-fit"
         >
           <div className="flex flex-row justify-between items-center mb-6">
-            <h3 className="text-white/80 font-bold">{list.title}</h3>
+            {editingListId === list._id ? (
+              <textarea
+                value={editedTitle}
+                onChange={(e) => setEditedTitle(e.target.value)}
+                onBlur={() => handleTitleSave(list._id)}
+                onKeyDown={async (e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    await handleTitleSave(list._id);
+                  }
+                }}
+                autoFocus
+                className="w-full h-8 text-white/80 text-2xl font-bold bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight"
+                maxLength={20}
+              />
+            ) : (
+              <h3
+                className="text-white/80 font-bold cursor-pointer"
+                onClick={() => {
+                  setEditingListId(list._id);
+                  setEditedTitle(list.title);
+                }}
+              >
+                {list.title}
+              </h3>
+            )}
+
             <svg
               viewBox="0 0 448 512"
               fill="white"
