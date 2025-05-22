@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ShowTasks from "../task/showTasks.jsx";
 import NewTask from "../task/NewTask.jsx";
 import { removeList, updateList } from "../../utils/list.js";
@@ -14,9 +14,19 @@ function ShowLists({ lists: initialLists, onAddTask }) {
   const [editingListId, setEditingListId] = useState(null);
   const [editedTitle, setEditedTitle] = useState("");
 
+  const textareaRef = useRef(null);
+
   useEffect(() => {
     setLists(initialLists);
   }, [initialLists]);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px";
+    }
+  }, [editedTitle, editingListId]);
 
   const handleRemoveList = async (listId) => {
     try {
@@ -54,8 +64,16 @@ function ShowLists({ lists: initialLists, onAddTask }) {
           <div className="flex flex-row justify-between items-center mb-6">
             {editingListId === list._id ? (
               <textarea
+                ref={textareaRef}
                 value={editedTitle}
-                onChange={(e) => setEditedTitle(e.target.value)}
+                onChange={(e) => {
+                  setEditedTitle(e.target.value);
+                  if (textareaRef.current) {
+                    textareaRef.current.style.height = "auto";
+                    textareaRef.current.style.height =
+                      textareaRef.current.scrollHeight + "px";
+                  }
+                }}
                 onBlur={() => handleTitleSave(list._id)}
                 onKeyDown={async (e) => {
                   if (e.key === "Enter") {
@@ -64,12 +82,13 @@ function ShowLists({ lists: initialLists, onAddTask }) {
                   }
                 }}
                 autoFocus
-                className="w-full h-8 text-white/80 text-2xl font-bold bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight"
-                maxLength={20}
+                className="w-full text-white/80 text-xl font-bold bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight"
+                maxLength={40}
+                rows={1}
               />
             ) : (
               <h3
-                className="text-white/80 font-bold cursor-pointer"
+                className="w-full text-white/80 text-xl font-bold bg-transparent leading-tight line-clamp-2"
                 onClick={() => {
                   setEditingListId(list._id);
                   setEditedTitle(list.title);
@@ -84,7 +103,7 @@ function ShowLists({ lists: initialLists, onAddTask }) {
               fill="white"
               height="12px"
               width="12px"
-              className="cursor-pointer"
+              className="cursor-pointer ml-4" // Añadido gap entre texto y svg
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -94,6 +113,7 @@ function ShowLists({ lists: initialLists, onAddTask }) {
               <path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z" />
             </svg>
           </div>
+
           <div className="flex flex-col gap-2 relative">
             <ShowTasks tasks={list.tasks} />
             <NewTask
