@@ -201,7 +201,7 @@ const getChronoStats = async (req, res) => {
     if (error.statusCode) {
       return res.status(error.statusCode).json({ error: error.message });
     }
-     res.status(500).json({ error: new ChronoStatsError().message });
+      res.status(500).json({ error: "Error getting Pomellodoro stats. User might not have stats yet." });
   }
   console.log( "Click a stats: \n",req.user.id)
   
