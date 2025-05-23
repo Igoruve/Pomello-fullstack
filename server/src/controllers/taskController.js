@@ -1,6 +1,6 @@
 import taskModel from "../models/taskModel.js";
 import listModel from "../models/listModel.js";
-import Errors from "../utils/errors.js"; // ✅ Importación del default export
+import Errors from "../utils/errors.js";
 
 const {
   TaskTitleNotProvided,

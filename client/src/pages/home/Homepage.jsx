@@ -14,7 +14,7 @@ function Homepage() {
 					<p className="text-xl pt-4"><span className="font-bold text-[#f56b79]">Pomello </span>is a task manager that helps you stay on top of your to-dos. Organize your tasks into lists and use the chronometer to stay focus on your work. </p>
 					<p className="pt-10 text-2xl font-bold text-white">Wanna get <span className="text-[#f56b79]">started?</span></p>
 					<Link to="/register">
-						<div className="font-bold px-4 py-2 rounded-lg bg-[#f56b79] mt-6 hover:bg-[#f56b79]/80 flex flex-rrow w-64 shadow-lg">Register Now</div>
+						<div className="font-bold px-4 py-2 rounded-lg bg-[#f56b79] mt-6 hover:bg-[#f56b79]/80 flex flex-row w-64 shadow-lg items-center justify-center">Register Now</div>
 					</Link>
 				</div>
 				<img src="./home_img.jpg" alt="pomello home" className="w-200" />

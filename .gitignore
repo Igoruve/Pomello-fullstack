@@ -140,3 +140,6 @@ text.txt
 
 #vite folder
 .vite/
+
+#our things
+node_modules
