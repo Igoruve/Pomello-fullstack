@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
-const ChronoSchema = new mongoose.Schema({
+const chronoSchema = new mongoose.Schema({
   userId: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User', 
-    //required: true 
+    required: true 
   },
   focusDuration: { 
     type: Number, 
@@ -16,13 +16,10 @@ const ChronoSchema = new mongoose.Schema({
   }, 
   chronostarted: { 
     type: Date, 
-    default: Date.now,
     required: true 
   },
   chronostopped: {
-    type: Date, 
-    default: Date.now,
-    //required: true
+    type: Date
   }, 
   sessionsCompleted: { 
     type: Number, 
@@ -34,4 +31,4 @@ const ChronoSchema = new mongoose.Schema({
   } 
 });
 
-export default mongoose.model('Chrono', ChronoSchema);
+export default mongoose.model('Chrono', chronoSchema);

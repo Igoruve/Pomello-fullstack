@@ -152,35 +152,38 @@ const SessionChart = ({ data }) => {
 
     // Weekly Chart
     const weeklyCtx = weeklyChartRef.current.getContext("2d");
+
+    // Destruir el gráfico existente si ya está creado
     if (weeklyChartRef.current.chartInstance) {
       weeklyChartRef.current.chartInstance.destroy();
     }
 
-    // Get the start and end of the current week (Monday to Sunday)
+    // Obtener el inicio y fin de la semana actual (lunes a domingo)
     const now = new Date();
     const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Set to Monday
+    startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Establecer a lunes
     startOfWeek.setHours(0, 0, 0, 0);
 
     const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6); // Set to Sunday
+    endOfWeek.setDate(startOfWeek.getDate() + 6); // Establecer a domingo
     endOfWeek.setHours(23, 59, 59, 999);
 
-    // Filter sessions for the current week
+    // Filtrar sesiones de la semana actual
     const currentWeekSessions = data.sessions.filter((session) => {
       const sessionDate = new Date(session.createdAt);
       return sessionDate >= startOfWeek && sessionDate <= endOfWeek;
     });
 
-    // Group sessions by day of the week (Monday to Sunday)
+    // Agrupar sesiones por día de la semana (lunes a domingo)
     const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    const weeklyData = Array(7).fill(0); // Initialize array for 7 days
+    const weeklyData = Array(7).fill(0); // Inicializar array para 7 días
 
     currentWeekSessions.forEach((session) => {
-      const day = (new Date(session.createdAt).getDay() + 6) % 7; // Adjust day to start from Monday (0 = Monday, 6 = Sunday)
-      weeklyData[day] += 1; // Increment session count for the day
+      const day = (new Date(session.createdAt).getDay() + 6) % 7; // Ajustar día para empezar en lunes
+      weeklyData[day] += 1; // Incrementar el conteo de sesiones para el día
     });
 
+    // Crear el gráfico
     weeklyChartRef.current.chartInstance = new Chart(weeklyCtx, {
       type: "line",
       data: {

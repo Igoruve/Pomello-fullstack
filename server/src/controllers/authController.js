@@ -38,7 +38,8 @@ const login = async (req, res) => {
       throw new UserInvalidCredentials();
     }
 
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: "7d" });
+
 
     res.json({ token, user: { _id: user._id, email: user.email } });
   } catch (error) {

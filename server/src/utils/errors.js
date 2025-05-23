@@ -146,7 +146,7 @@ class ActiveChronoNotFound extends Error {
   }
 }
 
-class chonoStatsError extends Error {
+class ChronoStatsError extends Error {
   constructor() {
     super("🍅❌ Error obtaining chronometer statistics");
     this.name = "ChronoStatsError";
@@ -170,7 +170,7 @@ class PomellodoroNotRunning extends Error {
   }
 }
 
-class pomellodoroStartError extends Error {
+class PomellodoroStartError extends Error {
   constructor() {
     super("🍅❌ Error starting Pomellodoro cycle");
     this.name = "PomellodoroStatsError";
@@ -209,6 +209,8 @@ class PomellodoroStatsEmpty extends Error {
   }
 }
 
+
+
 export default {
     ProjectTitleNotProvided, 
     ProjectDescriptionNotProvided,
@@ -228,13 +230,14 @@ export default {
     InvalidDurationValue,
     ChronoAlreadyRunning,
     ActiveChronoNotFound,
-    chonoStatsError,
+    ChronoStatsError,
     PomellodoroAlReadyRunning,
     PomellodoroNotRunning,
-    pomellodoroStartError,
+    PomellodoroStartError,
     pomellodoroStopError,
     pomellodoroStatusError,
     PomellodorotatsRetrievalError,
+    PomellodoroStatsEmpty
     }
 /* const ChronoErrors = {
   FocusDurationNotProvided,

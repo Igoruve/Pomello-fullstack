@@ -1,51 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import pomeloImg from './assets/pomelo.png';
-import relojArenaImg from './assets/reloj_arena.png';
-import './PomeloChrono.css'; // Asegúrate de crear este archivo para las animaciones
+import React, { useState } from 'react';
+import pomeloImg from '../assets/pomelo.png';
+import relojArenaImg from '../assets/reloj_arena.png';
+import '../styles/chronoStyles.css';
 
-function PomeloChrono() {
+function PomellodoroChrono() {
   const [isRunning, setIsRunning] = useState(false);
-  const [timer, setTimer] = useState(0);
-  const [intervalId, setIntervalId] = useState(null);
+  const [message, setMessage] = useState('');
+  const [icon, setIcon] = useState(pomeloImg);
+  const [rotationClass, setRotationClass] = useState('');
 
-  const handleClick = () => {
-    if (!isRunning) {
-      // Iniciar el cronómetro
-      const id = setInterval(() => {
-        setTimer(prev => prev + 1);
-      }, 1000);
-      setIntervalId(id);
-    } else {
-      // Detener el cronómetro
-      clearInterval(intervalId);
-      setIntervalId(null);
-    }
-    setIsRunning(!isRunning);
-  };
+  const handleClick = async () => {
+    const endpoint = isRunning ? '/pomellodoro/stop' : '/pomellodoro/start';
+    const method = 'POST';
 
-  useEffect(() => {
-    // Limpieza al desmontar el componente
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
+    try {
+      const response = await fetch(`http://localhost:3013${endpoint}`, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: isRunning
+          ? undefined
+          : JSON.stringify({ focusDuration: 1, breakDuration: 0.5 }) // valores de prueba
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Unknown error');
       }
-    };
-  }, [intervalId]);
+
+      setIsRunning(!isRunning);
+      setMessage(data.message);
+      setIcon(isRunning ? pomeloImg : relojArenaImg);
+      setRotationClass(isRunning ? '' : 'rotating');
+
+    } catch (error) {
+      setMessage(`🍅❌ ${error.message}`);
+    }
+  };
 
   return (
     <div className="pomelo-chrono-container">
       <img
-        src={isRunning ? relojArenaImg : pomeloImg}
-        alt="Cronómetro"
-        className={isRunning ? 'rotating' : ''}
+        src={icon}
+        alt="Chronometer"
+        className={rotationClass}
         onClick={handleClick}
         style={{ cursor: 'pointer', width: '200px', height: '200px' }}
       />
-      <div>
-        <h2>Tiempo: {timer} segundos</h2>
-      </div>
+      {message && <div className="chrono-message">{message}</div>}
     </div>
   );
 }
 
-export default PomeloChrono;
+export default PomellodoroChrono;
