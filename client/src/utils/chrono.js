@@ -1,3 +1,4 @@
+
 import FetchData from "./fetch";
 
 async function startChrono(focusDuration, breakDuration) {
@@ -21,14 +22,17 @@ async function stopChrono() {
   return result;
 }
 
-async function getChronoStats() {
-    const result = await FetchData("/chrono/stats", "GET");
-    if (result.status === 401) {
-      throw new Error("Token inválido o expirado. Por favor, vuelve a iniciar sesión.");
-    }
-    return result;
-  }
-  
+
+// async function getChronoStats() {
+//     const result = await FetchData("/chrono/stats", "GET");
+//     if (result.status === 401) {
+//       throw new Error("Token inválido o expirado. Por favor, vuelve a iniciar sesión.");
+//     }
+//     return result;
+//   }
+export async function getChronoStats() {
+  return await FetchData("/chrono/stats");
+} 
 
 async function getStatus() {
   const result = await FetchData("/chrono/pomellodoro/status", "GET");
@@ -37,7 +41,11 @@ async function getStatus() {
     throw new Error(result.message || "Error al obtener el estado del pomodoro");
   }
 
-  return result;
+  // Agrega esto para ver qué devuelve realmente:
+  console.log("🧪 Respuesta de /status:", result);
+
+  return result; // debe ser { running: true }
 }
 
-export { startChrono, stopChrono, getChronoStats, getStatus };
+
+export { startChrono, stopChrono, getStatus };

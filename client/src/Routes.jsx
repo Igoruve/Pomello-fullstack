@@ -51,7 +51,12 @@ const router = createBrowserRouter([
           {
             path: "/pomodoro",
             element: <PomodoroPage />,
-          }, 
+            // Agregar un loader básico para verificar que la ruta se carga
+            loader: async () => {
+              console.log("Pomodoro route loaded");
+              return null;
+            },
+          },
           {
             path: "/dashboard", // Nueva ruta para el dashboard
             element: <Dashboard />,

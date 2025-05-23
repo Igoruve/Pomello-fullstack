@@ -237,6 +237,7 @@ export default {
     pomellodoroStopError,
     pomellodoroStatusError,
     PomellodorotatsRetrievalError,
+    PomellodoroStatsEmpty
     }
 /* const ChronoErrors = {
   FocusDurationNotProvided,

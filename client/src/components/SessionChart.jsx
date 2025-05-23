@@ -6,6 +6,18 @@ const SessionChart = ({ data }) => {
   const barChartRef = useRef(null);
   const weeklyChartRef = useRef(null);
 
+  // Verificar si los datos están vacíos o no tienen estadísticas
+  if (!data || data.totalSessions === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 text-white">
+        <h2 className="text-2xl font-bold mb-4">No Statistics Available</h2>
+        <p className="text-lg">
+          You don't have any statistics yet. Start a session to see your stats here!
+        </p>
+      </div>
+    );
+  }
+
   useEffect(() => {
     if (!data) return;
 
@@ -15,7 +27,7 @@ const SessionChart = ({ data }) => {
       doughnutChartRef.current.chartInstance.destroy();
     }
     doughnutChartRef.current.chartInstance = new Chart(doughnutCtx, {
-      type: "pie",
+      type: "doughnut",
       data: {
         labels: ["Completed", "Interrupted"],
         datasets: [
@@ -23,6 +35,10 @@ const SessionChart = ({ data }) => {
             label: "Sessions",
             data: [data.completedSessions, data.interruptedSessions],
             backgroundColor: ["#4CAF50", "#F44336"],
+            hoverBackgroundColor: ["#66BB6A", "#EF5350"],
+            borderWidth: 2,
+            hoverBorderWidth: 3,
+            borderColor: "#ffffff",
           },
         ],
       },
@@ -31,6 +47,20 @@ const SessionChart = ({ data }) => {
         plugins: {
           legend: {
             position: "top",
+            labels: {
+              color: "#ffffff",
+              font: {
+                size: 14,
+              },
+            },
+          },
+          tooltip: {
+            callbacks: {
+              label: (tooltipItem) => {
+                const value = tooltipItem.raw;
+                return `${tooltipItem.label}: ${value} sessions`;
+              },
+            },
           },
         },
       },
@@ -53,12 +83,14 @@ const SessionChart = ({ data }) => {
           {
             label: "Focus Duration (min)",
             data: focusDurations,
-            backgroundColor: "#4CAF50",
+            backgroundColor: "rgba(76, 175, 80, 0.8)",
+            hoverBackgroundColor: "rgba(76, 175, 80, 1)",
           },
           {
             label: "Break Duration (min)",
             data: breakDurations,
-            backgroundColor: "#F44336",
+            backgroundColor: "rgba(244, 67, 54, 0.8)",
+            hoverBackgroundColor: "rgba(244, 67, 54, 1)",
           },
         ],
       },
@@ -67,6 +99,19 @@ const SessionChart = ({ data }) => {
         plugins: {
           legend: {
             position: "top",
+            labels: {
+              color: "#ffffff",
+              font: {
+                size: 14,
+              },
+            },
+          },
+          tooltip: {
+            callbacks: {
+              label: (tooltipItem) => {
+                return `${tooltipItem.dataset.label}: ${tooltipItem.raw} min`;
+              },
+            },
           },
         },
         scales: {
@@ -74,50 +119,71 @@ const SessionChart = ({ data }) => {
             title: {
               display: true,
               text: "Sessions",
+              color: "#ffffff",
+              font: {
+                size: 16,
+              },
+            },
+            ticks: {
+              color: "#ffffff",
             },
           },
           y: {
             title: {
               display: true,
               text: "Duration (minutes)",
+              color: "#ffffff",
+              font: {
+                size: 16,
+              },
+            },
+            ticks: {
+              color: "#ffffff",
             },
             beginAtZero: true,
           },
+        },
+        animation: {
+          duration: 1000,
+          easing: "easeOutBounce",
         },
       },
     });
 
     // Weekly Chart
     const weeklyCtx = weeklyChartRef.current.getContext("2d");
+
+    // Destruir el gráfico existente si ya está creado
     if (weeklyChartRef.current.chartInstance) {
       weeklyChartRef.current.chartInstance.destroy();
     }
 
-    // Get the start and end of the current week (Monday to Sunday)
+    // Obtener el inicio y fin de la semana actual (lunes a domingo)
     const now = new Date();
     const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Set to Monday
+    startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Establecer a lunes
     startOfWeek.setHours(0, 0, 0, 0);
 
     const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6); // Set to Sunday
+    endOfWeek.setDate(startOfWeek.getDate() + 6); // Establecer a domingo
     endOfWeek.setHours(23, 59, 59, 999);
 
-    // Filter sessions for the current week
+    // Filtrar sesiones de la semana actual
     const currentWeekSessions = data.sessions.filter((session) => {
       const sessionDate = new Date(session.createdAt);
       return sessionDate >= startOfWeek && sessionDate <= endOfWeek;
     });
 
-    // Group sessions by day of the week (Monday to Sunday)
+    // Agrupar sesiones por día de la semana (lunes a domingo)
     const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    const weeklyData = Array(7).fill(0); // Initialize array for 7 days
+    const weeklyData = Array(7).fill(0); // Inicializar array para 7 días
 
     currentWeekSessions.forEach((session) => {
-      const day = (new Date(session.createdAt).getDay() + 6) % 7; // Adjust day to start from Monday (0 = Monday, 6 = Sunday)
-      weeklyData[day] += 1; // Increment session count for the day
+      const day = (new Date(session.createdAt).getDay() + 6) % 7; // Ajustar día para empezar en lunes
+      weeklyData[day] += 1; // Incrementar el conteo de sesiones para el día
     });
 
+    // Crear el gráfico
     weeklyChartRef.current.chartInstance = new Chart(weeklyCtx, {
       type: "line",
       data: {
@@ -129,6 +195,10 @@ const SessionChart = ({ data }) => {
             borderColor: "#4CAF50",
             backgroundColor: "rgba(76, 175, 80, 0.2)",
             fill: true,
+            pointRadius: 5,
+            pointHoverRadius: 8,
+            pointBackgroundColor: "#ffffff",
+            pointBorderColor: "#4CAF50",
           },
         ],
       },
@@ -137,6 +207,19 @@ const SessionChart = ({ data }) => {
         plugins: {
           legend: {
             position: "top",
+            labels: {
+              color: "#ffffff",
+              font: {
+                size: 14,
+              },
+            },
+          },
+          tooltip: {
+            callbacks: {
+              label: (tooltipItem) => {
+                return `${tooltipItem.label}: ${tooltipItem.raw} sessions`;
+              },
+            },
           },
         },
         scales: {
@@ -144,29 +227,68 @@ const SessionChart = ({ data }) => {
             title: {
               display: true,
               text: "Day of the Week",
+              color: "#ffffff",
+              font: {
+                size: 16,
+              },
+            },
+            ticks: {
+              color: "#ffffff",
             },
           },
           y: {
             title: {
               display: true,
               text: "Number of Sessions",
+              color: "#ffffff",
+              font: {
+                size: 16,
+              },
+            },
+            ticks: {
+              color: "#ffffff",
             },
             beginAtZero: true,
           },
+        },
+        animation: {
+          duration: 1500,
+          easing: "easeInOutQuart",
         },
       },
     });
   }, [data]);
 
   return (
-    <div>
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", height: "350px" }}>
-        <div style={{ width: "350px", height: "350px" }}>
+    <div className="bg-gray-800 min-h-screen ml-64 mt-10 px-4 py-6"> {/* Añadir margen izquierdo */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          height: "300px", // Ajustar altura
+          marginBottom: "70px", // Espacio entre gráficos
+        }}
+      >
+        <div style={{ width: "300px", height: "300px" }}> {/* Ajustar tamaño */}
           <canvas ref={doughnutChartRef} style={{ width: "100%", height: "100%" }}></canvas>
         </div>
       </div>
-      <canvas ref={barChartRef} style={{ marginTop: "20px" }}></canvas>
-      <canvas ref={weeklyChartRef} style={{ marginTop: "20px" }}></canvas>
+      <div
+        style={{
+          marginBottom: "70px", // Espacio entre gráficos
+        }}
+      >
+        <canvas ref={barChartRef} style={{ width: "100%", maxHeight: "300px" }}></canvas> {/* Ajustar altura */}
+      </div>
+      <div
+        style={{
+          marginBottom: "20px", // Espacio entre gráficos
+        }}
+      >
+        <canvas ref={weeklyChartRef} style={{ width: "100%", maxHeight: "400px" }}></canvas> {/* Hacer más grande */}
+      </div>
     </div>
   );
 };
