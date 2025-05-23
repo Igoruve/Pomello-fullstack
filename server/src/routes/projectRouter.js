@@ -11,17 +11,17 @@ router.get(
   isLoggedInAPI, projectController.getProjectsByUser
 );
 
-router.get("/", /* isLoggedInAPI, */ projectController.getProjects);
+router.get("/", isLoggedInAPI, projectController.getProjects);
 
-router.get("/:id", /* isLoggedInAPI, */ projectController.getProjectbyId);
+router.get("/:id", isLoggedInAPI, projectController.getProjectbyId);
 
-router.put("/:id", /* isLoggedInAPI, */ projectController.updateProject);
+router.put("/:id", isLoggedInAPI, projectController.updateProject);
 
-router.delete("/:id", /* isLoggedInAPI, */ projectController.deleteProject);
+router.delete("/:id", isLoggedInAPI, projectController.deleteProject);
 
 router.get(
   "/full/:userId",
-  /* isLoggedInAPI, */ projectController.getFullUserData
+   isLoggedInAPI, projectController.getFullUserData
 );
 
 export default router;

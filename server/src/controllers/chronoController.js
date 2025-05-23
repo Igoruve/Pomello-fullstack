@@ -98,7 +98,9 @@ const {
 
 const getChronoStats = async (req, res) => {
   try {
+    console.log( req.user.id)
     const sessions = await Chrono.find({ userId: req.user.id });
+    console.log( "Click a stats: \n",req.user.id)
 
     if (!sessions.length) throw new PomellodoroStatsEmpty();
 
@@ -199,8 +201,10 @@ const getChronoStats = async (req, res) => {
     if (error.statusCode) {
       return res.status(error.statusCode).json({ error: error.message });
     }
-    res.status(500).json({ error: new ChronoStatsError().message });
+     res.status(500).json({ error: new ChronoStatsError().message });
   }
+  console.log( "Click a stats: \n",req.user.id)
+  
 };
 
 

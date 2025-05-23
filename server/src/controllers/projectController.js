@@ -90,21 +90,15 @@ const getProjectbyId = async (req, res) => {
 
 const getProjectsByUser = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     if (!userId) {
-      throw new UserNotFound();
-    }
-
-    // Verificar si el usuario existe
-    const userExists = await userModel.findById(userId);
-    if (!userExists) {
-      throw new UserNotFound();
+      throw new Errors.UserNotFound();
     }
 
     const projects = await projectModel.find({ user: userId });
 
-    if (projects.length === 0) {
+    if (!projects.length) {
       return res.status(200).json([]);
     }
 
