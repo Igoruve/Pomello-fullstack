@@ -26,7 +26,7 @@ function AsideNavbar() {
             Home
           </NavLink>
           <NavLink
-            to="/"
+            to="/dashboard"
             className={({ isActive }) =>
               `flex flex-row items-center gap-3 rounded-xl p-2 hover:bg-gray-500/20 ${
                 isActive ? "text-[#f56b79]" : "text-white/80"
