@@ -25,26 +25,30 @@ function ProjectList() {
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
-    const title = e.target.title.value;
-    const description = e.target.description.value;
+    const title = e.target.title.value.trim(); // Eliminar espacios en blanco
+    const description = e.target.description.value.trim(); // Eliminar espacios en blanco
 
-    e.target.reset();
+    if (!title) {
+      console.error("Project title is required");
+      return;
+    }
 
-    setTitleInput("");
-    setDescriptionInput("");
+    e.target.reset(); // Limpia el formulario
 
-    setExpanded(false);
+    setExpanded(false); // Cierra el formulario
 
-    const newProject = await createProject({ title, description });
-    console.log("newProject", newProject);
-    setProjects((prev) => {
-      const updated = [...prev, newProject[0]];
-      return updated.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-    });
+    try {
+      const newProject = await createProject({ title, description });
+      if (newProject.error) {
+        console.error("Error creating project:", newProject.error);
+        return;
+      }
 
-    navigate(`/project/${newProject[0]._id}`, { replace: true });
+      setProjects((prev) => [...prev, newProject]);
+      navigate(`/project/${newProject._id}`, { replace: true });
+    } catch (error) {
+      console.error("Error creating project:", error);
+    }
   };
 
   const handleRemoveProject = async (projectId) => {

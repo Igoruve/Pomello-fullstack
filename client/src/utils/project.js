@@ -21,7 +21,7 @@ const getProjectsFullInfo = async (userId) => {
 };
 
 const createProject = async (data) => {
-  const result = await FetchData("/project", "POST", [data]);
+  const result = await FetchData("/project", "POST", data);
   return result;
 };
 

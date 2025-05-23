@@ -16,27 +16,20 @@ const {
 
 const createProject = async (req, res) => {
   try {
-    if (!req.body || !req.body.length) {
+    const { title, description } = req.body;
+
+    if (!title) {
       throw new ProjectTitleNotProvided();
     }
 
-    const data = req.body.map((item) => {
-      if (!item.title) {
-        throw new ProjectTitleNotProvided();
-      }
+    const projectData = {
+      title,
+      description,
+      user: req.user.id, // Asegúrate de que el usuario autenticado esté asignado
+    };
 
-      if (!item.description) {
-        throw new ProjectDescriptionNotProvided();
-      }
-
-      return {
-        ...item,
-        user: req.user._id,
-      };
-    });
-
-    const projectCreated = await projectModel.create(data);
-    res.json(projectCreated);
+    const projectCreated = await projectModel.create(projectData);
+    res.status(201).json(projectCreated);
   } catch (error) {
     console.error(error);
     res.status(error.statusCode || 500).json({ message: error.message });
