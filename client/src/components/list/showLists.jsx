@@ -115,7 +115,7 @@ function ShowLists({ lists: initialLists, onAddTask }) {
           </div>
 
           <div className="flex flex-col gap-2 relative">
-            <ShowTasks tasks={list.tasks} />
+            <ShowTasks tasks={list.tasks || []} />
             <NewTask
               className="absolute bottom-0 left-0"
               listId={list._id}
