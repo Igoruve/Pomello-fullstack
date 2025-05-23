@@ -50,56 +50,6 @@ const startChrono = async (userId, focusDurationValue, breakDurationValue) => {
   return newSession;
 }; 
  
-/* 
-const startChrono = async (userId, focusDurationValue, breakDurationValue) => {
-  console.log('Starting chrono for user:', userId);
-
-  if (!userId) {
-    throw new Error("UserId is required to start a chrono session");
-  }
-
-  // Convert userId a ObjectId si viene como string válido
-  const userIdObj = typeof userId === 'string' && mongoose.Types.ObjectId.isValid(userId)
-    ? new mongoose.Types.ObjectId(userId)
-    : userId;
-
-  if (!mongoose.Types.ObjectId.isValid(userIdObj)) {
-    throw new Error("Invalid userId");
-  }
-
-  const focusDuration = Number(focusDurationValue);
-  const breakDuration = Number(breakDurationValue);
-
-  if (isNaN(focusDuration) || isNaN(breakDuration) ||
-      focusDuration <= 0 || breakDuration <= 0) {
-    throw new Errors.InvalidDurationValue();
-  }
-
-  const existingSession = await Chrono.findOne({
-    userId: userIdObj,
-    chronostopped: null,
-  });
-
-  if (existingSession) {
-    throw new Errors.ChronoAlreadyRunning();
-  }
-
-  const newSession = new Chrono({
-    userId: userIdObj,
-    focusDuration,
-    breakDuration,
-    chronostarted: new Date(),
-    chronostopped: null,
-    sessionsCompleted: 0,
-  });
-
-  await newSession.save();
-
-  console.log('New session saved:', newSession);
-
-  return newSession;
-};  */
-
 
 // Stop the chronometer session
 /**
@@ -330,7 +280,72 @@ const startPomellodoroCycle = async (req, res) => {
   };
 
   runCycle(0);
-};
+}; 
+/* const startPomellodoroCycle = async (req, res) => {
+  const userId = req.user._id;
+
+  // Valores falsos para test rápido (3 seg foco, 2 seg descanso)
+  const focus = 3; 
+  const rest = 2;
+
+  if (pomellodoroActive) {
+    return res.status(400).json({ message: '🍊✅ Pomellodoro already running' });
+  }
+
+  try {
+    await stopChrono(userId);
+  } catch (e) {
+    // ignorar si no hay sesión previa
+  }
+
+  pomellodoroActive = true;
+  res.status(200).json({ message: '🍊✅ Pomellodoro started with fast test durations' });
+
+  const cycles = 4;
+  const workMs = focus * 1000;
+  const breakMs = rest * 1000;
+
+  const runCycle = async (i) => {
+    if (!pomellodoroActive) return;
+
+    console.log(`🍊 Cycle ${i + 1} started: working for ${workMs} ms`);
+
+    try {
+      await startChrono(userId, focus, rest);
+    } catch (e) {
+      console.error(`❌ Error starting cycle ${i + 1}:`, e.message);
+      pomellodoroActive = false;
+      return;
+    }
+
+    const workTimeout = setTimeout(async () => {
+      if (!pomellodoroActive) return;
+
+      console.log(`🍊 Cycle ${i + 1} work finished, stopping chrono`);
+
+      try {
+        await stopChrono(userId);
+      } catch (e) {
+        console.error(`❌ Error stopping cycle ${i + 1}:`, e.message);
+        pomellodoroActive = false;
+        return;
+      }
+
+      if (i < cycles - 1) {
+        console.log(`🍊 Cycle ${i + 1} break for ${breakMs} ms`);
+        const restTimeout = setTimeout(() => runCycle(i + 1), breakMs);
+        pomellodoroTimeouts.push(restTimeout);
+      } else {
+        pomellodoroActive = false;
+        console.log('✅ Pomellodoro finished');
+      }
+    }, workMs);
+
+    pomellodoroTimeouts.push(workTimeout);
+  };
+
+  runCycle(0);
+}; */
 
 const {
   PomellodoroNotRunning,
