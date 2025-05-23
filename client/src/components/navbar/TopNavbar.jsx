@@ -10,6 +10,8 @@ function TopNavbar() {
           <Link to="/project/user" className="font-bold text-white/80 text-2xl">POMELLO</Link>
         </div>
         <div className="flex flex-row items-center gap-4">
+          <img src="/assets/rodaja-de-tomate.png" alt="pomello icon" className="h-8 w-auto" />
+          <Link to="/pomellodoro/start"> chrono</Link>
           <p>Browser</p>
           <div className="flex flex-row items-center gap-2">
           <svg viewBox="0 0 448 512" width="18px" height="18px" fill="white">
