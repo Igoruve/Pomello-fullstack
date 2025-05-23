@@ -8,7 +8,7 @@ function NavbarProjects() {
   const loaderData = useLoaderData();
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
-  const [setProjects] = useState(loaderData);
+  const [projects, setProjects] = useState(loaderData);
 
   if (!Array.isArray(loaderData)) {
     return <div>Error: {loaderData?.message || "Unexpected error"}</div>;
