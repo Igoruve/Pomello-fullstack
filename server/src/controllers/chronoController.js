@@ -1,37 +1,38 @@
 import Chrono from '../models/chrono.js';
+<<<<<<< HEAD
 import errors from '../utils/errors.js';
 import Errors from "../utils/errors.js"; // ✅ Importación correcta
+=======
+import Errors from "../utils/errors.js";
+
+const {
+  InvalidDurationValue,
+  ChronoAlreadyRunning,
+  ActiveChronoNotFound,
+  ChronoStatsError,
+  PomellodoroStatsEmpty,
+  PomellodoroAlreadyRunning,
+  PomellodoroNotRunning,
+  PomellodoroStopError,
+  PomellodoroStatusError,
+  pomellodoroStopError,
+  pomellodoroStatusError,
+} = Errors;
+>>>>>>> client/feature/chronoFetch
 
 // Start a new chrono session
-/**
- * Starts a new chronometer session for a user.
- *
- * Validates focus and break durations. If a session is already active, it throws an error.
- *
- * @param {string} userId - The ID of the user starting the session.
- * @param {number|string} focusDurationValue - The focus duration in minutes.
- * @param {number|string} breakDurationValue - The break duration in minutes.
- * @returns {Promise<Object>} The created chrono session.
- * @throws {InvalidDurationValue} If durations are invalid.
- * @throws {ChronoAlreadyRunning} If a session is already active.
- */
-
 const startChrono = async (userId, focusDurationValue, breakDurationValue) => {
   const focusDuration = Number(focusDurationValue);
   const breakDuration = Number(breakDurationValue);
 
-  if (isNaN(focusDuration) || isNaN(breakDuration) ||
-      focusDuration <= 0 || breakDuration <= 0) {
-    throw new Errors.InvalidDurationValue();
+  if (isNaN(focusDuration) || isNaN(breakDuration) || focusDuration <= 0 || breakDuration <= 0) {
+    throw new InvalidDurationValue();
   }
 
-  const existingSession = await Chrono.findOne({
-    userId,
-    chronostopped: null,
-  });
+  const existingSession = await Chrono.findOne({ userId, chronostopped: null });
 
   if (existingSession) {
-    throw new Errors.ChronoAlreadyRunning();
+    throw new ChronoAlreadyRunning();
   }
 
   const newSession = new Chrono({
@@ -47,23 +48,11 @@ const startChrono = async (userId, focusDurationValue, breakDurationValue) => {
   return newSession;
 };
 
-
 // Stop the chronometer session
-/**
- * Stops the user's current active chronometer session.
- *
- * Updates the session with a stop timestamp and increments completed sessions
- * if the focus duration was met.
- *
- * @param {string} userId - The ID of the user.
- * @returns {Promise<Object>} The updated chrono session.
- * @throws {ActiveChronoNotFound} If no active session is found.
- */
-
 const stopChrono = async (userId) => {
   const activeSession = await Chrono.findOne({ userId, chronostopped: null }).sort({ createdAt: -1 });
 
-  if (!activeSession) throw new Errors.ActiveChronoNotFound();
+  if (!activeSession) throw new ActiveChronoNotFound();
 
   activeSession.chronostopped = new Date();
   const elapsedMinutes = (activeSession.chronostopped - activeSession.chronostarted) / 60000;
@@ -76,32 +65,18 @@ const stopChrono = async (userId) => {
   return activeSession;
 };
 
-
-// Get statistics of the chronometer sessions to use with the chart
-/**
- * Retrieves and calculates detailed statistics from a user's chronometer sessions.
- *
- * Returns metrics such as total focus time, average focus/break time, and session
- * completion rates.
- *
- * @param {Object} req - Express request object, includes authenticated user.
- * @param {Object} res - Express response object to return JSON statistics.
- * @returns {void}
- *
- * @throws {PomellodoroStatsEmpty} If no session records exist for the user.
- * @throws {ChronoStatsError} On database or internal failure.
- */
-
-const {
-  ChronoStatsError,
-  PomellodoroStatsEmpty
-} = Errors;
-
+// Get statistics of the chronometer sessions
 const getChronoStats = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: "Unauthorized: no user found in request" });
+    }
+
     const sessions = await Chrono.find({ userId: req.user.id });
 
-    if (!sessions.length) throw new PomellodoroStatsEmpty();
+    if (!sessions.length) {
+      return res.status(404).json({ error: "No Pomellodoro sessions found" });
+    }
 
     const today = new Date();
 
@@ -197,33 +172,18 @@ const getChronoStats = async (req, res) => {
     });
 
   } catch (error) {
-    if (error.statusCode) {
-      return res.status(error.statusCode).json({ error: error.message });
-    }
-    res.status(500).json({ error: new ChronoStatsError().message });
+    console.error("Error in getChronoStats:", error);
+    res.status(500).json({ error: "Error getting Pomellodoro stats" });
   }
 };
 
 
 // Pomellodoro cycle control
-
 let pomellodoroActive = false;
 let pomellodoroTimeouts = [];
-/**
- * Starts a Pomellodoro cycle for the user.
- *
- * Runs 4 consecutive focus + break sessions. If interrupted or already running,
- * responds accordingly. Stops previous active session if one exists.
- *
- * @param {Object} req - Express request object (must contain focusDuration and breakDuration).
- * @param {Object} res - Express response object.
- * @returns {void}
- *
- * @throws {InvalidDurationValue} If durations are invalid.
- * @throws {ChronoAlreadyRunning} If an active chrono session is already running.
- */
 
 const startPomellodoroCycle = async (req, res) => {
+<<<<<<< HEAD
   const userId = req.user.id;
   const focus = Number(req.body.focusDuration);
   const rest = Number(req.body.breakDuration);
@@ -237,12 +197,12 @@ const startPomellodoroCycle = async (req, res) => {
   }
 
   // 🔧 Cierre forzado de posibles sesiones previas
+=======
+>>>>>>> client/feature/chronoFetch
   try {
-    await stopChrono(userId);
-  } catch (e) {
-    // Ignoramos si no hay ninguna sesión previa
-  }
+    const { focusDuration, breakDuration } = req.body;
 
+<<<<<<< HEAD
   pomellodoroActive = true;
   res.status(200).json({ message: '🍊✅ Pomellodoro started' });
 
@@ -259,11 +219,30 @@ const startPomellodoroCycle = async (req, res) => {
       console.error(`🍅❌  Error starting cycle ${i + 1}:`, e.message);
       pomellodoroActive = false;
       return;
+=======
+    // Validar tipos y que sean números válidos
+    if (
+      typeof focusDuration !== "number" ||
+      typeof breakDuration !== "number" ||
+      isNaN(focusDuration) ||
+      isNaN(breakDuration) ||
+      focusDuration <= 0 ||
+      breakDuration <= 0
+    ) {
+      return res.status(400).json({ message: "Duraciones inválidas. Deben ser números mayores que 0." });
+>>>>>>> client/feature/chronoFetch
     }
 
-    const workTimeout = setTimeout(async () => {
-      if (!pomellodoroActive) return;
+    // Simular almacenamiento en memoria temporal para este ejemplo
+    req.app.locals.pomodoroStatus = {
+      running: true,
+      startTime: Date.now(),
+      focusDuration,
+      breakDuration,
+      userId: req.user._id,
+    };
 
+<<<<<<< HEAD
       try {
         await stopChrono(userId);
       } catch (e) {
@@ -285,26 +264,16 @@ const startPomellodoroCycle = async (req, res) => {
   };
 
   runCycle(0);
+=======
+    res.json({ message: "Pomodoro iniciado", status: req.app.locals.pomodoroStatus });
+  } catch (err) {
+    console.error("Error iniciando Pomodoro:", err);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+>>>>>>> client/feature/chronoFetch
 };
 
-const {
-  PomellodoroNotRunning,
-  pomellodoroStopError
-} = Errors;
 
-/**
- * Stops the Pomellodoro cycle for the user.
- *
- * If the Pomellodoro cycle is not running, throws a PomellodoroNotRunning error.
- * If already running, stops all ongoing timeouts and sets the active state to false.
- * If an active chrono session is running, stops it.
- *
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @returns {void}
- *
- * @throws {PomellodoroNotRunning} If the Pomellodoro cycle is not running.
- */
 const stopPomellodoroCycle = async (req, res) => {
   const userId = req.user.id;
 
@@ -323,28 +292,9 @@ const stopPomellodoroCycle = async (req, res) => {
 
     res.status(200).json({ message: "🍊✅ Pomellodoro stopped" });
   } catch (error) {
-    res.status(error.statusCode || 500).json({ error: error.message || new pomellodoroStopError().message });
+    res.status(error.statusCode || 500).json({ error: error.message || new PomellodoroStopError().message });
   }
 };
-
-const {
-  pomellodoroStatusError
-} = Errors;
-/**
- * Returns the current status of the Pomellodoro cycle.
- * Includes whether the cycle is active, how many timeouts are set,
- * and how many have been executed.
- * The status contains three properties:
- * - `active`: A boolean indicating whether the Pomellodoro cycle is currently active.
- * - `timeouts`: The number of timeouts currently scheduled.
- * - `sessions`: The number of active sessions (i.e. focus + break sessions) currently running.
- *
- * @param {Object} req - Express request object.
- * @param {Object} res - Express response object.
- * @returns {void}
- *
- * @throws {pomellodoroStatusError} If an unexpected error occurs while retrieving the status.
- */
 
 const getPomellodoroStatus = (req, res) => {
   try {
@@ -355,10 +305,10 @@ const getPomellodoroStatus = (req, res) => {
     };
     res.status(200).json(status);
   } catch (error) {
-    res.status(500).json({ error: Errors.pomellodoroStatusError() });
+    res.status(500).json({ error: new PomellodoroStatusError().message });
   }
 };
- 
+
 export default {
   startChrono,
   stopChrono,
@@ -367,6 +317,5 @@ export default {
   stopPomellodoroCycle,
   getPomellodoroStatus
 };
-
 
 

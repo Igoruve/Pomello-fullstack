@@ -1,1 +1,9 @@
+<<<<<<< HEAD
 {}
+=======
+{
+  "dependencies": {
+    "chart.js": "^4.4.9"
+  }
+}
+>>>>>>> client/feature/chronoFetch
