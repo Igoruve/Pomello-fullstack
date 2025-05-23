@@ -4,6 +4,8 @@ import { getChronoStats } from "../utils/chrono.js";
 
 const Dashboard = () => {
   const [sessionData, setSessionData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchSessionData = async () => {
@@ -15,11 +17,27 @@ const Dashboard = () => {
         setSessionData(data);
       } catch (error) {
         console.error("Error fetching session data:", error);
+        setError("You don't have any statistics yet. Start a session to see your stats here!");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchSessionData();
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center bg-gray-800 justify-center min-h-screen text-white">
+        <h2 className="text-2xl font-bold mb-4">No Statistics Available</h2>
+        <p className="text-lg">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div>
