@@ -11,12 +11,12 @@ function HomeNavbar() {
         </div>
         <div className="flex flex-row items-center gap-4">
           <section className="flex flex-row items-center gap-6">
-            <Link to="/login">
-              <button className="font-bold">Login</button>
+            <Link to="/register">
+              <button className="font-bold hover:text-[#f56b79] cursor-pointer">Register</button>
             </Link>
 
-            <Link to="/register">
-              <button>Register</button>
+            <Link to="/login">
+              <button className="hover:text-[#f56b79] cursor-pointer">Login</button>
             </Link>
           </section>
         </div>

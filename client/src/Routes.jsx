@@ -26,6 +26,10 @@ const router = createBrowserRouter([
         path: "/register",
         element: <Auth isRegister={true} />,
       },
+            {
+        path: "/logout",
+        element: <Homepage />,
+      },
       {
         element: <Layout />,
         loader: async () => getProjectsByUserId(),

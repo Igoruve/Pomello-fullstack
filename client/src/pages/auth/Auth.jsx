@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 
 import { AuthContext } from "../../context/AuthContext";
+import HomeNavbar from "../../components/navbar/HomeNavbar";
 
 function Auth({ isRegister }) {
   const [error, setError] = useState(null);
@@ -31,6 +32,7 @@ function Auth({ isRegister }) {
 
   return (
     <section className="flex flex-col items-center justify-center h-screen bg-gray-700">
+      <HomeNavbar />
       <h2 className="text-4xl font-bold text-white mb-12">
         {isRegister ? "Register" : "Log in"}
       </h2>
@@ -74,7 +76,7 @@ function Auth({ isRegister }) {
         <>
           <p className="mt-4 text-white">Already have an account?</p>
           <Link to="/login">
-            <button className="underline text-blue-600 cursor-pointer">
+            <button className="underline text-[#f56b79] cursor-pointer">
               Go to login
             </button>
           </Link>
@@ -83,7 +85,7 @@ function Auth({ isRegister }) {
         <>
           <p className="mt-4 text-white">Don't have an account?</p>
           <Link to="/register">
-            <button className="underline text-blue-600 cursor-pointer">
+            <button className="underline text-[#f56b79] cursor-pointer">
               Register
             </button>
           </Link>
