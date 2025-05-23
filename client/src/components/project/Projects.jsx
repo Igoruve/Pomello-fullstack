@@ -110,7 +110,7 @@ function ProjectList() {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setProjectToDelete(project); // 👈 mostrar el modal
+                  setProjectToDelete(project); 
                 }}
               >
                 {" "}
