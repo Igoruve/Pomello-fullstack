@@ -1,9 +1,4 @@
-import {
-  Navigate,
-  useLoaderData,
-  useNavigate,
-  useRevalidator,
-} from "react-router-dom";
+import { Navigate, useLoaderData, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
@@ -13,8 +8,7 @@ function NavbarProjects() {
   const loaderData = useLoaderData();
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
-  const [projects, setProjects] = useState(loaderData);
-  const revalidator = useRevalidator();
+  const [setProjects] = useState(loaderData);
 
   if (!Array.isArray(loaderData)) {
     return <div>Error: {loaderData?.message || "Unexpected error"}</div>;
@@ -36,29 +30,28 @@ function NavbarProjects() {
   };
 
   return (
-    <section className="my-4">
-      <div className="flex flex-row justify-between items-center mb-4">
-        <div className="flex flex-row gap-2 items-center">
+    <>
+      <div className="flex flex-row justify-between items-center mt-2 rounded-xl transition duration-300">
+        <div className="flex flex-row gap-2 items-center ">
           <svg
             height="16px"
             viewBox="0 -960 960 960"
             width="16px"
             fill="white"
+            className="cursor-pointer "
           >
             <path d="M168-144q-29.7 0-50.85-21.15Q96-186.3 96-216v-432q0-29.7 21.15-50.85Q138.3-720 168-720h168v-72.21Q336-822 357.18-843q21.17-21 50.91-21h144.17Q582-864 603-842.85q21 21.15 21 50.85v72h168q29.7 0 50.85 21.15Q864-677.7 864-648v432q0 29.7-21.15 50.85Q821.7-144 792-144H168Zm0-72h624v-432H168v432Zm240-504h144v-72H408v72ZM168-216v-432 432Z" />
           </svg>
           <p>Projects</p>
         </div>
-        <svg
+        <div
           onClick={() => setExpanded(!expanded)}
-          className="text-white"
-          viewBox="0 0 448 512"
-          fill="#f56b79"
-          height="18px"
-          width="18px"
+          className="p-2 rounded-md cursor-pointer hover:bg-gray-500/20 transition duration-150"
         >
-          <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
-        </svg>
+          <svg viewBox="0 0 448 512" fill="#f56b79" height="18px" width="18px">
+            <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
+          </svg>
+        </div>
       </div>
 
       <section>
@@ -70,7 +63,7 @@ function NavbarProjects() {
             <form
               onSubmit={handleCreateProject}
               onClick={(e) => e.stopPropagation()}
-              className="bg-gray-800 z-30 absolute top-48 left-64 rounded-xl h-96 w-64 p-4 flex flex-col justify-between text-white font-bold"
+              className="bg-gray-800 z-50 absolute top-48 left-64 rounded-xl h-96 w-64 p-4 flex flex-col justify-between text-white font-bold"
             >
               <article className="flex flex-col">
                 <div className="gap-2 flex flex-col mb-6">
@@ -93,7 +86,7 @@ function NavbarProjects() {
                 </div>
               </article>
               <button
-                className="bg-[#e84860] py-3 px-1.5 rounded-xl"
+                className="bg-[#f56b79] py-3 px-1.5 rounded-xl"
                 type="submit"
               >
                 Create
@@ -103,16 +96,24 @@ function NavbarProjects() {
         )}
       </section>
 
-      <div>
-        {loaderData.map((project) => (
-          <Link to={`/project/${project._id}`} key={project._id}>
-            <div className="mb-2 bg-gray-600 rounded-2xl p-4 cursor-pointer hover:bg-[#e84860]">
-              <p>{project.title}</p>
-            </div>
-          </Link>
-        ))}
+      <div className="flex flex-col gap-2 overflow-y-auto no-scrollbar ">
+        {[...loaderData]
+          .sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          })
+          .map((project) => (
+            <Link to={`/project/${project._id}`} key={project._id}>
+              <div className="relative mb-4 rounded-2xl p-4 cursor-pointer group overflow-hidden">
+                <div className="absolute inset-0 bg-gray-600 transition-opacity duration-300 group-hover:opacity-0"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#fcab51] to-[#f56b79] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                <p className="relative z-10 truncate max-w-full whitespace-nowrap overflow-hidden">
+                  {project.title}
+                </p>
+              </div>
+            </Link>
+          ))}
       </div>
-    </section>
+    </>
   );
 }
 

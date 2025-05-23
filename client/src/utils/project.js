@@ -30,4 +30,17 @@ const removeProject = async (projectId) => {
   return result;
 };
 
-export { getAllProjects, getProjectById, getProjectsByUserId, getProjectsFullInfo, createProject, removeProject };
+const updateProject = async (projectId, data) => {
+  const result = await FetchData(`/project/${projectId}`, "PUT", data);
+  return result;
+};
+
+export {
+  updateProject,
+  getAllProjects,
+  getProjectById,
+  getProjectsByUserId,
+  getProjectsFullInfo,
+  createProject,
+  removeProject,
+};
