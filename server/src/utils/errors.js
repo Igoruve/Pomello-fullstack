@@ -56,29 +56,6 @@ class ListNotFound extends Error {
     }
 }
 
-/**
- * CHRONO
- */
-class FocusDurationNotProvided extends Error {
-    constructor() {
-        super("Focus duration not provided");
-        this.statusCode = 400;
-    }
-}
-
-class BreakDurationNotProvided extends Error {
-    constructor() {
-        super("Break duration not provided");
-        this.statusCode = 400;
-    }
-}
-
-class ChronoNotFound extends Error {
-    constructor() {
-        super("Chrono session not found");
-        this.statusCode = 404;
-    }
-}
 
 /**
  * USERS
@@ -125,7 +102,114 @@ class UserNotFound extends Error {
     }
 }
 
-export {
+//-------------------------------
+// --- CHRONO ERRORS ---
+//-------------------------------
+
+class FocusDurationNotProvided extends Error {
+  constructor() {
+    super("🍅❌ Focus duration not provided");
+    this.name = "FocusDurationNotProvided";
+    this.statusCode = 400;
+  }
+}
+
+class BreakDurationNotProvided extends Error {
+  constructor() {
+    super("🍅❌ Break duration not provided");
+    this.name = "BreakDurationNotProvided";
+    this.statusCode = 400;
+  }
+}
+
+class InvalidDurationValue extends Error {
+  constructor() {
+    super("🍅❌ Invalid Duration Values, must be numbers greater than zero");
+    this.name = "InvalidDurationValue";
+    this.statusCode = 400;
+  }
+}
+
+class ChronoAlreadyRunning extends Error {
+  constructor() {
+    super("🍅❌ Chronometer already running");
+    this.name = "ChronoAlreadyRunning";
+    this.statusCode = 400;
+  }
+}
+
+class ActiveChronoNotFound extends Error {
+  constructor() {
+    super("🍅❌ Active chronometer not found");
+    this.name = "ChronoNotFound";
+    this.statusCode = 404;
+  }
+}
+
+class chonoStatsError extends Error {
+  constructor() {
+    super("🍅❌ Error obtaining chronometer statistics");
+    this.name = "ChronoStatsError";
+    this.statusCode = 404;
+  }
+}
+
+class PomellodoroAlReadyRunning extends Error {
+  constructor() {
+    super("🍅❌ A Pomellodoro cycle is already running");
+    this.name = "PomellodoroAlreadyRunning";
+    this.statusCode = 400;
+  }
+}
+
+class PomellodoroNotRunning extends Error {
+  constructor() {
+    super("🍅❌ No Pomellodoro cycle currently running");
+    this.name = "PomellodoroNotRunning";
+    this.statusCode = 400;
+  }
+}
+
+class pomellodoroStartError extends Error {
+  constructor() {
+    super("🍅❌ Error starting Pomellodoro cycle");
+    this.name = "PomellodoroStatsError";
+    this.statusCode = 404;
+  }
+}
+
+class pomellodoroStopError extends Error {
+  constructor() {
+    super("🍅❌ Error stopping Pomellodoro cycle");
+    this.name = "PomellodoroStatsError";
+    this.statusCode = 404;
+  }
+}
+class pomellodoroStatusError extends Error {
+  constructor() {
+    super("🍅❌ Error obtaining pomellodoro status");
+    this.name = "PomellodoroStatusError";
+    this.statusCode = 404;
+  }
+}
+
+class PomellodorotatsRetrievalError extends Error {
+  constructor() {
+    super("🍅❌ Failed to retrieve Pomellodoro statistics");
+    this.name = "ChronoStatsRetrievalError";
+    this.statusCode = 500;
+  }
+}
+
+class PomellodoroStatsEmpty extends Error {
+  constructor() {
+    super("🍊✅ No sessions found, stats are empty");
+    this.name = "ChronoStatsEmpty";
+    this.statusCode = 200; // porque no es un error en sí
+  }
+}
+
+export default {
     ProjectTitleNotProvided, 
     ProjectDescriptionNotProvided,
     ProjectNotFound,
@@ -133,13 +217,55 @@ export {
     TaskNotFound,
     ListTitleNotProvided,
     ListNotFound,
-    FocusDurationNotProvided,
-    BreakDurationNotProvided,
-    ChronoNotFound,
     UserNameNotProvided,
     UserEmailNotProvided,
     UserPasswordNotProvided,
     UserEmailAlreadyExists,
     UserInvalidCredentials,
-    UserNotFound
+    UserNotFound, 
+    FocusDurationNotProvided,
+    BreakDurationNotProvided,
+    InvalidDurationValue,
+    ChronoAlreadyRunning,
+    ActiveChronoNotFound,
+    chonoStatsError,
+    PomellodoroAlReadyRunning,
+    PomellodoroNotRunning,
+    pomellodoroStartError,
+    pomellodoroStopError,
+    pomellodoroStatusError,
+    PomellodorotatsRetrievalError,
+    }
+/* const ChronoErrors = {
+  FocusDurationNotProvided,
+  BreakDurationNotProvided,
+  InvalidDurationValue,
+  ChronoAlreadyRunning,
+  ActiveChronoNotFound,
+  chonoStatsError,
+  PomellodoroAlReadyRunning,
+  PomellodoroNotRunning,
+  pomellodoroStartError,
+  pomellodoroStopError,
+  pomellodoroStatusError,
+  PomellodorotatsRetrievalError,
+  PomellodoroStatsEmpty
 };
+
+export default {
+    ProjectTitleNotProvided, 
+    ProjectDescriptionNotProvided,
+    ProjectNotFound,
+    TaskTitleNotProvided,
+    TaskNotFound,
+    ListTitleNotProvided,
+    ListNotFound,
+    UserNameNotProvided,
+    UserEmailNotProvided,
+    UserPasswordNotProvided,
+    UserEmailAlreadyExists,
+    UserInvalidCredentials,
+    UserNotFound, 
+    ChronoErrors,
+};
+ */
