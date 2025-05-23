@@ -6,10 +6,7 @@ const router = Router();
 
 router.post("/", isLoggedInAPI, projectController.createProject);
 
-router.get(
-  "/user/",
-  isLoggedInAPI, projectController.getProjectsByUser
-);
+router.get("/user/", isLoggedInAPI, projectController.getProjectsByUser);
 
 router.get("/", isLoggedInAPI, projectController.getProjects);
 

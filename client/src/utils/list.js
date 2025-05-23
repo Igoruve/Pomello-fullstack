@@ -15,4 +15,19 @@ const getListByProjectId = async (projectId) => {
   return lists;
 };
 
-export { getAllLists, getListById, getListByProjectId };
+const createList = async (list) => {
+  const newList = await FetchData("/list", "POST", list);
+  return newList;
+};
+
+const removeList = async (listId) => {
+  const response = await FetchData(`/list/${listId}`, "DELETE");
+  return response;
+}
+
+const updateList = async (listId, list) => {
+  const updatedList = await FetchData(`/list/${listId}`, "PUT", list);
+  return updatedList;
+};
+
+export { getAllLists, getListById, getListByProjectId, createList, removeList, updateList };
