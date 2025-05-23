@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import SessionChart from "../components/SessionChart";
-import { getChronoStats } from "../utils/chrono.js";
+import SessionChart from "../../components/charts/SessionChart.jsx";
+import { getChronoStats } from "../../utils/chrono.js";
 
 const Dashboard = () => {
   const [sessionData, setSessionData] = useState(null);

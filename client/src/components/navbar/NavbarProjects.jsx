@@ -20,13 +20,11 @@ function NavbarProjects() {
     const description = e.target.description.value;
 
     e.target.reset(); // Limpia el formulario
-
     setExpanded(false); // Cierra el formulario
 
     const newProject = await createProject({ title, description });
-    console.log("newProject", newProject);
-    setProjects((prev) => [...prev, newProject[0]]);
-    navigate(`/project/${newProject[0]._id}`, { replace: true });
+    setProjects((prev) => [...prev, newProject]);
+    navigate(`/project/${newProject._id}`, { replace: true });
   };
 
   return (
