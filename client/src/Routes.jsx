@@ -4,8 +4,8 @@ import { getProjectById, getProjectsByUserId } from "./utils/project.js";
 
 import Auth from "./pages/auth/Auth.jsx";
 import Homepage from "./pages/home/Homepage.jsx";
-import Projects from "./components/Projects.jsx";
-import Project from "./components/Project.jsx";
+import Projects from "./components/project/Projects.jsx";
+import Project from "./components/project/Project.jsx";
 import Root from "./pages/root/Root";
 import Layout from "./components/layout/Layout";
 
@@ -25,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Auth isRegister={true} />,
+      },
+            {
+        path: "/logout",
+        element: <Homepage />,
       },
       {
         element: <Layout />,

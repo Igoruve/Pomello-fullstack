@@ -15,7 +15,7 @@ const createTask = async (req, res) => {
         }
 
         const taskCreated = await taskModel.create(req.body);
-        res.json(taskCreated);
+        res.json(taskCreated.toObject());
     } catch (error) {
         res.status(error.statusCode || 500).json({ message: error.message });
     }

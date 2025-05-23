@@ -1,5 +1,6 @@
 import listsData from "../data/listsData.js";
 import tasksData from "../data/tasksData.js";
+import FetchData from "./fetch.js";
 
 const getAllTasks = async () => {
   return new Promise((resolve) => {
@@ -36,4 +37,18 @@ const getTaskByListId = async (listId) => {
   });
 };
 
-export { getAllTasks, getTaskById, getTaskByListId };
+const createTask = async (task) => {
+  const newTask = await FetchData("/task", "POST", task);
+  return newTask;
+};
+
+const removeTask = async (taskId) => {
+  await FetchData(`/task/${taskId}`, "DELETE");
+};
+
+const updateTask = async (taskId, task) => {
+  await FetchData(`/task/${taskId}`, "PUT", task);
+};
+
+
+export { getAllTasks, getTaskById, getTaskByListId, createTask, removeTask, updateTask };

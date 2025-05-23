@@ -1,5 +1,46 @@
 @import "tailwindcss";
 
-:root{
-    --color-accent: #f56b79;
+@layer utilities {
+  .scrollbar-thumb {
+    @apply bg-gray-400;
+  }
+  .scrollbar-track {
+    @apply bg-gray-200;
+  }
+  .scrollbar-thin {
+    @apply w-2;
+    @apply h-2;
+  }
+}
+
+:root {
+  --color-accent: #f56b79;
+}
+
+@layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limita a 2 líneas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 }
