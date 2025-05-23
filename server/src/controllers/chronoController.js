@@ -1,6 +1,6 @@
 import Chrono from '../models/chrono.js';
 import Errors from "../utils/errors.js"; // ✅ Importación correcta
-
+import mongoose from "mongoose";
 // Start a new chrono session
 /**
  * Starts a new chronometer session for a user.
@@ -32,6 +32,7 @@ const startChrono = async (userId, focusDurationValue, breakDurationValue) => {
   if (existingSession) {
     throw new Errors.ChronoAlreadyRunning();
   }
+  console.log('Starting chrono for user:', userId);
 
   const newSession = new Chrono({
     userId,
@@ -42,9 +43,62 @@ const startChrono = async (userId, focusDurationValue, breakDurationValue) => {
     sessionsCompleted: 0,
   });
 
+  
+
   await newSession.save();
+  console.log("New session saved:", newSession);
   return newSession;
-};
+}; 
+ 
+/* 
+const startChrono = async (userId, focusDurationValue, breakDurationValue) => {
+  console.log('Starting chrono for user:', userId);
+
+  if (!userId) {
+    throw new Error("UserId is required to start a chrono session");
+  }
+
+  // Convert userId a ObjectId si viene como string válido
+  const userIdObj = typeof userId === 'string' && mongoose.Types.ObjectId.isValid(userId)
+    ? new mongoose.Types.ObjectId(userId)
+    : userId;
+
+  if (!mongoose.Types.ObjectId.isValid(userIdObj)) {
+    throw new Error("Invalid userId");
+  }
+
+  const focusDuration = Number(focusDurationValue);
+  const breakDuration = Number(breakDurationValue);
+
+  if (isNaN(focusDuration) || isNaN(breakDuration) ||
+      focusDuration <= 0 || breakDuration <= 0) {
+    throw new Errors.InvalidDurationValue();
+  }
+
+  const existingSession = await Chrono.findOne({
+    userId: userIdObj,
+    chronostopped: null,
+  });
+
+  if (existingSession) {
+    throw new Errors.ChronoAlreadyRunning();
+  }
+
+  const newSession = new Chrono({
+    userId: userIdObj,
+    focusDuration,
+    breakDuration,
+    chronostarted: new Date(),
+    chronostopped: null,
+    sessionsCompleted: 0,
+  });
+
+  await newSession.save();
+
+  console.log('New session saved:', newSession);
+
+  return newSession;
+};  */
 
 
 // Stop the chronometer session
@@ -96,11 +150,19 @@ const {
   PomellodoroStatsEmpty
 } = Errors;
 
+
 const getChronoStats = async (req, res) => {
   try {
-    console.log( req.user.id)
-    const sessions = await Chrono.find({ userId: req.user.id });
-    console.log( "Click a stats: \n",req.user.id)
+    const userId = req.user._id;
+    console.log('User ID:', req.user._id);
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+    const filterUserId = typeof userId === 'string' ? new mongoose.Types.ObjectId(userId) : userId;
+
+    const sessions = await Chrono.find({ userId: filterUserId });
+    console.log("sessions from DB:", sessions);
 
     if (!sessions.length) throw new PomellodoroStatsEmpty();
 
@@ -109,9 +171,10 @@ const getChronoStats = async (req, res) => {
     const stats = sessions.reduce((acc, session) => {
       const { chronostarted, chronostopped, breakDuration = 0, sessionsCompleted = 0 } = session;
 
-      if (!chronostarted || !chronostopped) return acc;
+      if (!chronostarted) return acc;
 
-      const focusTime = (new Date(chronostopped) - new Date(chronostarted)) / 60000;
+      const effectiveStop = chronostopped || new Date();
+      const focusTime = (new Date(effectiveStop) - new Date(chronostarted)) / 60000;
 
       acc.totalSessions += 1;
       acc.totalFocusTime += focusTime;
@@ -148,63 +211,42 @@ const getChronoStats = async (req, res) => {
       dailySessions: []
     });
 
-    const {
-      totalSessions,
-      completedSessions,
-      interruptedSessions,
-      totalFocusTime,
-      totalBreakTime,
-      totalSessionsCompleted,
-      totalCompletedFocusTime,
-      totalInterruptedFocusTime,
-      dailySessions
-    } = stats;
-
     const safeDiv = (num, den) => den ? num / den : 0;
 
-    const totalTime = totalFocusTime + totalBreakTime;
-    const averageFocusTime = safeDiv(totalFocusTime, totalSessions);
-    const averageBreakTime = safeDiv(totalBreakTime, totalSessions);
-    const averageTime = safeDiv(totalTime, totalSessions);
-    const averageSessionsCompleted = safeDiv(totalSessionsCompleted, totalSessions);
-    const averageSessionsInterrupted = safeDiv(interruptedSessions, totalSessions);
-    const averageSessionsCompletedPercentage = safeDiv(completedSessions * 100, totalSessions);
-    const averageSessionsInterruptedPercentage = safeDiv(interruptedSessions * 100, totalSessions);
-    const averageSessionsCompletedTime = safeDiv(totalCompletedFocusTime, completedSessions);
-    const averageSessionsInterruptedTime = safeDiv(totalInterruptedFocusTime, interruptedSessions);
-    const averageSessionsTime = safeDiv(totalFocusTime, totalSessions);
-    const averageSessionsCompletedTimePercentage = safeDiv(averageSessionsCompletedTime * 100, averageSessionsTime);
+    const totalTime = stats.totalFocusTime + stats.totalBreakTime;
 
     res.status(200).json({
-      totalSessions,
-      completedSessions,
-      interruptedSessions,
+      totalSessions: stats.totalSessions,
+      completedSessions: stats.completedSessions,
+      interruptedSessions: stats.interruptedSessions,
       sessions,
-      totalFocusTime,
-      totalBreakTime,
+      totalFocusTime: stats.totalFocusTime,
+      totalBreakTime: stats.totalBreakTime,
       totalTime,
-      averageFocusTime,
-      averageBreakTime,
-      averageTime,
-      averageSessionsCompleted,
-      averageSessionsInterrupted,
-      averageSessionsCompletedPercentage,
-      averageSessionsInterruptedPercentage,
-      averageSessionsCompletedTime,
-      averageSessionsInterruptedTime,
-      averageSessionsTime,
-      averageSessionsCompletedTimePercentage,
-      dailySessions
+      averageFocusTime: safeDiv(stats.totalFocusTime, stats.totalSessions),
+      averageBreakTime: safeDiv(stats.totalBreakTime, stats.totalSessions),
+      averageTime: safeDiv(totalTime, stats.totalSessions),
+      averageSessionsCompleted: safeDiv(stats.totalSessionsCompleted, stats.totalSessions),
+      averageSessionsInterrupted: safeDiv(stats.interruptedSessions, stats.totalSessions),
+      averageSessionsCompletedPercentage: safeDiv(stats.completedSessions * 100, stats.totalSessions),
+      averageSessionsInterruptedPercentage: safeDiv(stats.interruptedSessions * 100, stats.totalSessions),
+      averageSessionsCompletedTime: safeDiv(stats.totalCompletedFocusTime, stats.completedSessions),
+      averageSessionsInterruptedTime: safeDiv(stats.totalInterruptedFocusTime, stats.interruptedSessions),
+      averageSessionsTime: safeDiv(stats.totalFocusTime, stats.totalSessions),
+      averageSessionsCompletedTimePercentage: safeDiv(
+        safeDiv(stats.totalCompletedFocusTime, stats.completedSessions) * 100,
+        safeDiv(stats.totalFocusTime, stats.totalSessions)
+      ),
+      dailySessions: stats.dailySessions
     });
 
   } catch (error) {
+    console.error(error);
     if (error.statusCode) {
       return res.status(error.statusCode).json({ error: error.message });
     }
-     res.status(500).json({ error: new ChronoStatsError().message });
+    res.status(500).json({ error: new ChronoStatsError().message });
   }
-  console.log( "Click a stats: \n",req.user.id)
-  
 };
 
 
@@ -227,7 +269,7 @@ let pomellodoroTimeouts = [];
  */
 
 const startPomellodoroCycle = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user._id;
   const focus = Number(req.body.focusDuration);
   const rest = Number(req.body.breakDuration);
 
@@ -309,7 +351,7 @@ const {
  * @throws {PomellodoroNotRunning} If the Pomellodoro cycle is not running.
  */
 const stopPomellodoroCycle = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user._id;
 
   try {
     if (!pomellodoroActive) throw new PomellodoroNotRunning();
@@ -352,7 +394,7 @@ const {
 const getPomellodoroStatus = (req, res) => {
   try {
     const status = {
-      active: pomellodoroActive,
+      running: pomellodoroActive,
       timeouts: pomellodoroTimeouts.length,
       sessions: pomellodoroTimeouts.filter(timeout => timeout !== null).length,
     };

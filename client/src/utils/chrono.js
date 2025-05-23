@@ -21,6 +21,7 @@ async function stopChrono() {
   return result;
 }
 
+
 async function getChronoStats() {
     const result = await FetchData("/chrono/stats", "GET");
     if (result.status === 401) {
@@ -37,7 +38,14 @@ async function getStatus() {
     throw new Error(result.message || "Error al obtener el estado del pomodoro");
   }
 
-  return result;
+  // Agrega esto para ver qué devuelve realmente:
+  console.log("🧪 Respuesta de /status:", result);
+
+  return result; // debe ser { running: true }
 }
 
+
 export { startChrono, stopChrono, getChronoStats, getStatus };
+ 
+
+

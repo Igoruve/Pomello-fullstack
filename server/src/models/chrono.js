@@ -21,7 +21,7 @@ const ChronoSchema = new mongoose.Schema({
   },
   chronostopped: {
     type: Date, 
-    default: Date.now,
+    default: null,
     //required: true
   }, 
   sessionsCompleted: { 
