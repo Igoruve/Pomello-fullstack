@@ -63,11 +63,16 @@ const stopChrono = async (userId) => {
 // Get statistics of the chronometer sessions
 const getChronoStats = async (req, res) => {
   try {
+<<<<<<< HEAD
     if (!req.user || !req.user.id) {
       return res.status(401).json({ error: "Unauthorized: no user found in request" });
     }
 
+=======
+    console.log( req.user.id)
+>>>>>>> client/feature/fetch-chart-data
     const sessions = await Chrono.find({ userId: req.user.id });
+    console.log( "Click a stats: \n",req.user.id)
 
     if (!sessions.length) {
       return res.status(404).json({ error: "No Pomellodoro sessions found" });
@@ -167,9 +172,18 @@ const getChronoStats = async (req, res) => {
     });
 
   } catch (error) {
+<<<<<<< HEAD
     console.error("Error in getChronoStats:", error);
     res.status(500).json({ error: "Error getting Pomellodoro stats" });
+=======
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({ error: error.message });
+    }
+     res.status(500).json({ error: new ChronoStatsError().message });
+>>>>>>> client/feature/fetch-chart-data
   }
+  console.log( "Click a stats: \n",req.user.id)
+  
 };
 
 
