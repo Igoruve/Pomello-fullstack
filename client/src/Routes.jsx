@@ -36,12 +36,12 @@
           shouldRevalidate: () => true,
           children: [
             {
-              path: "/project/user",
+              path: "project/user",
               element: <Projects />,
               loader: async ({ params }) => getProjectsByUserId(params.id),
             },
             {
-              path: "/project/:id",
+              path: "project/:id",
               element: <Project />,
               loader: async ({ params }) => getProjectById(params.id),
             },
