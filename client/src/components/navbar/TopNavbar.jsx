@@ -7,7 +7,7 @@ function TopNavbar() {
       <nav className="flex flex-row gap-4 text-white/80 w-full justify-between items-center px-12 text-lg ">
         <div className="flex flex-row items-center gap-2">
           <img src="/assets/icon_01.png" alt="pomello icon" className="h-8 w-auto" />
-          <Link to="/project/user" className="font-bold text-white/80 text-2xl">POMELLO</Link>
+          <Link to="/" className="font-bold text-white/80 text-2xl">POMELLO</Link>
         </div>
         <div className="flex flex-row items-center gap-4">
           <p>Browser</p>
