@@ -7,141 +7,165 @@ const SessionChart = ({ data }) => {
   const weeklyChartRef = useRef(null);
 
   useEffect(() => {
-  const sessions = data?.sessions ?? [];
-  const completedSessions = data?.completedSessions ?? 0;
-  const interruptedSessions = data?.interruptedSessions ?? 0;
+    const sessions = data?.sessions ?? [];
+    const completedSessions = data?.completedSessions ?? 0;
+    const interruptedSessions = data?.interruptedSessions ?? 0;
 
-  // Doughnut Chart
-  const doughnutCtx = doughnutChartRef.current.getContext("2d");
-  if (doughnutChartRef.current.chartInstance) {
-    doughnutChartRef.current.chartInstance.destroy();
-  }
-  doughnutChartRef.current.chartInstance = new Chart(doughnutCtx, {
-    type: "pie",
-    data: {
-      labels: ["Completed", "Interrupted"],
-      datasets: [
-        {
-          label: "Sessions",
-          data: [completedSessions, interruptedSessions],
-          backgroundColor: ["#4CAF50", "#F44336"],
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: "top" },
+    // Destroy old charts
+    const destroyIfExists = (ref) => {
+      if (ref.current?.chartInstance) {
+        ref.current.chartInstance.destroy();
+      }
+    };
+
+    destroyIfExists(doughnutChartRef);
+    destroyIfExists(barChartRef);
+    destroyIfExists(weeklyChartRef);
+
+    // Doughnut Chart
+    const doughnutCtx = doughnutChartRef.current.getContext("2d");
+    doughnutChartRef.current.chartInstance = new Chart(doughnutCtx, {
+      type: "pie",
+      data: {
+        labels: ["Completed", "Interrupted"],
+        datasets: [
+          {
+            label: "Sessions",
+            data: [completedSessions, interruptedSessions],
+            backgroundColor: ["#ff6384", "gray"],
+            borderColor: ["#ff6384", "gray"],
+            borderWidth: 1,
+          },
+        ],
       },
-    },
-  });
-
-  // Bar Chart
-  const barCtx = barChartRef.current.getContext("2d");
-  if (barChartRef.current.chartInstance) {
-    barChartRef.current.chartInstance.destroy();
-  }
-  const sessionLabels = sessions.map((_, i) => `Session ${i + 1}`);
-  const focusDurations = sessions.map((s) => s.focusDuration ?? 0);
-  const breakDurations = sessions.map((s) => s.breakDuration ?? 0);
-
-  barChartRef.current.chartInstance = new Chart(barCtx, {
-    type: "bar",
-    data: {
-      labels: sessionLabels.length > 0 ? sessionLabels : ["No Sessions"],
-      datasets: [
-        {
-          label: "Focus Duration (min)",
-          data: focusDurations.length > 0 ? focusDurations : [0],
-          backgroundColor: "#4CAF50",
-        },
-        {
-          label: "Break Duration (min)",
-          data: breakDurations.length > 0 ? breakDurations : [0],
-          backgroundColor: "#F44336",
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: "top" },
-      },
-      scales: {
-        x: { title: { display: true, text: "Sessions" } },
-        y: {
-          beginAtZero: true,
-          title: { display: true, text: "Duration (minutes)" },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+            labels: { color: "white", font: { size: 14 } },
+          },
         },
       },
-    },
-  });
+    });
 
-  // Weekly Chart
-  const weeklyCtx = weeklyChartRef.current.getContext("2d");
-  if (weeklyChartRef.current.chartInstance) {
-    weeklyChartRef.current.chartInstance.destroy();
-  }
+    // Bar Chart
+    const barCtx = barChartRef.current.getContext("2d");
+    const sessionLabels = sessions.map((_, i) => `Session ${i + 1}`);
+    const focusDurations = sessions.map((s) => s.focusDuration ?? 0);
+    const breakDurations = sessions.map((s) => s.breakDuration ?? 0);
 
-  const now = new Date();
-  const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + 1));
-  startOfWeek.setHours(0, 0, 0, 0);
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6);
-  endOfWeek.setHours(23, 59, 59, 999);
-
-  const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-  const weeklyData = Array(7).fill(0);
-
-  sessions.forEach((session) => {
-    const date = new Date(session.createdAt);
-    if (date >= startOfWeek && date <= endOfWeek) {
-      const day = (date.getDay() + 6) % 7; // Monday = 0
-      weeklyData[day]++;
-    }
-  });
-
-  weeklyChartRef.current.chartInstance = new Chart(weeklyCtx, {
-    type: "line",
-    data: {
-      labels: daysOfWeek,
-      datasets: [
-        {
-          label: "Sessions per Day",
-          data: weeklyData,
-          borderColor: "#4CAF50",
-          backgroundColor: "rgba(76, 175, 80, 0.2)",
-          fill: true,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: "top" },
+    barChartRef.current.chartInstance = new Chart(barCtx, {
+      type: "bar",
+      data: {
+        labels: sessionLabels.length ? sessionLabels : ["No stats yet"],
+        datasets: [
+          {
+            label: "Focus Duration",
+            data: focusDurations.length ? focusDurations : [0],
+            backgroundColor: "#ff6384",
+          },
+          {
+            label: "Break Duration",
+            data: breakDurations.length ? breakDurations : [0],
+            backgroundColor: "gray",
+          },
+        ],
       },
-      scales: {
-        x: { title: { display: true, text: "Day of the Week" } },
-        y: {
-          beginAtZero: true,
-          title: { display: true, text: "Number of Sessions" },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+            labels: { color: "white", font: { size: 14 } },
+          },
+        },
+        scales: {
+          x: {
+            title: { display: true, text: "Focus sessions", color: "white", font: { size: 14 } },
+            ticks: { color: "white" },
+          },
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: "Duration (min)", color: "white", font: { size: 14 } },
+            ticks: { color: "white" },
+          },
         },
       },
-    },
-  });
-}, [data]);
+    });
 
+    // Weekly Chart
+    const weeklyCtx = weeklyChartRef.current.getContext("2d");
+    const now = new Date();
+    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + 1));
+    startOfWeek.setHours(0, 0, 0, 0);
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    endOfWeek.setHours(23, 59, 59, 999);
 
+    const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    const weeklyData = Array(7).fill(0);
+    sessions.forEach((session) => {
+      const date = new Date(session.createdAt);
+      if (date >= startOfWeek && date <= endOfWeek) {
+        const day = (date.getDay() + 6) % 7;
+        weeklyData[day]++;
+      }
+    });
+
+    weeklyChartRef.current.chartInstance = new Chart(weeklyCtx, {
+      type: "line",
+      data: {
+        labels: daysOfWeek,
+        datasets: [
+          {
+            label: "Focus per day",
+            data: weeklyData,
+            backgroundColor: "#ff6384",
+            borderColor: "ff6384",
+            fill: true,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+            labels: { color: "white" }, font: { size: 14 },
+          },
+        },
+        scales: {
+          x: {
+            title: { display: true, text: "Day of the Week", color: "white", font: { size: 14 } },
+            ticks: { color: "white" },
+          },
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: "Number of Sessions", color: "white", font: { size: 14 } },
+            ticks: { color: "white" },
+          },
+        },
+      },
+    });
+  }, [data]);
+  
   return (
-    <div>
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", height: "350px" }}>
-        <div style={{ width: "350px", height: "350px" }}>
-          <canvas ref={doughnutChartRef} style={{ width: "100%", height: "100%" }}></canvas>
+    <section className="p-4">
+      <div className="flex flex-wrap gap-4 justify-center">
+        <div className="bg-gray-500 rounded shadow p-4 w-full md:w-[40%] h-[300px] flex items-center justify-center">
+          <canvas ref={doughnutChartRef} width={400} height={300}></canvas>
+        </div>
+
+        <div className="bg-gray-500 rounded shadow p-4 w-full md:w-[40%] h-[300px] flex items-center justify-center">
+          <canvas ref={barChartRef} width={400} height={300}></canvas>
+        </div>
+
+        <div className="bg-gray-500 rounded shadow p-4 w-full md:w-[50%] h-[300px] flex items-center justify-center">
+          <canvas ref={weeklyChartRef} width={400} height={300}></canvas>
         </div>
       </div>
-      <canvas ref={barChartRef} style={{ marginTop: "20px" }}></canvas>
-      <canvas ref={weeklyChartRef} style={{ marginTop: "20px" }}></canvas>
-    </div>
+    </section>
   );
 };
 
