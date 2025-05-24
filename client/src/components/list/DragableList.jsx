@@ -28,8 +28,8 @@ export function DragableList({
   const [tasks, setTasks] = useState(list.tasks);
 
   const handleAddTask = (newTask) => {
-    setTasks((prev) => [...prev, newTask]); 
-    onAddTask(newTask); 
+    setTasks((prev) => [...prev, newTask]);
+    onAddTask(newTask);
   };
 
   return (
@@ -109,7 +109,7 @@ export function DragableList({
         </div>
 
         <div className="flex flex-col gap-2 relative">
-          <ShowTasks tasks={tasks} setTasks={setTasks} />
+          <ShowTasks tasks={list.tasks || []} setTasks={setTasks} />
 
           <NewTask
             className="absolute bottom-0 left-0"

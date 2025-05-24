@@ -18,19 +18,20 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-function ShowTasks({ tasks, setTasks }) {
+function ShowTasks({ tasks = [], setTasks }) {
   const [editedTitle, setEditedTitle] = useState("");
   const [isEditingTaskId, setIsEditingTaskId] = useState(null);
   const revalidator = useRevalidator();
   const [tasksState, setTasksState] = useState(tasks);
   const sensors = useSensors(useSensor(PointerSensor));
 
-  const [checkedTasks, setCheckedTasks] = useState(
-    tasks.reduce((acc, task) => {
-      acc[task._id.$oid || task._id] = task.isCompleted;
+  const [checkedTasks, setCheckedTasks] = useState(() => {
+    if (!Array.isArray(tasks)) return {};
+    return tasks.reduce((acc, task) => {
+      acc[task._id?.$oid || task._id] = task.isCompleted;
       return acc;
-    }, {})
-  );
+    }, {});
+  });
 
   const handleToggle = async (task) => {
     const taskId = task._id.$oid || task._id;
