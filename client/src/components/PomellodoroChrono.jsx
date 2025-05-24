@@ -110,7 +110,7 @@ const PomellodoroChrono = () => {
           />
 
           <button onClick={handleTomatoClick} className="pomello-button">
-            {isRunning ? 'Detener' : 'Iniciar'}
+            {isRunning ? 'Stop' : 'Start'}
           </button>
         </div>
       )}
