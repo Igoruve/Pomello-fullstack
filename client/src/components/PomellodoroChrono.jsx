@@ -76,6 +76,41 @@ const PomellodoroChrono = () => {
     };
   }, [showMenu]);
 
+
+  // 🔁 Polling to get pomellodoro status
+  useEffect(() => {
+    if (!isRunning) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const token = getToken();
+        const response = await fetch("http://localhost:3013/chrono/pomellodoro/status", {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          console.warn("Error checking Pomellodoro status:", response.statusText);
+          setIsRunning(false); // 🔁 syncro frontend & backend
+          return;
+        }
+
+        const data = await response.json();
+        if (!data.running) {
+          console.log("Pomellodoro suscessfully stopped.");
+          setIsRunning(false); // 🔁 syncro frontend & backend
+        }
+      } catch (error) {
+        console.error("Polling error:", error);
+      }
+    }, 5000); // every 5 seconds   "GENTE: MODIFICAR AQUI PARA QUE NO SEA TAN FRECUENTE O SI QUEREIS QUE SEA ACORDE AL TIEMPO QUE ENTRA POR INPUT DE INICIO DEL CHRONO
+
+    return () => clearInterval(interval); // cleanup on unmount or when isRunning changes
+  }, [isRunning]);
+
+
   return (
     <div className="pomello-wrapper" ref={menuRef}>
       <div className="pomello-header">

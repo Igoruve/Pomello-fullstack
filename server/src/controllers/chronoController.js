@@ -1,5 +1,5 @@
 import Chrono from '../models/chrono.js';
-import Errors from "../utils/errors.js"; // ✅ Importación correcta
+import Errors from "../utils/errors.js"; 
 import mongoose from "mongoose";
 // Start a new chrono session
 /**
