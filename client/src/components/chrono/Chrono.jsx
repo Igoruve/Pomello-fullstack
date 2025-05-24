@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import pomeloImg from './assets/pomelo.png';
-import relojArenaImg from './assets/reloj_arena.png';
-import './PomeloChrono.css'; // Asegúrate de crear este archivo para las animaciones
+
+import pomeloImg from '../../../public/assets/icon_02.png'; //TODO Cambiar las imágenes
+import relojArenaImg from '../../../public/assets/icon_01.png';
+import '../../../public/styles/chronoStyles.css';
 
 function PomeloChrono() {
   const [isRunning, setIsRunning] = useState(false);
@@ -36,13 +37,13 @@ function PomeloChrono() {
     <div className="pomelo-chrono-container">
       <img
         src={isRunning ? relojArenaImg : pomeloImg}
-        alt="Cronómetro"
+        alt="Timer Icon"
         className={isRunning ? 'rotating' : ''}
         onClick={handleClick}
         style={{ cursor: 'pointer', width: '200px', height: '200px' }}
       />
       <div>
-        <h2>Tiempo: {timer} segundos</h2>
+        <h2>Time in focus: {timer} seconds</h2>
       </div>
     </div>
   );

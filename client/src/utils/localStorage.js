@@ -38,6 +38,7 @@ function saveToLocalStorage(key, value) {
   
   function getToken() {
     return getFromLocalStorage("token", null);
+    console.log("TOKEN", token);
   }
   
   function removeToken() {

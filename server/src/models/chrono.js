@@ -4,7 +4,7 @@ const ChronoSchema = new mongoose.Schema({
   userId: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User', 
-    //required: true 
+    required: true 
   },
   focusDuration: { 
     type: Number, 
@@ -30,7 +30,7 @@ const ChronoSchema = new mongoose.Schema({
   },
   createdAt: { 
     type: Date, 
-    default: Date.now 
+    default: null
   } 
 });
 

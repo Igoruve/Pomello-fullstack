@@ -98,14 +98,36 @@ const {
 
 const getChronoStats = async (req, res) => {
   try {
-    console.log( req.user.id)
+    console.log(req.user.id);
     const sessions = await Chrono.find({ userId: req.user.id });
-    console.log( "Click a stats: \n",req.user.id)
+    console.log("Click to stats: \n", req.user.id);
 
-    if (!sessions.length) throw new PomellodoroStatsEmpty();
+    // En lugar de lanzar un error, devolvemos una estructura con datos vacíos
+    if (!sessions.length) {
+      return res.status(200).json({
+        totalSessions: 0,
+        completedSessions: 0,
+        interruptedSessions: 0,
+        sessions: [],
+        totalFocusTime: 0,
+        totalBreakTime: 0,
+        totalTime: 0,
+        averageFocusTime: 0,
+        averageBreakTime: 0,
+        averageTime: 0,
+        averageSessionsCompleted: 0,
+        averageSessionsInterrupted: 0,
+        averageSessionsCompletedPercentage: 0,
+        averageSessionsInterruptedPercentage: 0,
+        averageSessionsCompletedTime: 0,
+        averageSessionsInterruptedTime: 0,
+        averageSessionsTime: 0,
+        averageSessionsCompletedTimePercentage: 0,
+        dailySessions: []
+      });
+    }
 
     const today = new Date();
-
     const stats = sessions.reduce((acc, session) => {
       const { chronostarted, chronostopped, breakDuration = 0, sessionsCompleted = 0 } = session;
 
@@ -198,13 +220,13 @@ const getChronoStats = async (req, res) => {
     });
 
   } catch (error) {
+    console.error(error);
     if (error.statusCode) {
       return res.status(error.statusCode).json({ error: error.message });
     }
-      res.status(500).json({ error: "Error getting Pomellodoro stats. User might not have stats yet." });
+    res.status(500).json({ error: "Error getting stats. User might not have stats yet." });
   }
-  console.log( "Click a stats: \n",req.user.id)
-  
+  console.log("Click to stats: \n", req.user.id);
 };
 
 

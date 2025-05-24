@@ -7,156 +7,130 @@ const SessionChart = ({ data }) => {
   const weeklyChartRef = useRef(null);
 
   useEffect(() => {
-    if (!data) return;
+  const sessions = data?.sessions ?? [];
+  const completedSessions = data?.completedSessions ?? 0;
+  const interruptedSessions = data?.interruptedSessions ?? 0;
 
-    // Doughnut Chart
-    const doughnutCtx = doughnutChartRef.current.getContext("2d");
-    if (doughnutChartRef.current.chartInstance) {
-      doughnutChartRef.current.chartInstance.destroy();
+  // Doughnut Chart
+  const doughnutCtx = doughnutChartRef.current.getContext("2d");
+  if (doughnutChartRef.current.chartInstance) {
+    doughnutChartRef.current.chartInstance.destroy();
+  }
+  doughnutChartRef.current.chartInstance = new Chart(doughnutCtx, {
+    type: "pie",
+    data: {
+      labels: ["Completed", "Interrupted"],
+      datasets: [
+        {
+          label: "Sessions",
+          data: [completedSessions, interruptedSessions],
+          backgroundColor: ["#4CAF50", "#F44336"],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: "top" },
+      },
+    },
+  });
+
+  // Bar Chart
+  const barCtx = barChartRef.current.getContext("2d");
+  if (barChartRef.current.chartInstance) {
+    barChartRef.current.chartInstance.destroy();
+  }
+  const sessionLabels = sessions.map((_, i) => `Session ${i + 1}`);
+  const focusDurations = sessions.map((s) => s.focusDuration ?? 0);
+  const breakDurations = sessions.map((s) => s.breakDuration ?? 0);
+
+  barChartRef.current.chartInstance = new Chart(barCtx, {
+    type: "bar",
+    data: {
+      labels: sessionLabels.length > 0 ? sessionLabels : ["No Sessions"],
+      datasets: [
+        {
+          label: "Focus Duration (min)",
+          data: focusDurations.length > 0 ? focusDurations : [0],
+          backgroundColor: "#4CAF50",
+        },
+        {
+          label: "Break Duration (min)",
+          data: breakDurations.length > 0 ? breakDurations : [0],
+          backgroundColor: "#F44336",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: "top" },
+      },
+      scales: {
+        x: { title: { display: true, text: "Sessions" } },
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: "Duration (minutes)" },
+        },
+      },
+    },
+  });
+
+  // Weekly Chart
+  const weeklyCtx = weeklyChartRef.current.getContext("2d");
+  if (weeklyChartRef.current.chartInstance) {
+    weeklyChartRef.current.chartInstance.destroy();
+  }
+
+  const now = new Date();
+  const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + 1));
+  startOfWeek.setHours(0, 0, 0, 0);
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setHours(23, 59, 59, 999);
+
+  const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const weeklyData = Array(7).fill(0);
+
+  sessions.forEach((session) => {
+    const date = new Date(session.createdAt);
+    if (date >= startOfWeek && date <= endOfWeek) {
+      const day = (date.getDay() + 6) % 7; // Monday = 0
+      weeklyData[day]++;
     }
-    doughnutChartRef.current.chartInstance = new Chart(doughnutCtx, {
-      type: "pie",
-      data: {
-        labels: ["Completed", "Interrupted"],
-        datasets: [
-          {
-            label: "Sessions",
-            data: [data.completedSessions, data.interruptedSessions],
-            backgroundColor: ["#4CAF50", "#F44336"],
-          },
-        ],
+  });
+
+  weeklyChartRef.current.chartInstance = new Chart(weeklyCtx, {
+    type: "line",
+    data: {
+      labels: daysOfWeek,
+      datasets: [
+        {
+          label: "Sessions per Day",
+          data: weeklyData,
+          borderColor: "#4CAF50",
+          backgroundColor: "rgba(76, 175, 80, 0.2)",
+          fill: true,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: "top" },
       },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: "top",
-          },
+      scales: {
+        x: { title: { display: true, text: "Day of the Week" } },
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: "Number of Sessions" },
         },
       },
-    });
+    },
+  });
+}, [data]);
 
-    // Bar Chart
-    const barCtx = barChartRef.current.getContext("2d");
-    if (barChartRef.current.chartInstance) {
-      barChartRef.current.chartInstance.destroy();
-    }
-    const sessionLabels = data.sessions.map((session, index) => `Session ${index + 1}`);
-    const focusDurations = data.sessions.map((session) => session.focusDuration);
-    const breakDurations = data.sessions.map((session) => session.breakDuration);
-
-    barChartRef.current.chartInstance = new Chart(barCtx, {
-      type: "bar",
-      data: {
-        labels: sessionLabels,
-        datasets: [
-          {
-            label: "Focus Duration (min)",
-            data: focusDurations,
-            backgroundColor: "#4CAF50",
-          },
-          {
-            label: "Break Duration (min)",
-            data: breakDurations,
-            backgroundColor: "#F44336",
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: "top",
-          },
-        },
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: "Sessions",
-            },
-          },
-          y: {
-            title: {
-              display: true,
-              text: "Duration (minutes)",
-            },
-            beginAtZero: true,
-          },
-        },
-      },
-    });
-
-    // Weekly Chart
-    const weeklyCtx = weeklyChartRef.current.getContext("2d");
-    if (weeklyChartRef.current.chartInstance) {
-      weeklyChartRef.current.chartInstance.destroy();
-    }
-
-    // Get the start and end of the current week (Monday to Sunday)
-    const now = new Date();
-    const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Set to Monday
-    startOfWeek.setHours(0, 0, 0, 0);
-
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6); // Set to Sunday
-    endOfWeek.setHours(23, 59, 59, 999);
-
-    // Filter sessions for the current week
-    const currentWeekSessions = data.sessions.filter((session) => {
-      const sessionDate = new Date(session.createdAt);
-      return sessionDate >= startOfWeek && sessionDate <= endOfWeek;
-    });
-
-    // Group sessions by day of the week (Monday to Sunday)
-    const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    const weeklyData = Array(7).fill(0); // Initialize array for 7 days
-
-    currentWeekSessions.forEach((session) => {
-      const day = (new Date(session.createdAt).getDay() + 6) % 7; // Adjust day to start from Monday (0 = Monday, 6 = Sunday)
-      weeklyData[day] += 1; // Increment session count for the day
-    });
-
-    weeklyChartRef.current.chartInstance = new Chart(weeklyCtx, {
-      type: "line",
-      data: {
-        labels: daysOfWeek,
-        datasets: [
-          {
-            label: "Sessions per Day",
-            data: weeklyData,
-            borderColor: "#4CAF50",
-            backgroundColor: "rgba(76, 175, 80, 0.2)",
-            fill: true,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: "top",
-          },
-        },
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: "Day of the Week",
-            },
-          },
-          y: {
-            title: {
-              display: true,
-              text: "Number of Sessions",
-            },
-            beginAtZero: true,
-          },
-        },
-      },
-    });
-  }, [data]);
 
   return (
     <div>

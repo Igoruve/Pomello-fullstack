@@ -1,6 +1,8 @@
+import { Outlet } from "react-router-dom";
+
 import TopNavbar from "../navbar/TopNavbar";
 import AsideNavbar from "../navbar/AsideNavbar";
-import { Outlet } from "react-router-dom";
+import ChronoNavbar from "../navbar/ChronoNavbar";
 
 const Layout = () => {
   return (
@@ -11,6 +13,9 @@ const Layout = () => {
         <main className="flex-1 overflow-auto">
           <Outlet />
         </main>
+        <div>
+          <ChronoNavbar />
+        </div>
       </div>
     </div>
   );
