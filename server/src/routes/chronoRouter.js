@@ -6,9 +6,9 @@ import isLoggedInAPI from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
-//router.post('/start', isLoggedInAPI, chronoController.startChrono);
+router.post('/start', isLoggedInAPI, chronoController.startChrono);
 
-//router.post('/stop', isLoggedInAPI, chronoController.stopChrono);
+router.post('/stop', isLoggedInAPI, chronoController.stopChrono);
 
 router.get('/stats', isLoggedInAPI, chronoController.getChronoStats);
 
