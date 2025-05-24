@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLoaderData, useParams, useRevalidator } from "react-router-dom";
 import { updateProject } from "../../utils/project.js";
 import NewList from "../list/NewList.jsx";
@@ -8,7 +8,7 @@ function Project() {
   const project = useLoaderData();
   const { id } = useParams();
   const revalidator = useRevalidator();
-
+  const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(project.title);
   const [lists, setLists] = useState(project.lists || []);
@@ -46,43 +46,87 @@ function Project() {
     );
   };
 
+  const modalRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        expanded &&
+        modalRef.current &&
+        !modalRef.current.contains(e.target)
+      ) {
+        setExpanded(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [expanded]);
+
   return (
     <section className="min-h-screen min-w-full bg-gradient-to-r from-[#fcab51] to-[#f56b79] px-72 py-24 overflow-x-auto scrollbar-thumb scrollbar-track scrollbar-thin">
-      <div className="max-w-xl w-full mx-6 mb-6 h-[4.5rem] flex flex-col justify-center">
-        {isEditing ? (
-          <>
-            <textarea
-              value={editedTitle}
-              onChange={handleTitleChange}
-              onBlur={handleBlur}
-              maxLength={40}
-              autoFocus
-              className="w-full h-8 text-black/80 text-2xl font-bold bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight"
-              onKeyDown={async (e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  await handleSaveTitle(); // Guardar al presionar Enter
-                }
-              }}
-            />
-            <p className="text-sm text-black/60 text-right h-5">
-              {editedTitle.length} / 40
-            </p>
-          </>
-        ) : (
-          <>
-            <h2
-              onClick={() => setIsEditing(true)}
-              className="w-full text-black/80 text-2xl font-bold cursor-pointer break-words h-8 hover:bg-gray-500/20 rounded-xl leading-tight"
-            >
-              {editedTitle}
-            </h2>
-            <div className="h-5" />
-          </>
-        )}
-      </div>
+      <div className="w-2/3 mx-6 mb-6 h-[4.5rem] flex flex-row gap-8 items-center fixed">
+        <div>
+          <svg
+            height="32px"
+            viewBox="0 -960 960 960"
+            width="32px"
+            fill="#e3e3e3"
+            onClick={() => setExpanded(!expanded)}
+            className="cursor-pointer"
+          >
+            <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z" />
+          </svg>
+        </div>
+        <div className="flex flex-row w-full gap-2 items-center">
+          {isEditing ? (
+            <>
+              <textarea
+                value={editedTitle}
+                onChange={handleTitleChange}
+                onBlur={handleBlur}
+                maxLength={40}
+                autoFocus
+                className="w-[66%] h-8 text-black/80 text-2xl font-bold bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight break-words"
+                onKeyDown={async (e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    await handleSaveTitle();
+                  }
+                }}
+              />
 
-      <section className="flex flex-row gap-8  ">
+              <p className="text-sm text-black/60 h-5">
+                {editedTitle.length} / 40
+              </p>
+            </>
+          ) : (
+            <>
+              <h2
+                onClick={() => setIsEditing(true)}
+                className="w-[66%] text-black/80 text-2xl font-bold cursor-pointer break-words hover:bg-gray-500/20 rounded-xl leading-tight"
+              >
+                {editedTitle}
+              </h2>
+            </>
+          )}
+        </div>
+      </div>
+      {expanded && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div
+            ref={modalRef}
+            className="flex flex-col gap-4 bg-gray-700 rounded-xl h-fit w-80 p-6 text-white/80 justify-between border border-gray-600 shadow-lg"
+          >
+            <p className="font-bold">Description:</p>
+            <p>{project.description}</p>
+          </div>
+        </div>
+      )}
+
+      <section className="flex flex-row gap-8 pt-32 ">
         <ShowLists lists={lists} onAddTask={handleAddTask} />
         <div className="mr-16">
           <NewList lists={lists} setLists={setLists} />

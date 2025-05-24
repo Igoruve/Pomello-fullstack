@@ -3,24 +3,47 @@ import { Link } from "react-router-dom";
 import HomeNavbar from "../../components/navbar/HomeNavbar";
 
 function Homepage() {
+  return (
+    <section className="bg-gray-600 h-screen">
+      <HomeNavbar />
+      <section className="flex flex-col items-center h-full bg-gray-900">
+        <h1 className="text-8xl pt-36 font-bold bg-gradient-to-t from-[#f56b79] via-[#f78a6b] to-[#fcab51] bg-clip-text text-transparent">
+          Pomello
+        </h1>
 
-	return (
-		<section className="mb-2 bg-gray-600 h-screen py-4">
-			<HomeNavbar />
-			<section className="flex flex-row mt-40 mx-60 gap-10">
-				<div className="flex flex-col *:items-center pt-20 text-white">
-					<h1 className="text-4xl font-bold">Focus, organize, and tackle your to-dos in one place.</h1>
-					<h2 className="text-2xl pt-4">Like trello, but better!</h2>
-					<p className="text-xl pt-4"><span className="font-bold text-[#f56b79]">Pomello </span>is a task manager that helps you stay on top of your to-dos. Organize your tasks into lists and use the chronometer to stay focus on your work. </p>
-					<p className="pt-10 text-2xl font-bold text-white">Wanna get <span className="text-[#f56b79]">started?</span></p>
-					<Link to="/register">
-						<div className="font-bold px-4 py-2 rounded-lg bg-[#f56b79] mt-6 hover:bg-[#f56b79]/80 flex flex-rrow w-64 shadow-lg">Register Now</div>
-					</Link>
-				</div>
-				<img src="./home_img.jpg" alt="pomello home" className="w-200" />
-			</section>
-		</section>
-	);
+        <section className="flex flex-row mt-24 mx-60 gap-24 items-center justify-center">
+          <section className="aspect-w-16 aspect-h-9 w-[70%]">
+            <img
+              src="./home_img.webp"
+              alt="pomello home"
+              className="object-contain rounded-lg"
+            />
+          </section>
+
+          <div className="flex flex-col *:items-center text-white">
+            <h2 className="text-4xl font-bold">
+              Focus, organize, and tackle your to-dos in one place.
+            </h2>
+            <h3 className="text-2xl pt-4">Like trello, but better!</h3>
+            <p className="text-xl pt-4">
+              <span className="font-bold text-[#f56b79]">Pomello </span>is a
+              task manager that helps you stay on top of your to-dos. Organize
+              your tasks into lists and use the chronometer to stay focus on
+              your work.{" "}
+            </p>
+            <p className="pt-10 text-2xl font-bold text-white">
+              Wanna get <span className="text-[#f56b79]">started?</span>
+            </p>
+            <Link to="/register">
+              <div className="w-fit font-bold px-6 py-2 rounded-lg bg-gradient-to-r from-[#f56b79] via-[#f78a6b] to-[#fcab51] mt-6 hover:opacity-90 shadow-lg">
+                Register Now
+              </div>
+            </Link>
+          </div>
+        </section>
+      </section>
+    </section>
+  );
 }
 
 export default Homepage;
