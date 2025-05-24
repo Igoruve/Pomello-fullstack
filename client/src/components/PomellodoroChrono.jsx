@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import '../styles/PomellodoroStyles.css';
 import tomateIcon from '/assets/rodaja-de-tomate.png';
 import relojIcon from '/assets/reloj_arena.png';
+import { getToken } from "../utils/localStorage.js";
+
 
 const PomellodoroChrono = () => {
   const [focusDuration, setFocusDuration] = useState(1);
@@ -22,11 +24,20 @@ const PomellodoroChrono = () => {
   };
 
   const handleTomatoClick = async () => {
-    const endpoint = isRunning ? '/pomellodoro/stop' : '/pomellodoro/start';
+    const endpoint = isRunning
+      ? 'http://localhost:3013/chrono/pomellodoro/stop'
+      : 'http://localhost:3013/chrono/pomellodoro/start';
+
+    const token = getToken();
+
     const options = {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
     };
+
 
     if (!isRunning) {
       options.body = JSON.stringify({ focusDuration, breakDuration });
