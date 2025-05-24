@@ -54,7 +54,7 @@ function Browser() {
     <div className="relative">
       <input
         type="text"
-        placeholder="Search project"
+        placeholder="Search a project"
         value={searchTerm}
         onChange={handleChange}
         onClick={handleClick}
@@ -67,7 +67,8 @@ function Browser() {
             <li
               key={project._id}
               onMouseDown={() => handleSelect(project._id)}
-              className="px-2 py-1 hover:bg-gray-500 cursor-pointer"
+              className="px-2 py-1 hover:bg-gray-700 cursor-pointer bg-gray-600 truncate"
+              title={project.title}
             >
               {project.title}
             </li>
