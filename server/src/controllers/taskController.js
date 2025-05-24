@@ -53,7 +53,7 @@ const getTaskbyId = async (req, res) => {
 
 const getTasksByList = async (req, res) => {
     try {
-        const tasks = await taskModel.find({ list: req.params.listId });
+        const tasks = await taskModel.find({ list: req.params.listId }).sort({ position: 1 }); // Ordenar por posición
         res.json(tasks);
     } catch (error) {
         res.status(error.statusCode || 500).json({ message: error.message });
@@ -96,11 +96,36 @@ const deleteTask = async (req, res) => {
     }
 }  
 
+const updateTaskPositions = async (req, res) => {
+    try {
+        const { tasks } = req.body; // Recibir un array de tareas con sus nuevas posiciones
+
+        if (!Array.isArray(tasks)) {
+            return res.status(400).json({ message: "Invalid tasks format" });
+        }
+
+        const bulkOperations = tasks.map((task) => ({
+            updateOne: {
+                filter: { _id: task._id },
+                update: { position: task.position },
+            },
+        }));
+
+        const result = await taskModel.bulkWrite(bulkOperations); // Actualizar las posiciones en una sola operación
+
+        res.status(200).json({ message: "Task positions updated successfully", result });
+    } catch (error) {
+        console.error("Error updating task positions:", error);
+        res.status(500).json({ message: "Error updating task positions" });
+    }
+};
+
 export default {
     createTask,
     getTasks,
     getTaskbyId,
     updateTask,
     deleteTask,
-    getTasksByList
+    getTasksByList,
+    updateTaskPositions
 }

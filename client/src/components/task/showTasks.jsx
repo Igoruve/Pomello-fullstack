@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRevalidator } from "react-router-dom";
-import { updateTask } from "../../utils/task";
+import { updateTask, updateTaskPositions } from "../../utils/task";
 
 import SortableTask from "./SortableTask.jsx";
 
@@ -22,8 +22,11 @@ function ShowTasks({ tasks, setTasks }) {
   const [editedTitle, setEditedTitle] = useState("");
   const [isEditingTaskId, setIsEditingTaskId] = useState(null);
   const revalidator = useRevalidator();
-  const [tasksState, setTasksState] = useState(tasks);
   const sensors = useSensors(useSensor(PointerSensor));
+
+  const [tasksState, setTasksState] = useState(() =>
+    tasks.sort((a, b) => a.position - b.position)
+  );
 
   const [checkedTasks, setCheckedTasks] = useState(
     tasks.reduce((acc, task) => {
@@ -78,7 +81,7 @@ function ShowTasks({ tasks, setTasks }) {
     }
   };
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = async (event) => {
     const { active, over } = event;
 
     if (!over) return;
@@ -91,12 +94,27 @@ function ShowTasks({ tasks, setTasks }) {
         (task) => (task._id.$oid || task._id) === over.id
       );
 
-      setTasks((items) => arrayMove(items, oldIndex, newIndex));
+      const newOrder = arrayMove(tasksState, oldIndex, newIndex);
+      setTasks(newOrder);
+
+      // Enviar las nuevas posiciones al backend
+      const updatedTasks = newOrder.map((task, index) => ({
+        _id: task._id.$oid || task._id,
+        position: index,
+      }));
+
+      try {
+        await updateTaskPositions(updatedTasks);
+      } catch (error) {
+        console.error("Error updating task positions:", error);
+      }
     }
   };
 
   useEffect(() => {
-    setTasksState(tasks);
+    // Ordenar las tareas por posición antes de establecer el estado
+    const sortedTasks = [...tasks].sort((a, b) => a.position - b.position);
+    setTasksState(sortedTasks);
   }, [tasks]);
 
   return (

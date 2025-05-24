@@ -27,6 +27,16 @@ export function DragableList({
 
   const [tasks, setTasks] = useState(list.tasks);
 
+  const fetchTasks = async () => {
+    const tasks = await getTaskByListId(list._id);
+    const sortedTasks = tasks.sort((a, b) => a.position - b.position); // Ordenar por posición
+    setTasks(sortedTasks);
+  };
+
+  useEffect(() => {
+    fetchTasks();
+  }, [list._id]);
+
   const handleAddTask = (newTask) => {
     setTasks((prev) => [...prev, newTask]); 
     onAddTask(newTask); 
