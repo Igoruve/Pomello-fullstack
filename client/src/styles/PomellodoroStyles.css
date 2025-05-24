@@ -1,0 +1,83 @@
+/* Contenedor del widget en el navbar */
+.pomello-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+/* Icono del tomate o reloj */
+.pomello-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.pomello-icon.rotating {
+  animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Flecha hacia abajo */
+.pomello-arrow {
+  font-size: 1rem;
+  color: white;
+
+}
+
+/* Menú desplegable del cronómetro */
+.pomello-dropdown {
+  position: absolute;
+  top: 150%;
+  right: 0;
+  color: white;
+  background-color:  #232028;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 100;
+}
+
+.pomello-dropdown label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+}
+
+.pomello-dropdown input {
+  padding: 0.4rem;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.pomello-button {
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background-color:   #faa158  ;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.pomello-button:hover {
+  background-color: #f37375 ;
+}
+
+/* Contenedor horizontal para 🍅 y ▾ */
+.pomello-header {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
