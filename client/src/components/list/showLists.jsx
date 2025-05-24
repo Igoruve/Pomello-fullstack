@@ -3,6 +3,21 @@ import ShowTasks from "../task/showTasks.jsx";
 import NewTask from "../task/NewTask.jsx";
 import { removeList, updateList } from "../../utils/list.js";
 import { useRevalidator } from "react-router-dom";
+import { DragableList } from "./DragableList.jsx";
+
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 function ShowLists({ lists: initialLists, onAddTask }) {
   const [setError] = useState(null);
@@ -15,6 +30,8 @@ function ShowLists({ lists: initialLists, onAddTask }) {
   const [editedTitle, setEditedTitle] = useState("");
 
   const textareaRef = useRef(null);
+
+  
 
   useEffect(() => {
     setLists(initialLists);
@@ -54,76 +71,45 @@ function ShowLists({ lists: initialLists, onAddTask }) {
     revalidator.revalidate();
   };
 
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (active.id !== over.id) {
+      const oldIndex = lists.findIndex((l) => l._id === active.id);
+      const newIndex = lists.findIndex((l) => l._id === over.id);
+      const newOrder = arrayMove(lists, oldIndex, newIndex);
+      setLists(newOrder);
+    }
+  };
+
   return (
     <>
-      {lists.map((list) => (
-        <div
-          key={list._id}
-          className="text-white max-w-64 bg-gray-900 rounded-xl p-4 shadow-md h-fit min-w-[300px] flex-shrink-0"
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={lists.map((l) => l._id)}
+          strategy={verticalListSortingStrategy}
         >
-          <div className="flex flex-row justify-between items-center mb-6">
-            {editingListId === list._id ? (
-              <textarea
-                ref={textareaRef}
-                value={editedTitle}
-                onChange={(e) => {
-                  setEditedTitle(e.target.value);
-                  if (textareaRef.current) {
-                    textareaRef.current.style.height = "auto";
-                    textareaRef.current.style.height =
-                      textareaRef.current.scrollHeight + "px";
-                  }
-                }}
-                onBlur={() => handleTitleSave(list._id)}
-                onKeyDown={async (e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    await handleTitleSave(list._id);
-                  }
-                }}
-                autoFocus
-                className="w-full text-white/80 text-xl font-bold bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight"
-                maxLength={40}
-                rows={1}
-              />
-            ) : (
-              <h3
-                className="w-full text-white/80 text-xl font-bold bg-transparent leading-tight line-clamp-2"
-                onClick={() => {
-                  setEditingListId(list._id);
-                  setEditedTitle(list.title);
-                }}
-              >
-                {list.title}
-              </h3>
-            )}
-
-            <svg
-              viewBox="0 0 448 512"
-              fill="white"
-              height="12px"
-              width="12px"
-              className="cursor-pointer ml-4" // Añadido gap entre texto y svg
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setListToDelete(list);
-              }}
-            >
-              <path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z" />
-            </svg>
-          </div>
-
-          <div className="flex flex-col gap-2 relative">
-            <ShowTasks tasks={list.tasks || []} />
-            <NewTask
-              className="absolute bottom-0 left-0"
-              listId={list._id}
-              onTaskCreated={(newTask) => onAddTask(list._id, newTask)}
+          {lists.map((list) => (
+            <DragableList
+              key={list._id}
+              list={list}
+              onAddTask={onAddTask}
+              setListToDelete={setListToDelete}
+              editingListId={editingListId}
+              setEditingListId={setEditingListId}
+              editedTitle={editedTitle}
+              setEditedTitle={setEditedTitle}
+              handleTitleSave={handleTitleSave}
+              textareaRef={textareaRef}
             />
-          </div>
-        </div>
-      ))}
+          ))}
+        </SortableContext>
+      </DndContext>
 
       {listToDelete && (
         <div
