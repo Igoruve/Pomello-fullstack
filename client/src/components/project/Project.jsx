@@ -107,7 +107,7 @@ function Project() {
                   onBlur={handleBlur}
                   maxLength={40}
                   autoFocus
-                  className="w-1/3 h-8 text-black text-2xl font-bold bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight break-words"
+                  className="w-2/4 h-8 text-black text-2xl font-bold bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight break-words"
                   onKeyDown={async (e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
@@ -122,7 +122,7 @@ function Project() {
             ) : (
               <h2
                 onClick={() => setIsEditing(true)}
-                className="w-1/3 text-black text-2xl font-bold cursor-pointer break-words hover:bg-gray-500/20 rounded-xl leading-tight px-2 py-1"
+                className="w-2/4 text-black text-2xl font-bold cursor-pointer break-words hover:bg-gray-500/20 rounded-xl leading-tight px-2 py-1"
               >
                 {editedTitle}
               </h2>
