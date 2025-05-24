@@ -17,3 +17,16 @@ export const connectDB = async () => {
         console.error(error);
     }
 }
+const db = mongoose.connection;
+
+db.on('connected', () => {
+  console.log('Stablished connection to MongoDB');
+});
+
+db.on('error', (err) => {
+  console.error('BD Connection error:', err);
+});
+
+db.on('disconnected', () => {
+  console.log('DB disconnected.');
+});

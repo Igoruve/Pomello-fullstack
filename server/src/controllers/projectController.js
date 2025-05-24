@@ -1,37 +1,35 @@
 import projectModel from "../models/projectModel.js";
 import userModel from "../models/userModel.js";
-import {
-  ProjectTitleNotProvided,
-  ProjectDescriptionNotProvided,
-  ProjectNotFound,
-  UserNotFound,
-} from "../utils/errors.js";
+import Errors from "../utils/errors.js"; // ✅ Importamos el default
+
 import listModel from "../models/listModel.js";
 import taskModel from "../models/taskModel.js";
 
+// ✅ Destructuramos solo los errores que usamos
+const {
+  ProjectTitleNotProvided,
+  ProjectDescriptionNotProvided,
+  ProjectNotFound,
+  UserNotFound
+} = Errors;
+
+
 const createProject = async (req, res) => {
   try {
-    if (!req.body || !req.body.length) {
+    const { title, description } = req.body;
+
+    if (!title) {
       throw new ProjectTitleNotProvided();
     }
 
-    const data = req.body.map((item) => {
-      if (!item.title) {
-        throw new ProjectTitleNotProvided();
-      }
+    const projectData = {
+      title,
+      description,
+      user: req.user.id, // Asegúrate de que el usuario autenticado esté asignado
+    };
 
-      if (!item.description) {
-        throw new ProjectDescriptionNotProvided();
-      }
-
-      return {
-        ...item,
-        user: req.user._id,
-      };
-    });
-
-    const projectCreated = await projectModel.create(data);
-    res.json(projectCreated);
+    const projectCreated = await projectModel.create(projectData);
+    res.status(201).json(projectCreated);
   } catch (error) {
     console.error(error);
     res.status(error.statusCode || 500).json({ message: error.message });
@@ -85,21 +83,15 @@ const getProjectbyId = async (req, res) => {
 
 const getProjectsByUser = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     if (!userId) {
-      throw new UserNotFound();
-    }
-
-    // Verificar si el usuario existe
-    const userExists = await userModel.findById(userId);
-    if (!userExists) {
-      throw new UserNotFound();
+      throw new Errors.UserNotFound();
     }
 
     const projects = await projectModel.find({ user: userId });
 
-    if (projects.length === 0) {
+    if (!projects.length) {
       return res.status(200).json([]);
     }
 

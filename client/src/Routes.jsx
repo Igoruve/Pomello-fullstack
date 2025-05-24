@@ -2,12 +2,22 @@
 
   import { getProjectById, getProjectsByUserId } from "./utils/project.js";
 
+<<<<<<< HEAD
   import Auth from "./pages/auth/Auth.jsx";
   import Homepage from "./pages/home/Homepage.jsx";
   import Projects from "./components/project/Projects.jsx";
   import Project from "./components/project/Project.jsx";
   import Root from "./pages/root/Root";
   import Layout from "./components/layout/Layout";
+=======
+import Auth from "./pages/auth/Auth.jsx";
+import Homepage from "./pages/home/Homepage.jsx";
+import Projects from "./components/project/Projects.jsx";
+import Project from "./components/project/Project.jsx";
+import Root from "./pages/root/Root";
+import Layout from "./components/layout/Layout";
+import Dashboard from "./pages/Dashboard.jsx"; // Importar el componente Dashboard
+>>>>>>> merge/chartjs-to-dev2
 
   const router = createBrowserRouter([
     {
@@ -36,6 +46,7 @@
           shouldRevalidate: () => true,
           children: [
             {
+<<<<<<< HEAD
               path: "project/user",
               element: <Projects />,
               loader: async ({ params }) => getProjectsByUserId(params.id),
@@ -50,5 +61,34 @@
       ],
     },
   ]);
+=======
+        path: "/logout",
+        element: <Homepage />,
+      },
+      {
+        element: <Layout />,
+        loader: async () => getProjectsByUserId(),
+        shouldRevalidate: () => true,
+        children: [
+          {
+            path: "/project/user",
+            element: <Projects />,
+            loader: async ({ params }) => getProjectsByUserId(params.id),
+          },
+          {
+            path: "/project/:id",
+            element: <Project />,
+            loader: async ({ params }) => getProjectById(params.id),
+          },
+          {
+            path: "/dashboard", // Nueva ruta para el dashboard
+            element: <Dashboard />,
+          },
+        ],
+      },
+    ],
+  },
+]);
+>>>>>>> merge/chartjs-to-dev2
 
   export default router;

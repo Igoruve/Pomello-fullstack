@@ -2,13 +2,16 @@ import userModel from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import {
+import Errors from "../utils/errors.js";
+
+const {
   UserEmailNotProvided,
   UserPasswordNotProvided,
   UserEmailAlreadyExists,
   UserInvalidCredentials,
   UserNotFound,
-} from "../utils/errors.js";
+} = Errors;
+
 
 dotenv.config();
 
