@@ -31,8 +31,6 @@ function ShowLists({ lists: initialLists, onAddTask }) {
 
   const textareaRef = useRef(null);
 
-  
-
   useEffect(() => {
     setLists(initialLists);
   }, [initialLists]);

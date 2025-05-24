@@ -1,15 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRevalidator } from "react-router-dom";
 import { updateTask } from "../../utils/task";
 
-function ShowTasks({ tasks }) {
+import SortableTask from "./SortableTask.jsx";
+
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+
+import {
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+
+function ShowTasks({ tasks, setTasks }) {
   const [editedTitle, setEditedTitle] = useState("");
   const [isEditingTaskId, setIsEditingTaskId] = useState(null);
   const revalidator = useRevalidator();
+  const [tasksState, setTasksState] = useState(tasks);
+  const sensors = useSensors(useSensor(PointerSensor));
 
   const [checkedTasks, setCheckedTasks] = useState(
     tasks.reduce((acc, task) => {
-      acc[task._id] = task.isCompleted;
+      acc[task._id.$oid || task._id] = task.isCompleted;
       return acc;
     }, {})
   );
@@ -34,10 +52,23 @@ function ShowTasks({ tasks }) {
   };
 
   const handleBlur = async (taskId) => {
-    if (!editedTitle.trim()) return; // evitar títulos vacíos
-    await updateTask(taskId, { title: editedTitle });
-    setIsEditingTaskId(null);
-    revalidator.revalidate();
+    if (!editedTitle.trim()) return;
+
+    try {
+      const updatedTask = await updateTask(taskId, { title: editedTitle });
+
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          (task._id.$oid || task._id) === taskId
+            ? { ...task, title: editedTitle }
+            : task
+        )
+      );
+
+      setIsEditingTaskId(null);
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
   };
 
   const handleKeyDown = (e, taskId) => {
@@ -47,55 +78,56 @@ function ShowTasks({ tasks }) {
     }
   };
 
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (!over) return;
+
+    if (active.id !== over.id) {
+      const oldIndex = tasksState.findIndex(
+        (task) => (task._id.$oid || task._id) === active.id
+      );
+      const newIndex = tasksState.findIndex(
+        (task) => (task._id.$oid || task._id) === over.id
+      );
+
+      setTasks((items) => arrayMove(items, oldIndex, newIndex));
+    }
+  };
+
+  useEffect(() => {
+    setTasksState(tasks);
+  }, [tasks]);
+
   return (
-    <section>
-      <ul className="flex flex-col gap-2">
-        {tasks?.map((task) => {
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext
+        items={tasks.map((task) => task._id.$oid || task._id)}
+        strategy={verticalListSortingStrategy}
+      >
+        {tasks.map((task) => {
           const taskId = task._id.$oid || task._id;
-          const isChecked = checkedTasks[taskId];
-          const isEditing = isEditingTaskId === taskId;
-
           return (
-            <li
+            <SortableTask
               key={taskId}
-              className="flex items-center bg-gray-700 py-2 px-4 rounded-lg shadow-sm text-sm text-white gap-2"
-            >
-              <input
-                type="checkbox"
-                className="w-4 h-4 rounded border-gray-300 text-[#f56b79] focus:ring-[#f56b79] accent-[#f56b79]"
-                checked={isChecked}
-                onChange={() => handleToggle(task)}
-              />
-
-              {isEditing ? (
-                <textarea
-                  value={editedTitle}
-                  onChange={(e) => setEditedTitle(e.target.value)}
-                  onBlur={() => handleBlur(taskId)}
-                  onKeyDown={(e) => handleKeyDown(e, taskId)}
-                  autoFocus
-                  className="bg-gray-800 text-white text-sm rounded px-2 py-1 min-w-0 w-full resize-none"
-                  maxLength={80}
-                />
-              ) : (
-                <span
-                  onClick={() => {
-                    if (!isChecked) startEditing(task);
-                  }}
-                  className={`cursor-pointer transition-all break-all whitespace-pre-wrap w-full ${
-                    isChecked
-                      ? "line-through opacity-60 cursor-not-allowed"
-                      : ""
-                  }`}
-                >
-                  {task.title}
-                </span>
-              )}
-            </li>
+              task={task}
+              isEditing={isEditingTaskId === taskId}
+              isChecked={checkedTasks[taskId]}
+              editedTitle={editedTitle}
+              setEditedTitle={setEditedTitle}
+              startEditing={startEditing}
+              handleBlur={handleBlur}
+              handleKeyDown={handleKeyDown}
+              handleToggle={handleToggle}
+            />
           );
         })}
-      </ul>
-    </section>
+      </SortableContext>
+    </DndContext>
   );
 }
 

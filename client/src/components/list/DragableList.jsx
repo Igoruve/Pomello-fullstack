@@ -2,6 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import ShowTasks from "../task/showTasks.jsx";
 import NewTask from "../task/NewTask.jsx";
+import { useState, useEffect } from "react";
 
 export function DragableList({
   list,
@@ -23,6 +24,13 @@ export function DragableList({
   };
 
   const isDragging = transform !== null;
+
+  const [tasks, setTasks] = useState(list.tasks);
+
+  const handleAddTask = (newTask) => {
+    setTasks((prev) => [...prev, newTask]); 
+    onAddTask(newTask); 
+  };
 
   return (
     <>
@@ -101,11 +109,12 @@ export function DragableList({
         </div>
 
         <div className="flex flex-col gap-2 relative">
-          <ShowTasks tasks={list.tasks || []} />
+          <ShowTasks tasks={tasks} setTasks={setTasks} />
+
           <NewTask
             className="absolute bottom-0 left-0"
             listId={list._id}
-            onTaskCreated={(newTask) => onAddTask(list._id, newTask)}
+            onTaskCreated={handleAddTask}
           />
         </div>
       </div>
