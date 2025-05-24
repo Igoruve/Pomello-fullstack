@@ -1,6 +1,6 @@
-import { createBrowserRouter } from "react-router-dom";
+  import { createBrowserRouter } from "react-router-dom";
 
-import { getProjectById, getProjectsByUserId } from "./utils/project.js";
+  import { getProjectById, getProjectsByUserId } from "./utils/project.js";
 
 import Auth from "./pages/auth/Auth.jsx";
 import Homepage from "./pages/home/Homepage.jsx";
@@ -67,4 +67,4 @@ const router = createBrowserRouter([
   },
 ]);
 
-export default router;
+  export default router;
