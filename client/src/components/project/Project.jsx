@@ -85,54 +85,52 @@ function Project() {
   };
 
   return (
-    <section className="min-h-screen min-w-full bg-gradient-to-r from-[#fcab51] to-[#f56b79] px-72 py-24 overflow-x-auto scrollbar-thumb scrollbar-track scrollbar-thin">
-      <div className="w-2/3 mx-6 mb-6 h-[4.5rem] flex flex-row gap-8 items-center fixed">
-        <div>
+    <section className="min-h-screen min-w-full bg-gradient-to-r from-[#fcab51] to-[#f56b79] px-72 py-16 overflow-x-auto scrollbar-thumb scrollbar-track scrollbar-thin">
+      <div className="w-full fixed top-0 left-0 bg-white/20 backdrop-blur-md z-10 px-8 py-4 mt-16 ml-64">
+        <div className="flex flex-row gap-4 items-center">
           <svg
             height="32px"
             viewBox="0 -960 960 960"
             width="32px"
-            fill="white"
+            fill="black"
             onClick={() => setExpanded(!expanded)}
             className="cursor-pointer"
           >
             <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z" />
           </svg>
-        </div>
-        <div className="flex flex-row w-full gap-2 items-center">
-          {isEditing ? (
-            <>
-              <textarea
-                value={editedTitle}
-                onChange={handleTitleChange}
-                onBlur={handleBlur}
-                maxLength={40}
-                autoFocus
-                className="w-[66%] h-8 text-white text-2xl font-bold bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight break-words"
-                onKeyDown={async (e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    await handleSaveTitle();
-                  }
-                }}
-              />
-
-              <p className="text-sm text-white h-5">
-                {editedTitle.length} / 40
-              </p>
-            </>
-          ) : (
-            <>
+          <div className="flex flex-row w-full gap-2 items-center">
+            {isEditing ? (
+              <>
+                <textarea
+                  value={editedTitle}
+                  onChange={handleTitleChange}
+                  onBlur={handleBlur}
+                  maxLength={40}
+                  autoFocus
+                  className="w-1/3 h-8 text-black text-2xl font-bold bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight break-words"
+                  onKeyDown={async (e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      await handleSaveTitle();
+                    }
+                  }}
+                />
+                <p className="text-sm text-black h-5">
+                  {editedTitle.length} / 40
+                </p>
+              </>
+            ) : (
               <h2
                 onClick={() => setIsEditing(true)}
-                className="w-[66%] text-white text-2xl font-bold cursor-pointer break-words hover:bg-gray-500/20 rounded-xl leading-tight"
+                className="w-1/3 text-black text-2xl font-bold cursor-pointer break-words hover:bg-gray-500/20 rounded-xl leading-tight px-2 py-1"
               >
                 {editedTitle}
               </h2>
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
+
       {expanded && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div
