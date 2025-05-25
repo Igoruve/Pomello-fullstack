@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import ShowTasks from "../task/showTasks.jsx";
 import NewTask from "../task/NewTask.jsx";
-import { removeList, updateList } from "../../utils/list.js";
+import { removeList, updateList, updateListPositions } from "../../utils/list.js";
 import { useRevalidator } from "react-router-dom";
 import { DragableList } from "./DragableList.jsx";
 
@@ -20,9 +20,10 @@ import {
 } from "@dnd-kit/sortable";
 
 function ShowLists({ lists: initialLists, onAddTask }) {
+  const [lists, setLists] = useState([]);
+  const [isReady, setIsReady] = useState(false); // Estado para controlar el renderizado
   const [setError] = useState(null);
   const [selectedList, setSelectedList] = useState(null);
-  const [lists, setLists] = useState(initialLists);
   const [listToDelete, setListToDelete] = useState(null);
   const revalidator = useRevalidator();
 
@@ -32,7 +33,9 @@ function ShowLists({ lists: initialLists, onAddTask }) {
   const textareaRef = useRef(null);
 
   useEffect(() => {
-    setLists(initialLists);
+    const sortedLists = [...initialLists].sort((a, b) => a.position - b.position);
+    setLists(sortedLists);
+    setIsReady(true); // Marcar como listo para renderizar
   }, [initialLists]);
 
   useEffect(() => {
@@ -71,15 +74,35 @@ function ShowLists({ lists: initialLists, onAddTask }) {
 
   const sensors = useSensors(useSensor(PointerSensor));
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = async (event) => {
     const { active, over } = event;
+
+    if (!over) return;
+
     if (active.id !== over.id) {
-      const oldIndex = lists.findIndex((l) => l._id === active.id);
-      const newIndex = lists.findIndex((l) => l._id === over.id);
+      const oldIndex = lists.findIndex((list) => list._id === active.id);
+      const newIndex = lists.findIndex((list) => list._id === over.id);
+
       const newOrder = arrayMove(lists, oldIndex, newIndex);
       setLists(newOrder);
+
+      // Enviar las nuevas posiciones al backend
+      const updatedLists = newOrder.map((list, index) => ({
+        _id: list._id,
+        position: index,
+      }));
+
+      try {
+        await updateListPositions(updatedLists);
+      } catch (error) {
+        console.error("Error updating list positions:", error);
+      }
     }
   };
+
+  if (!isReady) {
+    return null; // No renderizar nada hasta que las listas estén listas
+  }
 
   return (
     <>

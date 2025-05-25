@@ -96,11 +96,36 @@ const deleteList = async (req, res) => {
     }
 }
 
+const updateListPositions = async (req, res) => {
+  try {
+    const { lists } = req.body; // Recibir un array de listas con sus nuevas posiciones
+
+    if (!Array.isArray(lists)) {
+      return res.status(400).json({ message: "Invalid lists format" });
+    }
+
+    const bulkOperations = lists.map((list) => ({
+      updateOne: {
+        filter: { _id: list._id },
+        update: { position: list.position },
+      },
+    }));
+
+    const result = await listModel.bulkWrite(bulkOperations); // Actualizar las posiciones en una sola operación
+
+    res.status(200).json({ message: "List positions updated successfully", result });
+  } catch (error) {
+    console.error("Error updating list positions:", error);
+    res.status(500).json({ message: "Error updating list positions" });
+  }
+};
+
 export default {
     createList,
     getListsByProject,
     getLists,
     getListById,
     updateList,
-    deleteList
+    deleteList,
+    updateListPositions
 };

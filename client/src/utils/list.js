@@ -30,4 +30,8 @@ const updateList = async (listId, list) => {
   return updatedList;
 };
 
-export { getAllLists, getListById, getListByProjectId, createList, removeList, updateList };
+const updateListPositions = async (lists) => {
+  await FetchData("/list/lists/positions", "PUT", { lists });
+};
+
+export { getAllLists, getListById, getListByProjectId, createList, removeList, updateList, updateListPositions };

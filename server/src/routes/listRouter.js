@@ -14,5 +14,6 @@ router.get("/:id", isLoggedInAPI, listController.getListById);
 router.post("/", isLoggedInAPI, listController.createList);
 router.put("/:id", isLoggedInAPI, listController.updateList);
 router.delete("/:id", isLoggedInAPI, listController.deleteList);
+router.put("/lists/positions", listController.updateListPositions);
 
 export default router;
