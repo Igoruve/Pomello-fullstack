@@ -21,6 +21,8 @@ const SessionChart = ({ data }) => {
   useEffect(() => {
     if (!data) return;
 
+    console.log("Weekly Chart Data:", data.sessions);
+
     // Doughnut Chart
     const doughnutCtx = doughnutChartRef.current.getContext("2d");
     if (doughnutChartRef.current.chartInstance) {
@@ -160,17 +162,24 @@ const SessionChart = ({ data }) => {
 
     // Obtener el inicio y fin de la semana actual (lunes a domingo)
     const now = new Date();
+    const dayOfWeek = now.getDay(); // 0 (domingo) a 6 (sábado)
+
+    // Ajustar para que la semana comience el lunes y termine el domingo
     const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Establecer a lunes
+    startOfWeek.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)); // Si es domingo, retrocede 6 días
     startOfWeek.setHours(0, 0, 0, 0);
 
     const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6); // Establecer a domingo
+    endOfWeek.setDate(startOfWeek.getDate() + 6); // Avanzar 6 días desde el lunes
     endOfWeek.setHours(23, 59, 59, 999);
+
+    console.log("Start of Week:", startOfWeek);
+    console.log("End of Week:", endOfWeek);
+    console.log("Session Dates:", data.sessions.map((s) => s.chronostarted));
 
     // Filtrar sesiones de la semana actual
     const currentWeekSessions = data.sessions.filter((session) => {
-      const sessionDate = new Date(session.createdAt);
+      const sessionDate = new Date(session.chronostarted);
       return sessionDate >= startOfWeek && sessionDate <= endOfWeek;
     });
 
