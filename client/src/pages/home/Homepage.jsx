@@ -4,7 +4,7 @@ import HomeNavbar from "../../components/navbar/HomeNavbar";
 
 function Homepage() {
   return (
-    <section className="bg-gray-900 h-full py-24">
+    <section className="bg-gray-900 h-screen py-24">
       <HomeNavbar />
       <section className="flex flex-col items-center h-full bg-gray-900">
         <h1 className="text-8xl font-bold bg-gradient-to-t from-[#f56b79] via-[#f78a6b] to-[#fcab51] bg-clip-text text-transparent">
