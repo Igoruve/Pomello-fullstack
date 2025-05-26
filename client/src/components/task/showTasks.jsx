@@ -23,9 +23,10 @@ function ShowTasks({ tasks = [], setTasks }) {
   const [isEditingTaskId, setIsEditingTaskId] = useState(null);
   const revalidator = useRevalidator();
   const sensors = useSensors(useSensor(PointerSensor));
+  console.log("tasksss",tasks)
 
   const [tasksState, setTasksState] = useState(() =>
-    [...tasks].sort((a, b) => a.position - b.position)
+    tasks.sort((a, b) => a.position - b.position)
   );
 
   const [checkedTasks, setCheckedTasks] = useState(
@@ -92,19 +93,26 @@ function ShowTasks({ tasks = [], setTasks }) {
       const newIndex = tasksState.findIndex(
         (task) => (task._id.$oid || task._id) === over.id
       );
+      console.log("tasks",tasks,oldIndex,newIndex)
+      const newOrder = arrayMove(tasksState, oldIndex, newIndex).map((task,index)=>{
+        return {
+          ...task,
+          position: index
+        }
+      });
 
-      const newOrder = arrayMove(tasksState, oldIndex, newIndex);
-      setTasksState(newOrder); // Actualizar el estado local inmediatamente
-      setTasks(newOrder); // Actualizar el estado global
+      console.log("new order",newOrder)
+      setTasks(newOrder);
 
       // Enviar las nuevas posiciones al backend
-      const updatedTasks = newOrder.map((task, index) => ({
-        _id: task._id.$oid || task._id,
-        position: index,
-      }));
+      // const updatedTasks = newOrder.map((task, index) => ({
+      //   _id: task._id.$oid || task._id,
+      //   position: index,
+      // }));
 
       try {
-        await updateTaskPositions(updatedTasks);
+        const result = await updateTaskPositions(newOrder);
+        console.log("result",result)
       } catch (error) {
         console.error("Error updating task positions:", error);
       }
@@ -112,7 +120,9 @@ function ShowTasks({ tasks = [], setTasks }) {
   };
 
   useEffect(() => {
-    setTasksState([...tasks].sort((a, b) => a.position - b.position));
+    // Ordenar las tareas por posición antes de establecer el estado
+    const sortedTasks = [...tasks].sort((a, b) => a.position - b.position);
+    setTasksState(sortedTasks);
   }, [tasks]);
 
   return (

@@ -51,7 +51,7 @@ const updateTask = async (taskId, task) => {
 };
 
 const updateTaskPositions = async (tasks) => {
-  await FetchData("/task/tasks/positions", "PUT", { tasks });
+ return  await FetchData("/task/tasks/positions", "PUT", { tasks });
 };
 
 export { getAllTasks, getTaskById, getTaskByListId, createTask, removeTask, updateTask, updateTaskPositions };

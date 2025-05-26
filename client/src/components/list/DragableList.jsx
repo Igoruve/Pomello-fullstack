@@ -15,6 +15,7 @@ export function DragableList({
   handleTitleSave,
   textareaRef,
 }) {
+  const [tasks, setTasks] = useState(list.tasks);
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: list._id });
 
@@ -25,8 +26,7 @@ export function DragableList({
 
   const isDragging = transform !== null;
 
-  const [tasks, setTasks] = useState(list.tasks);
-
+  
   const fetchTasks = async () => {
     const tasks = await getTaskByListId(list._id);
     const sortedTasks = tasks.sort((a, b) => a.position - b.position); // Ordenar por posición
@@ -119,7 +119,7 @@ export function DragableList({
         </div>
 
         <div className="flex flex-col gap-2 relative">
-          <ShowTasks tasks={list.tasks || []} setTasks={setTasks} />
+          <ShowTasks tasks={tasks || []} setTasks={setTasks} />
 
           <NewTask
             className="absolute bottom-0 left-0"
