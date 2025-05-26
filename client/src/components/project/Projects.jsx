@@ -90,7 +90,7 @@ function ProjectList() {
                 className=" h-full "
               >
                 <div className="max-w-full overflow-hidden">
-                  <p className="font-bold overflow-hidden text-ellipsis whitespace-nowrap">
+                  <p className="font-bold line-clamp-2 ">
                     {project.title}
                   </p>
                 </div>

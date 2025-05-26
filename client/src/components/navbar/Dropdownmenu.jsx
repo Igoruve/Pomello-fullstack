@@ -16,7 +16,7 @@ function DropdownMenu() {
         height={36}
         width={36}
         fill="currentColor"
-        className={`text-gray-800 absolute -left-4 top-1/3 bg-[#f56b79] rounded-full cursor-pointer shadow-lg ${
+        className={`text-gray-800 absolute -left-4 top-1/12 bg-[#f56b79] rounded-full cursor-pointer shadow-lg ${
           isMenuOpen ? "rotate-180" : ""
         } transition-rotate duration-150`}
         onClick={() => setIsMenuOpen(!isMenuOpen)}
