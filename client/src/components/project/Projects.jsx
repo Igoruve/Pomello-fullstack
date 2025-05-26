@@ -1,6 +1,8 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import FetchData from "../../utils/fetch.js";
 
 import { createProject, removeProject } from "../../utils/project.js";
 
@@ -19,7 +21,6 @@ function ProjectList() {
   if (!loaderData) return <div>Loading...</div>;
 
   if (!Array.isArray(loaderData)) {
-    console.log("loaderData", loaderData);
     return <div>Error: {loaderData?.message || "Unexpected error"}</div>;
   }
 
@@ -69,6 +70,15 @@ function ProjectList() {
 
     setProjectToDelete(null);
   };
+
+   useEffect(() => {
+    async function fetchStats() {
+      const res = await FetchData("/chrono/stats", "GET");
+      console.log("Estadísticas:", res);
+    }
+
+    fetchStats();
+  }, []);
 
   return (
     <section className="min-h-screen max-w-screen bg-gray-800 px-10 py-10 mt-16 ml-64 overflow-x-hidden">

@@ -4,7 +4,7 @@ import FetchData from "./fetch.js";
  * Obtiene las estadísticas del cronómetro desde el backend.
  */
 async function getChronoStats() {
-  return await FetchData("/chrono/stats");
+  return await FetchData("/chrono/stats", "GET");
 }
 
 /**
@@ -28,7 +28,7 @@ async function stopChrono() {
  * Obtiene el estado actual del cronómetro.
  */
 async function getChronoStatus() {
-  return await FetchData("/chrono/pomellodoro/status");
+  return await FetchData("/chrono/pomellodoro/status", "GET");
 }
 
 export {

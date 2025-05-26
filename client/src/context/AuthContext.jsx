@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { saveToken, removeToken, saveToLocalStorage, getFromLocalStorage } from "../utils/localStorage";
+import { getUser, saveUser, saveToken, removeToken, saveToLocalStorage, removeUser } from "../utils/localStorage";
 import { login, register, logout } from "../utils/auth";
 
 const BASE_URL = "http://localhost:3013";
@@ -19,7 +19,7 @@ const AuthProvider = ({ children }) => {
 
     //cargar los datos del usuario al inicio si existe
     useEffect(() => {
-        const savedUserData = getFromLocalStorage("userData");
+        const savedUserData = getUser();
         if (savedUserData) {
             setUserData(savedUserData);
         }
@@ -63,7 +63,7 @@ const AuthProvider = ({ children }) => {
             }
             let finalUserData = result.user;
             setUserData(finalUserData);
-            saveToLocalStorage("userData", finalUserData);
+            saveUser(finalUserData);
             navigate(`/project/user/`);
             return null;
         }
@@ -83,7 +83,7 @@ const handleLogout = async () => {
     } finally {
         //siempre limpia los datos locales independientemente de la respuesta del servidor
         removeToken();
-        localStorage.removeItem("userData");
+        removeUser();
         setUserData(null);
         navigate("/");
     }

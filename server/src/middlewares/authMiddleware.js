@@ -9,6 +9,7 @@ function isLoggedInAPI(req, res, next) {
   const token = authorization.split(" ")[1]; // Extraer el token del encabezado Authorization
   try {
     const decoded = verifyToken(token); // Verificar el token
+     console.log("Token decodificado:", decoded);
     req.user = { id: decoded._id }; // Asegurarse de asignar el userId al req.user
     next();
   } catch (error) {
