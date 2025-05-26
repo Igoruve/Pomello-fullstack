@@ -194,13 +194,13 @@ function ProjectList() {
                   type="text"
                   name="description"
                   id="description"
-                  maxLength={200}
+                  maxLength={120}
                   value={descriptionInput}
                   onChange={(e) => setDescriptionInput(e.target.value)}
                   required
                 />
                 <p className="text-sm text-white/50 self-end">
-                  {descriptionInput.length}/40
+                  {descriptionInput.length}/120
                 </p>
               </div>
             </article>

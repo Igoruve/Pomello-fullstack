@@ -37,10 +37,16 @@ function Auth({ isRegister }) {
         {isRegister ? "Register" : "Log in"}
       </h2>
       {error && <p className="text-red-500">{error}</p>}
+      {!isRegister && (
+        <p className="text-white">
+          Email: demo@gmail.com <br />
+          Password: Demo123*
+        </p>
+      )}
       <section className="flex flex-col items-center justify-center w-full max-w-md mx-auto h-full">
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col bg-gray-900 p-4 rounded-lg border border-gray-500/50 shadow-lg h-2/3 justify-around w-84 items-center"
+          className="flex flex-col bg-gray-900 p-4 rounded-lg border border-gray-500/50 shadow-lg h-fit justify-around w-84 items-center"
         >
           <div className="flex flex-col gap-4 ">
             {!isRegister ? (
@@ -90,7 +96,7 @@ function Auth({ isRegister }) {
           <div>
             <button
               type="submit"
-              className="w-fit self-center font-bold px-6 py-2 rounded-lg bg-gradient-to-r from-[#f56b79] via-[#f78a6b] to-[#fcab51] mt-2 hover:opacity-90 shadow-lg text-white cursor-pointer"
+              className="w-fit self-center font-bold px-6 py-2 rounded-lg bg-gradient-to-r from-[#f56b79] via-[#f78a6b] to-[#fcab51] mt-10 hover:opacity-90 shadow-lg text-white cursor-pointer"
             >
               {isRegister ? "Register" : "Log in"}
             </button>

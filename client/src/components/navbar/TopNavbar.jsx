@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import PomellodoroChrono from '../PomellodoroChrono';
 
 
+import Browser from "./Browser.jsx";
+
 function TopNavbar() {
 
   return (
@@ -13,7 +15,7 @@ function TopNavbar() {
         </div>
         <div className="flex flex-row items-center gap-4">
           <PomellodoroChrono/>
-          <p>Browser</p>
+          <Browser />
           <div className="flex flex-row items-center gap-2">
           <svg viewBox="0 0 448 512" width="18px" height="18px" fill="white">
             <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/>

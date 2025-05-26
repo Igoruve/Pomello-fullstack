@@ -18,14 +18,14 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-function ShowTasks({ tasks, setTasks }) {
+function ShowTasks({ tasks = [], setTasks }) {
   const [editedTitle, setEditedTitle] = useState("");
   const [isEditingTaskId, setIsEditingTaskId] = useState(null);
   const revalidator = useRevalidator();
   const sensors = useSensors(useSensor(PointerSensor));
 
   const [tasksState, setTasksState] = useState(() =>
-    tasks.sort((a, b) => a.position - b.position)
+    [...tasks].sort((a, b) => a.position - b.position)
   );
 
   const [checkedTasks, setCheckedTasks] = useState(
@@ -34,7 +34,6 @@ function ShowTasks({ tasks, setTasks }) {
       return acc;
     }, {})
   );
-
   const handleToggle = async (task) => {
     const taskId = task._id.$oid || task._id;
     const newCompleted = !checkedTasks[taskId];
@@ -95,7 +94,8 @@ function ShowTasks({ tasks, setTasks }) {
       );
 
       const newOrder = arrayMove(tasksState, oldIndex, newIndex);
-      setTasks(newOrder);
+      setTasksState(newOrder); // Actualizar el estado local inmediatamente
+      setTasks(newOrder); // Actualizar el estado global
 
       // Enviar las nuevas posiciones al backend
       const updatedTasks = newOrder.map((task, index) => ({
@@ -112,9 +112,7 @@ function ShowTasks({ tasks, setTasks }) {
   };
 
   useEffect(() => {
-    // Ordenar las tareas por posición antes de establecer el estado
-    const sortedTasks = [...tasks].sort((a, b) => a.position - b.position);
-    setTasksState(sortedTasks);
+    setTasksState([...tasks].sort((a, b) => a.position - b.position));
   }, [tasks]);
 
   return (

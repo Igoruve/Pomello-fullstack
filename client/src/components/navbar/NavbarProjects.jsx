@@ -10,6 +10,9 @@ function NavbarProjects() {
   const navigate = useNavigate();
   const [projects, setProjects] = useState(loaderData);
 
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
   if (!Array.isArray(loaderData)) {
     return <div>Error: {loaderData?.message || "Unexpected error"}</div>;
   }
@@ -63,7 +66,7 @@ function NavbarProjects() {
             <form
               onSubmit={handleCreateProject}
               onClick={(e) => e.stopPropagation()}
-              className="bg-gray-800 z-50 absolute top-48 left-64 rounded-xl h-96 w-64 p-4 flex flex-col justify-between text-white font-bold"
+              className="bg-gray-700 z-50 absolute top-48 left-64 rounded-xl h-96 w-64 p-4 flex flex-col justify-between text-white font-bold"
             >
               <article className="flex flex-col">
                 <div className="gap-2 flex flex-col mb-6">
@@ -73,20 +76,31 @@ function NavbarProjects() {
                     type="text"
                     name="title"
                     id="title"
+                    maxLength={40}
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                   />
+                  <p className="text-xs text-white/60 text-right">
+                    {title.length} / 40
+                  </p>
                 </div>
-                <div className="gap-4 flex flex-col ">
+                <div className="gap-4 flex flex-col">
                   <label htmlFor="description">Description</label>
                   <textarea
-                    className="bg-gray-800 border border-white/50 rounded-sm"
-                    type="text"
+                    className="bg-gray-800 border border-white/50 rounded-sm h-24 resize-none"
                     name="description"
                     id="description"
+                    maxLength={120}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                   />
+                  <p className="text-xs text-white/60 text-right">
+                    {description.length} / 120
+                  </p>
                 </div>
               </article>
               <button
-                className="bg-[#f56b79] py-3 px-1.5 rounded-xl"
+                className="cursor-pointer bg-[#f56b79] hover:brightness-90 py-3 px-1.5 rounded-xl"
                 type="submit"
               >
                 Create
