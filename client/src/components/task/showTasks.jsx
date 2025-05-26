@@ -23,7 +23,6 @@ function ShowTasks({ tasks = [], setTasks }) {
   const [isEditingTaskId, setIsEditingTaskId] = useState(null);
   const revalidator = useRevalidator();
   const sensors = useSensors(useSensor(PointerSensor));
-  console.log("tasksss",tasks)
 
   const [tasksState, setTasksState] = useState(() =>
     tasks.sort((a, b) => a.position - b.position)
@@ -93,15 +92,16 @@ function ShowTasks({ tasks = [], setTasks }) {
       const newIndex = tasksState.findIndex(
         (task) => (task._id.$oid || task._id) === over.id
       );
-      console.log("tasks",tasks,oldIndex,newIndex)
-      const newOrder = arrayMove(tasksState, oldIndex, newIndex).map((task,index)=>{
-        return {
-          ...task,
-          position: index
-        }
-      });
 
-      console.log("new order",newOrder)
+      const newOrder = arrayMove(tasksState, oldIndex, newIndex).map(
+        (task, index) => {
+          return {
+            ...task,
+            position: index,
+          };
+        }
+      );
+
       setTasks(newOrder);
 
       // Enviar las nuevas posiciones al backend
@@ -112,7 +112,7 @@ function ShowTasks({ tasks = [], setTasks }) {
 
       try {
         const result = await updateTaskPositions(newOrder);
-        console.log("result",result)
+        console.log("result", result);
       } catch (error) {
         console.error("Error updating task positions:", error);
       }

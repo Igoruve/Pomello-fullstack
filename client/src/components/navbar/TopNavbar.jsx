@@ -14,7 +14,6 @@ function TopNavbar() {
           <Link to="/" className="font-bold text-white/80 text-2xl">POMELLO</Link>
         </div>
         <div className="flex flex-row items-center gap-4">
-          <PomellodoroChrono/>
           <Browser />
           <div className="flex flex-row items-center gap-2">
           <svg viewBox="0 0 448 512" width="18px" height="18px" fill="white">

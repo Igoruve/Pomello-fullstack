@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import '../styles/PomellodoroStyles.css';
-import tomateIcon from '/assets/rodaja-de-tomate.png';
-import relojIcon from '/assets/reloj_arena.png';
+import React, { useState, useEffect, useRef } from "react";
+import "../styles/PomellodoroStyles.css";
+import tomateIcon from "/assets/rodaja-de-tomate.png";
+import relojIcon from "/assets/reloj_arena.png";
 import { getToken } from "../utils/localStorage.js";
-
 
 /**
  * Componente que renderiza un Pomellodoro con una interfaz de usuario simple.
@@ -14,8 +13,8 @@ import { getToken } from "../utils/localStorage.js";
  * @returns Un JSX element que renderiza el Pomellodoro.
  */
 const PomellodoroChrono = () => {
-  const [focusDuration, setFocusDuration] = useState(1);
-  const [breakDuration, setBreakDuration] = useState(0.2);
+  const [focusDuration, setFocusDuration] = useState(25);
+  const [breakDuration, setBreakDuration] = useState(5);
   const [isRunning, setIsRunning] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
@@ -30,11 +29,10 @@ const PomellodoroChrono = () => {
     setBreakDuration(breakValue);
   };
 
-
   /**
    * Handles changes to the focus duration input field.
    * Updates the focus duration state and recalculates the break duration.
-   * 
+   *
    * @param {Object} e - The event object representing the change event from the input field.
    * @param {string} e.target.value - The new value from the input field, expected to be a string representation of a number.
    */
@@ -59,12 +57,15 @@ const PomellodoroChrono = () => {
 
     // check status from backend
     try {
-      const statusRes = await fetch('http://localhost:3013/chrono/pomellodoro/visual/status', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        credentials: 'include'
-      });
+      const statusRes = await fetch(
+        "http://localhost:3013/chrono/pomellodoro/visual/status",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        }
+      );
 
       const status = await statusRes.json();
 
@@ -81,16 +82,16 @@ const PomellodoroChrono = () => {
       }
 
       const endpoint = isRunning
-        ? 'http://localhost:3013/chrono/pomellodoro/stop'
-        : 'http://localhost:3013/chrono/pomellodoro/start';
+        ? "http://localhost:3013/chrono/pomellodoro/stop"
+        : "http://localhost:3013/chrono/pomellodoro/start";
 
       const options = {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        credentials: 'include'
+        credentials: "include",
       };
 
       if (!isRunning) {
@@ -103,14 +104,12 @@ const PomellodoroChrono = () => {
         setShowMenu(false); // Oculta el menú desplegable si se lanza el start desde botón
       } else {
         const err = await response.json();
-        console.error('Error:', err);
+        console.error("Error:", err);
       }
-
     } catch (error) {
-      console.error('Network error:', error);
+      console.error("Network error:", error);
     }
   };
-
 
   /**
    * Toggle the Pomellodoro menu on/off.
@@ -129,13 +128,12 @@ const PomellodoroChrono = () => {
       }
     };
     if (showMenu) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showMenu]);
-
 
   // Polling to get pomellodoro status. LA ALTERNATIVA A WEB SOCKETS, QUE ES MÁS COMPLEJA Y NO NECESARIA PARA ESTE CASO Y NO DABA TIEMPO PARA IMPLEMENTAR PORTE NO LA CONTROLO BIEN.
   useEffect(() => {
@@ -144,15 +142,21 @@ const PomellodoroChrono = () => {
     const interval = setInterval(async () => {
       try {
         const token = getToken();
-        const response = await fetch("http://localhost:3013/chrono/pomellodoro/status", {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`
+        const response = await fetch(
+          "http://localhost:3013/chrono/pomellodoro/status",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
+        );
 
         if (!response.ok) {
-          console.warn("Error checking Pomellodoro status:", response.statusText);
+          console.warn(
+            "Error checking Pomellodoro status:",
+            response.statusText
+          );
           setIsRunning(false); // syncro frontend & backend
           return;
         }
@@ -178,11 +182,14 @@ const PomellodoroChrono = () => {
     const interval = setInterval(async () => {
       try {
         const token = getToken();
-        const res = await fetch("http://localhost:3013/chrono/pomellodoro/visual/status", {
-          headers: {
-            'Authorization': `Bearer ${token}`
+        const res = await fetch(
+          "http://localhost:3013/chrono/pomellodoro/visual/status",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
+        );
 
         if (!res.ok) return;
 
@@ -190,7 +197,7 @@ const PomellodoroChrono = () => {
         const { running, phase } = data;
 
         // start of pomellodoro notification
-        if (!previousStatus.current.running && running && phase === 'focus') {
+        if (!previousStatus.current.running && running && phase === "focus") {
           alert("🍅 ¡Pomellodoro Suscesfully started!");
         }
 
@@ -199,9 +206,9 @@ const PomellodoroChrono = () => {
           previousStatus.current.phase !== phase &&
           previousStatus.current.running // if is running
         ) {
-          if (phase === 'break') {
+          if (phase === "break") {
             alert("🛌 ¡Good job, now take a break!.");
-          } else if (phase === 'focus') {
+          } else if (phase === "focus") {
             alert("🔥 ¡Back to focus!");
           }
         }
@@ -215,11 +222,7 @@ const PomellodoroChrono = () => {
           }
         }
 
-
-
-
         previousStatus.current = { running, phase };
-
       } catch (error) {
         console.error("Error fetching visual status:", error);
       }
@@ -228,23 +231,20 @@ const PomellodoroChrono = () => {
     return () => clearInterval(interval);
   }, []);
 
-
-
   return (
-    <div className="pomello-wrapper" ref={menuRef}>
-      <div className="pomello-header">
-        <img
-          src={isRunning ? relojIcon : tomateIcon}
-          alt="Pomellodoro Icon"
-          className={`pomello-icon ${isRunning ? 'rotating' : ''}`}
-          onClick={handleTomatoClick}
-        />
-        <span className="pomello-arrow" onClick={handleToggleMenu}>| ▾</span>
-      </div>
-
-      {showMenu && (
-        <div className="pomello-dropdown">
-          <label htmlFor="focus">Focus (min):</label>
+    <div
+      ref={menuRef}
+      className="flex flex-col gap-8 items-center justify-center text-white/80 w-full"
+    >
+      <img
+        src={isRunning ? relojIcon : tomateIcon}
+        alt="Pomellodoro Icon"
+        className={`pomello-icon ${isRunning ? "rotating" : ""}`}
+        onClick={handleTomatoClick}
+      />
+      <div className="flex flex-col gap-8 items-center justify-center w-full">
+        <div className="flex flex-col gap-2 items-center justify-center">
+          <label>Focus (min):</label>
           <input
             id="focus"
             type="number"
@@ -252,22 +252,27 @@ const PomellodoroChrono = () => {
             min="1"
             step="1"
             onChange={handleFocusChange}
+            className="w-32 text-center bg-gray-700 border border-gray-200/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f56b79] transition-colors duration-300 py-1"
           />
-
-          <label htmlFor="break">Break (min):</label>
+        </div>
+        <div className="flex flex-col gap-2 items-center justify-center">
+          <label>Break (min):</label>
           <input
             id="break"
             type="number"
             value={breakDuration}
             step="0.1"
             readOnly
+            className="w-32 text-center bg-gray-700 border border-gray-200/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f56b79] transition-colors duration-300 py-1"
           />
-
-          <button onClick={handleTomatoClick} className="pomello-button">
-            {isRunning ? 'Stop' : 'Start'}
-          </button>
         </div>
-      )}
+        <button
+          onClick={handleTomatoClick}
+          className="px-4 py-2 bg-[#f56b79] text-white rounded-lg hover:bg-[#f56b79]/90 transition-colors duration-300 cursor-pointer w-32"
+        >
+          {isRunning ? "Stop" : "Start"}
+        </button>
+      </div>
     </div>
   );
 };
