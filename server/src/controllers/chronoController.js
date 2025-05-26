@@ -1,6 +1,15 @@
 import Chrono from '../models/chrono.js';
-import Errors from "../utils/errors.js"; // ✅ Importación correcta
+import Errors from "../utils/errors.js";
 import mongoose from "mongoose";
+
+let pomellodoroActive = false;
+let pomellodoroTimeouts = [];
+let pomellodoroPhase = null;
+let pomellodoroCycle = 0;
+let pomellodoroStartTime = null;
+let pomellodoroWasManuallyStopped = false;
+
+
 // Start a new chrono session
 /**
  * Starts a new chronometer session for a user.
@@ -20,7 +29,7 @@ const startChrono = async (userId, focusDurationValue, breakDurationValue) => {
   const breakDuration = Number(breakDurationValue);
 
   if (isNaN(focusDuration) || isNaN(breakDuration) ||
-      focusDuration <= 0 || breakDuration <= 0) {
+    focusDuration <= 0 || breakDuration <= 0) {
     throw new Errors.InvalidDurationValue();
   }
 
@@ -43,13 +52,13 @@ const startChrono = async (userId, focusDurationValue, breakDurationValue) => {
     sessionsCompleted: 0,
   });
 
-  
+
 
   await newSession.save();
   console.log("New session saved:", newSession);
   return newSession;
-}; 
- 
+};
+
 
 // Stop the chronometer session
 /**
@@ -103,9 +112,9 @@ const {
 
 const getChronoStats = async (req, res) => {
   try {
-    console.log( req.user.id)
+    console.log(req.user.id)
     const sessions = await Chrono.find({ userId: req.user.id });
-    console.log( "Click a stats: \n",req.user.id)
+    console.log("Click a stats: \n", req.user.id)
 
     if (!sessions.length) throw new PomellodoroStatsEmpty();
 
@@ -188,17 +197,16 @@ const getChronoStats = async (req, res) => {
     if (error.statusCode) {
       return res.status(error.statusCode).json({ error: error.message });
     }
-      res.status(500).json({ error: "Error getting Pomellodoro stats. User might not have stats yet." });
+    res.status(500).json({ error: "Error getting Pomellodoro stats. User might not have stats yet." });
   }
-  console.log( "Click a stats: \n",req.user.id)
-  
+  console.log("Click a stats: \n", req.user.id)
+
 };
 
 
 // Pomellodoro cycle control
 
-let pomellodoroActive = false;
-let pomellodoroTimeouts = [];
+
 /**
  * Starts a Pomellodoro cycle for the user.
  *
@@ -215,7 +223,7 @@ let pomellodoroTimeouts = [];
 
 const startPomellodoroCycle = async (req, res) => {
   const userId = req.user.id; // Asegúrate de que req.user._id esté definido
-  
+
   const focus = Number(req.body.focusDuration);
   const rest = Number(req.body.breakDuration);
 
@@ -242,40 +250,51 @@ const startPomellodoroCycle = async (req, res) => {
   const breakMs = rest * 60 * 1000;
 
   const runCycle = async (i) => {
+  if (!pomellodoroActive) return;
+
+  pomellodoroCycle = i + 1;
+  pomellodoroPhase = 'focus';
+  pomellodoroWasManuallyStopped = false;
+
+  if (i === 0) pomellodoroStartTime = Date.now();
+
+  try {
+    await startChrono(userId, focus, rest);
+  } catch (e) {
+    console.error(`❌ Error starting cycle ${i + 1}:`, e.message);
+    pomellodoroActive = false;
+    return;
+  }
+
+  const workTimeout = setTimeout(async () => {
     if (!pomellodoroActive) return;
 
     try {
-      await startChrono(userId, focus, rest); // Asegúrate de que userId esté definido
+      await stopChrono(userId);
     } catch (e) {
-      console.error(`❌ Error starting cycle ${i + 1}:`, e.message);
+      console.error(`❌ Error stopping cycle ${i + 1}:`, e.message);
       pomellodoroActive = false;
       return;
     }
 
-    const workTimeout = setTimeout(async () => {
-      if (!pomellodoroActive) return;
+    pomellodoroPhase = 'break';
 
-      try {
-        await stopChrono(userId);
-      } catch (e) {
-        console.error(`❌ Error stopping cycle ${i + 1}:`, e.message);
-        pomellodoroActive = false;
-        return;
-      }
+    if (i < cycles - 1) {
+      const restTimeout = setTimeout(() => runCycle(i + 1), breakMs);
+      pomellodoroTimeouts.push(restTimeout);
+    } else {
+      pomellodoroActive = false;
+      pomellodoroPhase = null;
+      pomellodoroCycle = 0;
+      pomellodoroStartTime = null;
+      console.log('✅ Pomellodoro finished');
+    }
+  }, workMs);
 
-      if (i < cycles - 1) {
-        const restTimeout = setTimeout(() => runCycle(i + 1), breakMs);
-        pomellodoroTimeouts.push(restTimeout);
-      } else {
-        pomellodoroActive = false;
-        console.log('✅ Pomellodoro finished');
-      }
-    }, workMs);
+  pomellodoroTimeouts.push(workTimeout);
+};
+runCycle(0);
 
-    pomellodoroTimeouts.push(workTimeout);
-  };
-
-  runCycle(0);
 };
 
 const {
@@ -305,9 +324,10 @@ const stopPomellodoroCycle = async (req, res) => {
     pomellodoroTimeouts.forEach(clearTimeout);
     pomellodoroTimeouts = [];
     pomellodoroActive = false;
+    pomellodoroWasManuallyStopped = true;
 
     try {
-      await stopChrono(userId); // Asegúrate de que esta función se esté llamando correctamente
+      await stopChrono(userId);
     } catch (e) {
       console.warn('🍊✅ No active chrono to stop or already stopped');
     }
@@ -337,6 +357,21 @@ const {
  * @throws {pomellodoroStatusError} If an unexpected error occurs while retrieving the status.
  */
 
+/**
+ * Returns the current status of the Pomellodoro cycle.
+ * Includes whether the cycle is active, how many timeouts are set,
+ * and how many have been executed.
+ * The status contains three properties:
+ * - `running`: A boolean indicating whether the Pomellodoro cycle is currently active.
+ * - `timeouts`: The number of timeouts currently scheduled.
+ * - `sessions`: The number of active sessions (i.e. focus + break sessions) currently running.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {void}
+ *
+ * @throws {pomellodoroStatusError} If an unexpected error occurs while retrieving the status.
+ */
 const getPomellodoroStatus = (req, res) => {
   try {
     const status = {
@@ -349,12 +384,49 @@ const getPomellodoroStatus = (req, res) => {
     res.status(500).json({ error: Errors.pomellodoroStatusError() });
   }
 };
- 
+
+
+
+/**
+ * Returns the current status of the Pomellodoro cycle, including the phase and cycle.
+ * The status contains six properties:
+ * - `running`: A boolean indicating whether the Pomellodoro cycle is currently active.
+ * - `timeouts`: The number of timeouts currently scheduled.
+ * - `sessions`: The number of active sessions (i.e. focus + break sessions) currently running.
+ * - `phase`: The current phase of the Pomellodoro cycle (either 'focus' or 'break').
+ * - `cycle`: The current cycle of the Pomellodoro cycle (ranging from 1 to 4).
+ * - `startTime`: The timestamp (in milliseconds) when the Pomellodoro cycle started.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ * @returns {void}
+ *
+ * @throws {pomellodoroStatusError} If an unexpected error occurs while retrieving the status.
+ */
+const visualPomellodoroStatus = (req, res) => {
+  try {
+    const status = {
+      running: pomellodoroActive,
+      timeouts: pomellodoroTimeouts.length,
+      sessions: pomellodoroTimeouts.filter(timeout => timeout !== null).length,
+      phase: pomellodoroPhase,
+      cycle: pomellodoroCycle,
+      startTime: pomellodoroStartTime,
+      manuallyStopped: pomellodoroWasManuallyStopped 
+    };
+    res.status(200).json(status);
+  } catch (error) {
+    res.status(500).json({ error: Errors.pomellodoroStatusError().message });
+  }
+};
+
+
 export default {
   startChrono,
   stopChrono,
   getChronoStats,
   startPomellodoroCycle,
   stopPomellodoroCycle,
-  getPomellodoroStatus
+  getPomellodoroStatus,
+  visualPomellodoroStatus
 };
