@@ -75,7 +75,7 @@ function ProjectList() {
       <h2 className="text-2xl font-bold mb-4 mx-4 text-slate-100 opacity-80 ml-36 pb-8">
         Projects
       </h2>
-      <section className="gap-8 px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-full ml-32">
+      <section className="gap-8 px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-full ml-32 no-scrollbar">
         {projects
           .slice()
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))

@@ -178,7 +178,7 @@ function Project() {
         </div>
       )}
 
-      <section className="flex flex-row gap-8 pt-32 ">
+      <section className="flex flex-row gap-8 pt-32 no-scrollbar">
         <ShowLists lists={lists} onAddTask={handleAddTask} />
         <div className="mr-16">
           <NewList lists={lists} setLists={setLists} />

@@ -59,7 +59,7 @@ function Browser() {
           onChange={handleChange}
           onClick={handleClick}
           onBlur={handleBlur}
-          className="pl-10 pr-4 py-1 rounded-md border border-gray-300 focus:outline-none focus:border-[#f56b79] w-full"
+          className="pl-10 pr-4 py-1 rounded-md border border-gray-300/50 focus:outline-none focus:border-[#f56b79] w-full"
         />
         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
           <svg
@@ -74,7 +74,7 @@ function Browser() {
       </div>
 
       {isOpen && results.length > 0 && (
-        <ul className="absolute top-full left-0 bg-gray-800/80 text-gray-200 border rounded-md shadow-md w-full z-50">
+        <ul className="absolute top-full left-0 bg-gray-800/80 text-gray-200 border border-gray-100/50 shadow-md w-full z-100 max-h-60 overflow-y-auto rounded-b-md no-scrollbar">
           {results.map((project) => (
             <li
               key={project._id}

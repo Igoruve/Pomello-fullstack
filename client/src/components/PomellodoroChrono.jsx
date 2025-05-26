@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../styles/PomellodoroStyles.css";
-import tomateIcon from "/assets/rodaja-de-tomate.png";
+import tomateIcon from "/assets/icon_01.png";
 import relojIcon from "/assets/reloj_arena.png";
 import { getToken } from "../utils/localStorage.js";
 
@@ -237,34 +237,47 @@ const PomellodoroChrono = () => {
       className="flex flex-col gap-8 items-center justify-center text-white/80 w-full"
     >
       <img
-        src={isRunning ? relojIcon : tomateIcon}
+        src={tomateIcon}
         alt="Pomellodoro Icon"
         className={`pomello-icon ${isRunning ? "rotating" : ""}`}
         onClick={handleTomatoClick}
       />
       <div className="flex flex-col gap-8 items-center justify-center w-full">
-        <div className="flex flex-col gap-2 items-center justify-center">
-          <label>Focus (min):</label>
-          <input
-            id="focus"
-            type="number"
-            value={focusDuration}
-            min="1"
-            step="1"
-            onChange={handleFocusChange}
-            className="w-32 text-center bg-gray-700 border border-gray-200/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f56b79] transition-colors duration-300 py-1"
-          />
+        <div className="flex items-center justify-center gap-2 flex-col">
+          <label>Focus</label>
+          <div className="relative w-32">
+            <input
+              id="focus"
+              type="number"
+              value={focusDuration}
+              min="1"
+              step="1"
+              onChange={handleFocusChange}
+              className="w-full pr-10 text-center bg-gray-700 border border-gray-200/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f56b79] transition-colors duration-300 py-1"
+            />
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-white/60 text-sm pointer-events-none">
+              mins
+            </span>
+          </div>
         </div>
+
         <div className="flex flex-col gap-2 items-center justify-center">
-          <label>Break (min):</label>
-          <input
-            id="break"
-            type="number"
-            value={breakDuration}
-            step="0.1"
-            readOnly
-            className="w-32 text-center bg-gray-700 border border-gray-200/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f56b79] transition-colors duration-300 py-1"
-          />
+          <div className="flex items-center justify-center gap-2 flex-col">
+            <label>Break</label>
+            <div className="relative w-32">
+              <input
+                id="break"
+                type="number"
+                value={breakDuration}
+                step="0.1"
+                readOnly
+                className="w-full pr-10 text-center bg-gray-700 border border-gray-200/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f56b79] transition-colors duration-300 py-1"
+              />
+              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-white/60 text-sm pointer-events-none">
+                mins
+              </span>
+            </div>
+          </div>
         </div>
         <button
           onClick={handleTomatoClick}

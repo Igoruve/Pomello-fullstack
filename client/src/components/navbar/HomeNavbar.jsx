@@ -16,7 +16,7 @@ function HomeNavbar() {
             </Link>
 
             <Link to="/login">
-              <button className="hover:text-[#f56b79] cursor-pointer">Login</button>
+              <button className="hover:text-[#f56b79] cursor-pointer">Log In</button>
             </Link>
           </section>
         </div>

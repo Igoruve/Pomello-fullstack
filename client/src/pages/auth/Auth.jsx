@@ -107,7 +107,7 @@ function Auth({ isRegister }) {
             <p className="mt-4 text-white">Already have an account?</p>
             <Link to="/login">
               <button className="underline text-[#f56b79] cursor-pointer">
-                Go to login
+                Go to Log In
               </button>
             </Link>
           </>
