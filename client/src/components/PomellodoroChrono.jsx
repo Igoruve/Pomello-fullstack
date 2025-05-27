@@ -19,6 +19,7 @@ const PomellodoroChrono = () => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
   const [notification, setNotification] = useState("");
+  const [expanded, setExpanded] = useState(false);
 
   /**
    * Calcula la duración del descanso en minutos.
@@ -243,6 +244,10 @@ const PomellodoroChrono = () => {
     }
   }, [notification]);
 
+  const handleShowInfo = () => {
+    setShowMenu(!showMenu);
+  };
+
   return (
     <div
       ref={menuRef}
@@ -304,10 +309,46 @@ const PomellodoroChrono = () => {
         >
           {isRunning ? "Stop" : "Start"}
         </button>
-        <p className="text-center text-white/80 px-4">Want to get extra help to focus? Start your pomodoro chrono and work more effectively.</p>
-        <a className="text-[#f56b79] underline " href="https://en.wikipedia.org/wiki/Pomodoro_Technique" target="_blank" rel="noopener noreferrer">
+        <p className="text-center text-white/80 px-4">
+          Want to get extra help to focus? Start your pomodoro chrono and work
+          more effectively.
+        </p>
+        <p
+          className="text-[#f56b79] underline cursor-pointer"
+          onMouseEnter={() => setShowMenu(true)}
+          onMouseLeave={() => setShowMenu(false)}
+        >
           Learn More
-        </a>
+        </p>
+        {showMenu && (
+          <div className="bg-white/90 text-black text-sm px-4 py-4 rounded-lg absolute -left-[600px] right-[200px] bottom-24">
+            <p className=" font-bold">How Does the Pomodoro Technique Work?</p>
+            <p>
+              The Pomodoro Technique is a time management method that helps you
+              stay focused and work more efficiently. It divides your time into
+              blocks:
+            </p>
+            <ul>
+              <li className="list-disc ml-6">
+                Work blocks: You choose how many minutes you want to stay
+                focused on your projects (e.g., 25 minutes).
+              </li>
+              <li className="list-disc ml-6">
+                Breaks: After each work block, you take a short break (one fifth
+                of your chosen work time).
+              </li>
+            </ul>
+            <p>
+              Once you complete four work blocks with their respective breaks,
+              you've completed one Pomodoro. Our chrono automatically adjusts
+              your breaks based on the focus time you set: you simply choose how
+              long you want to work, and we handle the rest. This way, you can
+              stay productive without worrying about intervals. We also keep
+              track of your sessions so you can monitor your progress and stay
+              motivated. You can check them at the Stats section.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
