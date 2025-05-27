@@ -273,10 +273,11 @@ const PomellodoroChrono = () => {
               id="focus"
               type="number"
               value={focusDuration}
+              disabled={isRunning}
               min="1"
               step="1"
               onChange={handleFocusChange}
-              className="w-full pr-10 text-center bg-gray-700 border border-gray-200/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f56b79] transition-colors duration-300 py-1"
+              className={`w-full pr-10 text-center bg-gray-700 border border-gray-200/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f56b79] transition-colors duration-300 py-1 ${isRunning ? "cursor-not-allowed" : "cursor-pointer"}`}
             />
             <span className="absolute right-2 top-1/2 -translate-y-1/2 text-white/60 text-sm pointer-events-none">
               mins
