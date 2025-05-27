@@ -10,6 +10,7 @@ import Root from "./pages/root/Root";
 import Layout from "./components/layout/Layout";
 import Dashboard from "./pages/Dashboard.jsx"; // Importar el componente Dashboard
 
+
 const router = createBrowserRouter([
   {
     path: "/",

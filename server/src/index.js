@@ -16,6 +16,8 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use("/docs",express.static("docs"));
+
 
 app.use(express.json()); // para API (formato json)
 app.use(express.urlencoded({extended:true})); // para Vistas (formato formulario)

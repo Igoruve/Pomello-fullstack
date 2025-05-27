@@ -1,0 +1,13 @@
+{
+  "source": {
+    "include": ["./client/src"],
+    "exclude": ["./src/ignored"],
+    "includePattern": ".+\\.js(doc|x)?$"
+  },
+  "plugins": ["plugins/markdown"],
+  "opts": {
+    "destination": "./docs",
+    "recurse": true
+  },
+  "private": true
+}
