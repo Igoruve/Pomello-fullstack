@@ -15,6 +15,15 @@ const {
 
 dotenv.config();
 
+/**
+ * Logs in an existing user using the provided email and password.
+ * 
+ * @param {String} email - The user's email address.
+ * @param {String} password - The user's password.
+ * 
+ * @returns {Promise<Object>} A promise that resolves with an object containing the user's details and a token if the login was successful,
+ * or an object with an error message if there was an issue with the login.
+ */
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -47,6 +56,20 @@ const login = async (req, res) => {
   }
 };
 
+/**
+ * Registers a new user using the provided email and password.
+ * 
+ * @param {String} email - The user's email address.
+ * @param {String} password - The user's password.
+ * 
+ * @returns {Promise<Object>} A promise that resolves with an object containing the user's details and a token if the registration was successful,
+ * or an object with an error message if there was an issue with the registration.
+ * 
+ * Validation rules:
+ * - Email must be in a valid format.
+ * - Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character.
+ * - Email must not already be in use.
+ */
 const register = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -91,6 +114,17 @@ const register = async (req, res) => {
   }
 };
 
+/**
+ * Retrieves a list of all users from the database.
+ *
+ * Excludes the password field from the returned user objects for security reasons.
+ *
+ * @param {Object} req - Express request object.
+ * @param {Object} res - Express response object.
+ *
+ * @returns {void} Sends a JSON response with an array of user objects or an error message.
+ */
+
 const getUsers = async (req, res) => {
   try {
     const users = await userModel.find().select("-password"); // ocultar password
@@ -99,6 +133,19 @@ const getUsers = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+/**
+ * Retrieves a user by their ID from the database.
+ *
+ * Excludes the password field from the returned user object.
+ *
+ * @param {Object} req - Express request object. Must include the user ID in params.
+ * @param {Object} res - Express response object.
+ *
+ * @returns {void} Sends a JSON response with the user object or an error message.
+ *
+ * @throws {UserNotFound} If the user with the specified ID is not found.
+ */
 
 const getUserById = async (req, res) => {
   try {
@@ -111,6 +158,22 @@ const getUserById = async (req, res) => {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
+
+/**
+ * Updates a user by their ID in the database.
+ *
+ * Accepts an Express request object containing the user ID in the URL parameters
+ * and the updated user data in the request body. The password field is excluded
+ * from the updated user object for security reasons.
+ *
+ * @param {Object} req - Express request object. Must include the user ID in params
+ * and updated user data in the body.
+ * @param {Object} res - Express response object.
+ *
+ * @returns {void} Sends a JSON response with the updated user object or an error message.
+ *
+ * @throws {UserNotFound} If the user with the specified ID is not found.
+ */
 
 const updateUser = async (req, res) => {
   try {
@@ -129,6 +192,19 @@ const updateUser = async (req, res) => {
     res.status(error.statusCode || 500).json({ error: error.message });
   }
 };
+
+/**
+ * Deletes a user by their ID from the database.
+ *
+ * Accepts an Express request object containing the user ID in the URL parameters.
+ *
+ * @param {Object} req - Express request object. Must include the user ID in params.
+ * @param {Object} res - Express response object.
+ *
+ * @returns {void} Sends a JSON response with a success message or an error message.
+ *
+ * @throws {UserNotFound} If the user with the specified ID is not found.
+ */
 
 const deleteUser = async (req, res) => {
   try {

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/task/NewTask.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/task/NewTask.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState, useEffect, useRef } from "react";
+import { useRevalidator } from "react-router-dom";
+import { createTask } from "../../utils/task.js";
+
+/**
+ * Component for creating a new task within a list.
+ * Provides an input area that appears when clicked, allowing the
+ * user to enter a task title. Submits the new task upon pressing
+ * enter or losing focus from the input area.
+ *
+ * @param {string} listId - The ID of the list to which the new task will be added.
+ * @param {Function} onTaskCreated - Callback function to handle the newly created task.
+ */
+
+function NewTask({ listId, onTaskCreated }) {
+  const revalidator = useRevalidator();
+  const [showInput, setShowInput] = useState(false);
+  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  const textareaRef = useRef(null);
+
+  /**
+   * Callback function to handle losing focus from the input area.
+   * If the entered title is not empty, it creates the new task and calls the onTaskCreated callback.
+   * If there is an error, it logs the error to the console. Finally, it resets the state.
+   */
+  const handleBlur = async () => {
+    const title = newTaskTitle.trim();
+    if (!title) {
+      setShowInput(false);
+      setNewTaskTitle("");
+      return;
+    }
+    setIsSaving(true);
+    try {
+      const newTask = await createTask({ title, list: listId });
+      onTaskCreated(newTask);
+      revalidator.revalidate();
+    } catch (error) {
+      console.error("Error creating task:", error);
+    } finally {
+      setIsSaving(false);
+      setShowInput(false);
+      setNewTaskTitle("");
+    }
+  };
+
+  /**
+   * Callback function to handle pressing the Enter key.
+   * Prevents the default event behavior and calls handleBlur to create the new task.
+   * @param {KeyboardEvent} e - The Enter keydown event.
+   */
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleBlur();
+    }
+  };
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto"; // Reset para recalcular
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px";
+    }
+  }, [newTaskTitle]);
+
+  return (
+    &lt;div>
+      {!showInput ? (
+        &lt;div
+          onClick={() => setShowInput(true)}
+          className="flex flex-row text-white gap-4 text-md mb-2 bg-gray-900 h-10 rounded-xl w-full p-4 cursor-pointer hover:bg-gray-700/60 transition-colors duration-300 ease-in-out  items-center justify-between"
+        >
+          New Task
+          &lt;svg viewBox="0 0 448 512" fill="white" height="16px" width="16px">
+            &lt;path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
+          &lt;/svg>
+        &lt;/div>
+      ) : (
+        &lt;textarea
+          ref={textareaRef}
+          autoFocus
+          onKeyDown={handleKeyDown}
+          value={newTaskTitle}
+          onChange={(e) => setNewTaskTitle(e.target.value)}
+          onBlur={handleBlur}
+          disabled={isSaving}
+          className="w-full text-white text-md bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight p-2 break-all"
+          style={{ height: "auto", overflow: "hidden" }}
+          maxLength={200}
+        />
+      )}
+    &lt;/div>
+  );
+}
+
+export default NewTask;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AsideNavbar">AsideNavbar</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Browser">Browser</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#DragableList">DragableList</a></li><li><a href="global.html#DropdownMenu">DropdownMenu</a></li><li><a href="global.html#FetchData">FetchData</a></li><li><a href="global.html#HomeNavbar">HomeNavbar</a></li><li><a href="global.html#Homepage">Homepage</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#NavbarProjects">NavbarProjects</a></li><li><a href="global.html#NewList">NewList</a></li><li><a href="global.html#NewTask">NewTask</a></li><li><a href="global.html#PomellodoroChrono">PomellodoroChrono</a></li><li><a href="global.html#Project">Project</a></li><li><a href="global.html#ProjectList">ProjectList</a></li><li><a href="global.html#Root">Root</a></li><li><a href="global.html#SessionChart">SessionChart</a></li><li><a href="global.html#ShowLists">ShowLists</a></li><li><a href="global.html#ShowTasks">ShowTasks</a></li><li><a href="global.html#SortableList">SortableList</a></li><li><a href="global.html#TopNavbar">TopNavbar</a></li><li><a href="global.html#createList">createList</a></li><li><a href="global.html#createProject">createProject</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#getAllLists">getAllLists</a></li><li><a href="global.html#getAllProjects">getAllProjects</a></li><li><a href="global.html#getAllTasks">getAllTasks</a></li><li><a href="global.html#getAllUsers">getAllUsers</a></li><li><a href="global.html#getChronoStats">getChronoStats</a></li><li><a href="global.html#getFromLocalStorage">getFromLocalStorage</a></li><li><a href="global.html#getListById">getListById</a></li><li><a href="global.html#getListByProjectId">getListByProjectId</a></li><li><a href="global.html#getProjectById">getProjectById</a></li><li><a href="global.html#getProjectsByUserId">getProjectsByUserId</a></li><li><a href="global.html#getProjectsFullInfo">getProjectsFullInfo</a></li><li><a href="global.html#getStatus">getStatus</a></li><li><a href="global.html#getTaskById">getTaskById</a></li><li><a href="global.html#getTaskByListId">getTaskByListId</a></li><li><a href="global.html#getToken">getToken</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#removeFromLocalStorage">removeFromLocalStorage</a></li><li><a href="global.html#removeList">removeList</a></li><li><a href="global.html#removeProject">removeProject</a></li><li><a href="global.html#removeTask">removeTask</a></li><li><a href="global.html#removeToken">removeToken</a></li><li><a href="global.html#removeUser">removeUser</a></li><li><a href="global.html#saveToLocalStorage">saveToLocalStorage</a></li><li><a href="global.html#saveToken">saveToken</a></li><li><a href="global.html#saveUser">saveUser</a></li><li><a href="global.html#startChrono">startChrono</a></li><li><a href="global.html#stopChrono">stopChrono</a></li><li><a href="global.html#updateList">updateList</a></li><li><a href="global.html#updateListPositions">updateListPositions</a></li><li><a href="global.html#updateProject">updateProject</a></li><li><a href="global.html#updateTask">updateTask</a></li><li><a href="global.html#updateTaskPositions">updateTaskPositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue May 27 2025 16:08:51 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

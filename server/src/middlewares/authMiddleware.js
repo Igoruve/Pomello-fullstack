@@ -1,5 +1,17 @@
 import { verifyToken } from "../utils/token.js";
 
+/**
+ * Middleware to check if a user is logged in by verifying the JWT token.
+ *
+ * Extracts the token from the 'Authorization' header, verifies its validity,
+ * and assigns the user's ID to the request object if the token is valid.
+ * If the token is missing or invalid, responds with a 401 status and an error message.
+ *
+ * @param {Object} req - Express request object. Must include 'Authorization' header.
+ * @param {Object} res - Express response object. Used to send error responses.
+ * @param {Function} next - Express next middleware function. Called if the token is valid.
+ */
+
 function isLoggedInAPI(req, res, next) {
   const authorization = req.headers.authorization;
   if (!authorization) {

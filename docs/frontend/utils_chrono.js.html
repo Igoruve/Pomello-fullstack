@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: utils/chrono.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: utils/chrono.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
+import FetchData from "./fetch";
+
+
+/**
+ * Starts a Pomellodoro cycle.
+ *
+ * Makes an API call to start a new Pomellodoro cycle with the given focus and break durations.
+ * If the call fails, it throws an Error with the error message.
+ *
+ * @param {number} focusDuration The duration of the focus phase in minutes.
+ * @param {number} breakDuration The duration of the break phase in minutes.
+ *
+ * @returns {Promise&lt;Object>} The result of the API call, containing the session ID.
+ *
+ * @throws {Error} If there's an error starting the Pomellodoro cycle.
+ */
+async function startChrono(focusDuration, breakDuration) {
+  const data = { focusDuration, breakDuration };
+  const result = await FetchData("/chrono/pomellodoro/start", "POST", data);
+
+  if (result.error || result.status >= 400) {
+    throw new Error(result.message || "Error al iniciar el pomodoro");
+  }
+
+  return result;
+}
+
+
+/**
+ * Stops the current Pomellodoro cycle.
+ *
+ * Makes an API call to update the session state to stopped and
+ * returns the updated session data.
+ *
+ * @returns {Promise&lt;Object>} A promise that resolves to the updated session data.
+ * @throws {Error} If the fetch operation fails or returns an error.
+ */
+async function stopChrono() {
+  const result = await FetchData("/chrono/pomellodoro/stop", "POST");
+
+  if (result.error || result.status >= 400) {
+    throw new Error(result.message || "Error al detener el pomodoro");
+  }
+
+  return result;
+}
+
+
+
+/**
+ * Fetches and returns statistics for the user's chronometer sessions.
+ *
+ * Makes an API call to retrieve the accumulated statistics data
+ * which includes total focus time, sessions count, and more.
+ *
+ * @returns {Promise&lt;Object>} A promise that resolves to the statistics data.
+ * @throws {Error} If the fetch operation fails or returns an error.
+ */
+
+export async function getChronoStats() {
+  return await FetchData("/chrono/stats");
+} 
+
+/**
+ * Fetches and returns the current state of the Pomellodoro cycle.
+ *
+ * Makes an API call to retrieve the current state of the Pomellodoro cycle.
+ * The state is an object with a single property `running` which is a boolean
+ * indicating whether the cycle is currently active.
+ *
+ * @returns {Promise&lt;Object>} A promise that resolves to the current state of the Pomellodoro cycle.
+ * @throws {Error} If the fetch operation fails or returns an error.
+ */
+async function getStatus() {
+  const result = await FetchData("/chrono/pomellodoro/status", "GET");
+
+  if (result.error || result.status >= 400) {
+    throw new Error(result.message || "Error al obtener el estado del pomodoro");
+  }
+
+  // Agrega esto para ver qué devuelve realmente:
+  console.log("🧪 Respuesta de /status:", result);
+
+  return result; // debe ser { running: true }
+}
+
+
+export { startChrono, stopChrono, getStatus };</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AsideNavbar">AsideNavbar</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Browser">Browser</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#DragableList">DragableList</a></li><li><a href="global.html#DropdownMenu">DropdownMenu</a></li><li><a href="global.html#FetchData">FetchData</a></li><li><a href="global.html#HomeNavbar">HomeNavbar</a></li><li><a href="global.html#Homepage">Homepage</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#NavbarProjects">NavbarProjects</a></li><li><a href="global.html#NewList">NewList</a></li><li><a href="global.html#NewTask">NewTask</a></li><li><a href="global.html#PomellodoroChrono">PomellodoroChrono</a></li><li><a href="global.html#Project">Project</a></li><li><a href="global.html#ProjectList">ProjectList</a></li><li><a href="global.html#Root">Root</a></li><li><a href="global.html#SessionChart">SessionChart</a></li><li><a href="global.html#ShowLists">ShowLists</a></li><li><a href="global.html#ShowTasks">ShowTasks</a></li><li><a href="global.html#SortableList">SortableList</a></li><li><a href="global.html#TopNavbar">TopNavbar</a></li><li><a href="global.html#createList">createList</a></li><li><a href="global.html#createProject">createProject</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#getAllLists">getAllLists</a></li><li><a href="global.html#getAllProjects">getAllProjects</a></li><li><a href="global.html#getAllTasks">getAllTasks</a></li><li><a href="global.html#getAllUsers">getAllUsers</a></li><li><a href="global.html#getChronoStats">getChronoStats</a></li><li><a href="global.html#getFromLocalStorage">getFromLocalStorage</a></li><li><a href="global.html#getListById">getListById</a></li><li><a href="global.html#getListByProjectId">getListByProjectId</a></li><li><a href="global.html#getProjectById">getProjectById</a></li><li><a href="global.html#getProjectsByUserId">getProjectsByUserId</a></li><li><a href="global.html#getProjectsFullInfo">getProjectsFullInfo</a></li><li><a href="global.html#getStatus">getStatus</a></li><li><a href="global.html#getTaskById">getTaskById</a></li><li><a href="global.html#getTaskByListId">getTaskByListId</a></li><li><a href="global.html#getToken">getToken</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#removeFromLocalStorage">removeFromLocalStorage</a></li><li><a href="global.html#removeList">removeList</a></li><li><a href="global.html#removeProject">removeProject</a></li><li><a href="global.html#removeTask">removeTask</a></li><li><a href="global.html#removeToken">removeToken</a></li><li><a href="global.html#removeUser">removeUser</a></li><li><a href="global.html#saveToLocalStorage">saveToLocalStorage</a></li><li><a href="global.html#saveToken">saveToken</a></li><li><a href="global.html#saveUser">saveUser</a></li><li><a href="global.html#startChrono">startChrono</a></li><li><a href="global.html#stopChrono">stopChrono</a></li><li><a href="global.html#updateList">updateList</a></li><li><a href="global.html#updateListPositions">updateListPositions</a></li><li><a href="global.html#updateProject">updateProject</a></li><li><a href="global.html#updateTask">updateTask</a></li><li><a href="global.html#updateTaskPositions">updateTaskPositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue May 27 2025 16:08:51 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

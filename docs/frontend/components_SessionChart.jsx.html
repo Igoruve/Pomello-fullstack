@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/SessionChart.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/SessionChart.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useRef } from "react";
+import { Chart } from "chart.js/auto";
+
+/**
+ * SessionChart is a React functional component that visualizes session data using Chart.js.
+ * It displays three charts: a doughnut chart for completed vs interrupted sessions,
+ * a bar chart for focus and break durations per session, and a line chart for
+ * sessions per day over the current week.
+ *
+ * @param {Object} props - The component props.
+ * @param {Object} props.data - The data used for generating the charts. Contains
+ * session statistics such as total sessions, completed sessions, interrupted sessions,
+ * and individual session details.
+ *
+ * If no data is available or if totalSessions is zero, a message is displayed
+ * indicating that no statistics are available.
+ */
+
+const SessionChart = ({ data }) => {
+  const doughnutChartRef = useRef(null);
+  const barChartRef = useRef(null);
+  const weeklyChartRef = useRef(null);
+
+  useEffect(() => {
+    const sessions = data?.sessions ?? [];
+    const completedSessions = data?.completedSessions ?? 0;
+    const interruptedSessions = data?.interruptedSessions ?? 0;
+
+    const destroyIfExists = (ref) => {
+      if (ref.current?.chartInstance) {
+        ref.current.chartInstance.destroy();
+      }
+    };
+
+    destroyIfExists(doughnutChartRef);
+    destroyIfExists(barChartRef);
+    destroyIfExists(weeklyChartRef);
+
+    // Doughnut Chart
+    const doughnutCtx = doughnutChartRef.current.getContext("2d");
+    doughnutChartRef.current.chartInstance = new Chart(doughnutCtx, {
+      type: "pie",
+      data: {
+        labels: ["Completed", "Interrupted"],
+        datasets: [
+          {
+            label: "Sessions",
+            data: [completedSessions, interruptedSessions],
+            backgroundColor: ["#ff6384", "#fcab51"],
+            borderColor: ["#ff6384", "#fcab51"],
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "top",
+            labels: { color: "white", font: { size: 14 } },
+          },
+        },
+      },
+    });
+
+    // Bar Chart
+    const barCtx = barChartRef.current.getContext("2d");
+    const sessionLabels = sessions.map((_, i) => `Session ${i + 1}`);
+    const focusDurations = sessions.map((s) => s.focusDuration ?? 0);
+    const breakDurations = sessions.map((s) => s.breakDuration ?? 0);
+
+    barChartRef.current.chartInstance = new Chart(barCtx, {
+      type: "bar",
+      data: {
+        labels: sessionLabels.length ? sessionLabels : ["No stats yet"],
+        datasets: [
+          {
+            label: "Focus Duration",
+            data: focusDurations.length ? focusDurations : [0],
+            backgroundColor: "#ff6384",
+          },
+          {
+            label: "Break Duration",
+            data: breakDurations.length ? breakDurations : [0],
+            backgroundColor: "#fcab51",
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "top",
+            labels: { color: "white", font: { size: 14 } },
+          },
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: "Focus sessions",
+              color: "white",
+              font: { size: 14 },
+            },
+            ticks: { color: "white" },
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: "Duration (min)",
+              color: "white",
+              font: { size: 14 },
+            },
+            ticks: { color: "white" },
+          },
+        },
+      },
+    });
+
+    // Weekly Chart
+    const weeklyCtx = weeklyChartRef.current.getContext("2d");
+    const now = new Date();
+    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + 1));
+    startOfWeek.setHours(0, 0, 0, 0);
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    endOfWeek.setHours(23, 59, 59, 999);
+
+    const daysOfWeek = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ];
+    const weeklyData = Array(7).fill(0);
+    sessions.forEach((session) => {
+      const date = new Date(session.createdAt);
+      if (date >= startOfWeek &amp;&amp; date &lt;= endOfWeek) {
+        const day = (date.getDay() + 6) % 7;
+        weeklyData[day]++;
+      }
+    });
+
+    weeklyChartRef.current.chartInstance = new Chart(weeklyCtx, {
+      type: "line",
+      data: {
+        labels: daysOfWeek,
+        datasets: [
+          {
+            label: "Focus per day",
+            data: weeklyData,
+            backgroundColor: "#ff6384",
+            borderColor: "#ff6384",
+            fill: true,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "top",
+            labels: { color: "white", font: { size: 14 } },
+          },
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: "Day of the Week",
+              color: "white",
+              font: { size: 14 },
+            },
+            ticks: { color: "white" },
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: "Number of Sessions",
+              color: "white",
+              font: { size: 14 },
+            },
+            ticks: { color: "white" },
+          },
+        },
+      },
+    });
+  }, [data]);
+
+  return (
+    &lt;section className="bg-gray-800 h-full">
+      &lt;section className="p-4 pt-18 ml-64">
+        &lt;h1 className="text-2xl font-bold text-white/80 mb-8 pl-24 pt-2">Stats&lt;/h1>
+        &lt;div className="flex flex-col gap-8 items-center">
+          {[doughnutChartRef, barChartRef, weeklyChartRef].map((ref, index) => (
+            &lt;div
+              key={index}
+              className="bg-gray-500 rounded shadow p-4 w-[700px] h-[350px] flex items-center justify-center relative"
+            >
+              &lt;canvas ref={ref} className="w-full h-full">&lt;/canvas>
+            &lt;/div>
+          ))}
+        &lt;/div>
+      &lt;/section>
+    &lt;/section>
+  );
+};
+
+export default SessionChart;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AsideNavbar">AsideNavbar</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Browser">Browser</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#DragableList">DragableList</a></li><li><a href="global.html#DropdownMenu">DropdownMenu</a></li><li><a href="global.html#FetchData">FetchData</a></li><li><a href="global.html#HomeNavbar">HomeNavbar</a></li><li><a href="global.html#Homepage">Homepage</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#NavbarProjects">NavbarProjects</a></li><li><a href="global.html#NewList">NewList</a></li><li><a href="global.html#NewTask">NewTask</a></li><li><a href="global.html#PomellodoroChrono">PomellodoroChrono</a></li><li><a href="global.html#Project">Project</a></li><li><a href="global.html#ProjectList">ProjectList</a></li><li><a href="global.html#Root">Root</a></li><li><a href="global.html#SessionChart">SessionChart</a></li><li><a href="global.html#ShowLists">ShowLists</a></li><li><a href="global.html#ShowTasks">ShowTasks</a></li><li><a href="global.html#SortableList">SortableList</a></li><li><a href="global.html#TopNavbar">TopNavbar</a></li><li><a href="global.html#createList">createList</a></li><li><a href="global.html#createProject">createProject</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#getAllLists">getAllLists</a></li><li><a href="global.html#getAllProjects">getAllProjects</a></li><li><a href="global.html#getAllTasks">getAllTasks</a></li><li><a href="global.html#getAllUsers">getAllUsers</a></li><li><a href="global.html#getChronoStats">getChronoStats</a></li><li><a href="global.html#getFromLocalStorage">getFromLocalStorage</a></li><li><a href="global.html#getListById">getListById</a></li><li><a href="global.html#getListByProjectId">getListByProjectId</a></li><li><a href="global.html#getProjectById">getProjectById</a></li><li><a href="global.html#getProjectsByUserId">getProjectsByUserId</a></li><li><a href="global.html#getProjectsFullInfo">getProjectsFullInfo</a></li><li><a href="global.html#getStatus">getStatus</a></li><li><a href="global.html#getTaskById">getTaskById</a></li><li><a href="global.html#getTaskByListId">getTaskByListId</a></li><li><a href="global.html#getToken">getToken</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#removeFromLocalStorage">removeFromLocalStorage</a></li><li><a href="global.html#removeList">removeList</a></li><li><a href="global.html#removeProject">removeProject</a></li><li><a href="global.html#removeTask">removeTask</a></li><li><a href="global.html#removeToken">removeToken</a></li><li><a href="global.html#removeUser">removeUser</a></li><li><a href="global.html#saveToLocalStorage">saveToLocalStorage</a></li><li><a href="global.html#saveToken">saveToken</a></li><li><a href="global.html#saveUser">saveUser</a></li><li><a href="global.html#startChrono">startChrono</a></li><li><a href="global.html#stopChrono">stopChrono</a></li><li><a href="global.html#updateList">updateList</a></li><li><a href="global.html#updateListPositions">updateListPositions</a></li><li><a href="global.html#updateProject">updateProject</a></li><li><a href="global.html#updateTask">updateTask</a></li><li><a href="global.html#updateTaskPositions">updateTaskPositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue May 27 2025 16:08:51 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

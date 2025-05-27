@@ -56,6 +56,7 @@ const PomellodoroChrono = () => {
     localStorage.setItem("focusDuration", value);
   };
 
+
   /**
    * Handles clicks on the tomato button.
    * If the Pomellodoro is running, stops it. If it's not running, starts it.
