@@ -15,6 +15,16 @@ const {
 
 dotenv.config();
 
+/**
+ * Login an existing user
+ * @function login
+ * @param {Object} req Express request object
+ * @param {Object} res Express response object
+ * @returns {Promise<void>}
+ * @throws {UserEmailNotProvided}
+ * @throws {UserPasswordNotProvided}
+ * @throws {UserInvalidCredentials}
+ */
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -47,6 +57,16 @@ const login = async (req, res) => {
   }
 };
 
+/**
+ * Register a new user
+ * @function register
+ * @param {Object} req Express request object
+ * @param {Object} res Express response object
+ * @returns {Promise<void>}
+ * @throws {UserEmailNotProvided}
+ * @throws {UserPasswordNotProvided}
+ * @throws {UserEmailAlreadyExists}
+ */
 const register = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -91,6 +111,13 @@ const register = async (req, res) => {
   }
 };
 
+/**
+ * @api {get} /users Get all users
+ * @apiName GetUsers
+ * @apiGroup Users
+ * @apiSuccess {Object[]} users List of users, with password field excluded
+ * @apiError {Object} 500 Internal Server Error
+ */
 const getUsers = async (req, res) => {
   try {
     const users = await userModel.find().select("-password"); // ocultar password
@@ -100,6 +127,15 @@ const getUsers = async (req, res) => {
   }
 };
 
+/**
+ * @api {get} /users/:id Get user by ID
+ * @apiName GetUserById
+ * @apiGroup Users
+ * @apiParam {String} id User ID
+ * @apiSuccess {Object} user User data, with password field excluded
+ * @apiError {Object} 404 User not found
+ * @apiError {Object} 500 Internal Server Error
+ */
 const getUserById = async (req, res) => {
   try {
     const user = await userModel.findById(req.params.id).select("-password");
@@ -112,6 +148,16 @@ const getUserById = async (req, res) => {
   }
 };
 
+/**
+ * @api {patch} /users/:id Update user
+ * @apiName UpdateUser
+ * @apiGroup Users
+ * @apiParam {String} id User ID
+ * @apiBody {Object} user User data to update
+ * @apiSuccess {Object} user Updated user data, with password field excluded
+ * @apiError {Object} 404 User not found
+ * @apiError {Object} 500 Internal Server Error
+ */
 const updateUser = async (req, res) => {
   try {
     const updatedUser = await userModel.findByIdAndUpdate(
@@ -130,6 +176,15 @@ const updateUser = async (req, res) => {
   }
 };
 
+/**
+ * @api {delete} /users/:id Delete user
+ * @apiName DeleteUser
+ * @apiGroup Users
+ * @apiParam {String} id User ID
+ * @apiSuccess {Object} message Success message
+ * @apiError {Object} 404 User not found
+ * @apiError {Object} 500 Internal Server Error
+ */
 const deleteUser = async (req, res) => {
   try {
     const deletedUser = await userModel.findByIdAndDelete(req.params.id);

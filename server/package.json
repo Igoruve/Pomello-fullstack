@@ -6,8 +6,11 @@
   "type": "module",
   "scripts": {
     "start": "nodemon src/index.js",
-     "dev": "nodemon src/index.js"
-  },
+     "dev": "nodemon src/index.js",
+     "doc:backend": "jsdoc -c jsdoc.backend.json",
+     "doc:frontend": "jsdoc -c jsdoc.frontend.json",
+      "doc:all": "npm run doc:backend && npm run doc:frontend"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Igoruve/pomello.git"
