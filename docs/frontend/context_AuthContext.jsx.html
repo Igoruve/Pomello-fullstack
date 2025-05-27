@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: context/AuthContext.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: context/AuthContext.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { saveToken, removeToken, saveToLocalStorage, getFromLocalStorage } from "../utils/localStorage";
+import { login, register, logout } from "../utils/auth";
+
+const BASE_URL = "http://localhost:3013";
+
+const AuthContext = createContext({
+    userData: null,
+    onLogin: async () => { },
+    onLogout: () => { },
+    onRegister: async () => { }
+});
+
+
+/**
+ * AuthProvider component that provides authentication context to its children components.
+ * It manages user data and authentication actions such as login, logout, and register.
+ * 
+ * - Loads user data from local storage on initialization if available.
+ * - Provides `handleRegister`, `handleLogin`, and `handleLogout` functions to manage user authentication.
+ * - Uses `AuthContext` to share authentication state and actions with descendant components.
+ * - Redirects users to different routes based on authentication actions.
+ * 
+ * @param {Object} props - The component props.
+ * @param {React.ReactNode} props.children - The children components that require access to the authentication context.
+ */
+
+const AuthProvider = ({ children }) => {
+    const [userData, setUserData] = useState(null);
+    const navigate = useNavigate();
+
+    //cargar los datos del usuario al inicio si existe
+    useEffect(() => {
+        const savedUserData = getFromLocalStorage("userData");
+        if (savedUserData) {
+            setUserData(savedUserData);
+        }
+    }, []);
+
+
+
+    /**
+     * Registers a new user using the provided email and password.
+     * 
+     * @param {String} email - The user's email address.
+     * @param {String} password - The user's password.
+     * 
+     * @returns {Promise&lt;String>} A promise that resolves with an error message if there was an issue with the registration
+     * or null if the registration was successful.
+     */
+    const handleRegister = async (email, password) => {
+        try {
+            const result = await register(email, password);
+            if (result.error) {
+                return result.error;
+            } else {
+                if (result.token) { //si existe token, lo guarda
+                    saveToken(result.token);
+                }
+                if (result.user) { //y si existe user guarda sus datos
+                    setUserData(result.user);
+                    saveToLocalStorage("userData", result.user);
+                }
+
+                navigate(`/login`);
+                return null;
+            }
+        } catch (error) {
+            console.error("Register error: ", error);
+            return "Error processing the register.";
+        }
+    };
+
+
+    /**
+     * Logs in an existing user using the provided email and password.
+     * 
+     * @param {String} email - The user's email address.
+     * @param {String} password - The user's password.
+     * 
+     * @returns {Promise&lt;String>} A promise that resolves with an error message if there was an issue with the login
+     * or null if the login was successful.
+     */
+    const handleLogin = async (email, password) => {
+        try {
+            const result = await login(email, password);
+            if ("error" in result &amp;&amp; result.error) {
+                removeToken();
+                return result.error;
+            } else {
+            if (result.token) { //si existe token, lo guarda
+                saveToken(result.token);
+            }
+            let finalUserData = result.user;
+            setUserData(finalUserData);
+            saveToLocalStorage("userData", finalUserData);
+            navigate(`/project/user/`);
+            return null;
+        }
+    }
+        catch (error) {
+        console.error("Error logging in: ", error);
+        return "Error processing the login.";
+    }
+}
+
+
+    /**
+     * Logs out the current user.
+     * 
+     * - Calls the logout endpoint on the server to invalidate the user's session.
+     * - Removes the user's session token from local storage.
+     * - Removes the user's data from local storage.
+     * - Sets the user data to null in the state.
+     * - Navigates to the root route.
+     * 
+     * @returns {Promise&lt;void>} A promise that resolves when the logout is complete.
+     */
+const handleLogout = async () => {
+    try {
+        await logout();
+    } catch (error) {
+        console.error("Error loggint out: ", error);
+    } finally {
+        //siempre limpia los datos locales independientemente de la respuesta del servidor
+        removeToken();
+        localStorage.removeItem("userData");
+        setUserData(null);
+        navigate("/");
+    }
+}
+
+return (
+    &lt;AuthContext.Provider value={{
+        userData: userData,
+        onLogin: handleLogin,
+        onLogout: handleLogout,
+        onRegister: handleRegister
+    }}>
+        {children}
+    &lt;/AuthContext.Provider >
+)
+}
+
+export {
+    AuthContext,
+    AuthProvider
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AsideNavbar">AsideNavbar</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Browser">Browser</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#DragableList">DragableList</a></li><li><a href="global.html#DropdownMenu">DropdownMenu</a></li><li><a href="global.html#FetchData">FetchData</a></li><li><a href="global.html#HomeNavbar">HomeNavbar</a></li><li><a href="global.html#Homepage">Homepage</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#NavbarProjects">NavbarProjects</a></li><li><a href="global.html#NewList">NewList</a></li><li><a href="global.html#NewTask">NewTask</a></li><li><a href="global.html#PomellodoroChrono">PomellodoroChrono</a></li><li><a href="global.html#Project">Project</a></li><li><a href="global.html#ProjectList">ProjectList</a></li><li><a href="global.html#Root">Root</a></li><li><a href="global.html#SessionChart">SessionChart</a></li><li><a href="global.html#ShowLists">ShowLists</a></li><li><a href="global.html#ShowTasks">ShowTasks</a></li><li><a href="global.html#SortableList">SortableList</a></li><li><a href="global.html#TopNavbar">TopNavbar</a></li><li><a href="global.html#createList">createList</a></li><li><a href="global.html#createProject">createProject</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#getAllLists">getAllLists</a></li><li><a href="global.html#getAllProjects">getAllProjects</a></li><li><a href="global.html#getAllTasks">getAllTasks</a></li><li><a href="global.html#getAllUsers">getAllUsers</a></li><li><a href="global.html#getChronoStats">getChronoStats</a></li><li><a href="global.html#getFromLocalStorage">getFromLocalStorage</a></li><li><a href="global.html#getListById">getListById</a></li><li><a href="global.html#getListByProjectId">getListByProjectId</a></li><li><a href="global.html#getProjectById">getProjectById</a></li><li><a href="global.html#getProjectsByUserId">getProjectsByUserId</a></li><li><a href="global.html#getProjectsFullInfo">getProjectsFullInfo</a></li><li><a href="global.html#getStatus">getStatus</a></li><li><a href="global.html#getTaskById">getTaskById</a></li><li><a href="global.html#getTaskByListId">getTaskByListId</a></li><li><a href="global.html#getToken">getToken</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#removeFromLocalStorage">removeFromLocalStorage</a></li><li><a href="global.html#removeList">removeList</a></li><li><a href="global.html#removeProject">removeProject</a></li><li><a href="global.html#removeTask">removeTask</a></li><li><a href="global.html#removeToken">removeToken</a></li><li><a href="global.html#removeUser">removeUser</a></li><li><a href="global.html#saveToLocalStorage">saveToLocalStorage</a></li><li><a href="global.html#saveToken">saveToken</a></li><li><a href="global.html#saveUser">saveUser</a></li><li><a href="global.html#startChrono">startChrono</a></li><li><a href="global.html#stopChrono">stopChrono</a></li><li><a href="global.html#updateList">updateList</a></li><li><a href="global.html#updateListPositions">updateListPositions</a></li><li><a href="global.html#updateProject">updateProject</a></li><li><a href="global.html#updateTask">updateTask</a></li><li><a href="global.html#updateTaskPositions">updateTaskPositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue May 27 2025 16:08:51 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/PomodoroTimer.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/PomodoroTimer.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from "react";
+import { startChrono, stopChrono, getChronoStats, getStatus } from "../utils/chrono.js";
+
+/**
+ * PomodoroTimer is a React component that manages a pomodoro timer session.
+ * It provides functionality to start and stop the timer, displaying the current status,
+ * and shows statistics for the sessions.
+ * The component handles loading states and displays error messages when necessary.
+ * It uses effect hooks to fetch initial data when mounted and updates the display based
+ * on the running state of the timer.
+ */
+
+export default function PomodoroTimer() {
+    const [status, setStatus] = useState({ running: false });
+    const [stats, setStats] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        console.log("PomodoroTimer mounted");
+        fetchData();
+    }, []);
+
+    /**
+     * fetchData is an async function that fetches the current status and stats from the API,
+     * and updates the state of the component accordingly.
+     * It sets the loading state to true before the requests, and sets it back to false after.
+     * If any of the requests fail, it sets the error state with the error message.
+     */
+    async function fetchData() {
+        try {
+            setLoading(true);
+            const [statusData, statsData] = await Promise.all([
+                getStatus().catch(e => { console.error("Status error:", e); return { running: false }; }),
+                getChronoStats().catch(e => { console.error("Stats error:", e); return null; })
+            ]);
+            setStatus(statusData || { running: false });
+            setStats(statsData);
+            setError(null);
+        } catch (err) {
+            console.error("Fetch error:", err);
+            setError("Error al cargar datos");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+/**
+ * Initiates a new Pomodoro session with predefined focus and break durations.
+ * Sets the loading state to true during the process. If successful, updates the
+ * component's status and statistics by fetching data from the API. If an error
+ * occurs, logs the error and updates the error state with an appropriate message.
+ * Finally, ensures the loading state is set to false.
+ */
+
+    async function handleStart() {
+        setLoading(true);
+        try {
+            await startChrono(25, 5);
+            await fetchData();
+        } catch (err) {
+            console.error("Start error:", err);
+            setError(err.message || "Error al iniciar");
+        }
+        setLoading(false);
+    }
+
+    async function handleStop() {
+        setLoading(true);
+        try {
+            await stopChrono();
+            await fetchData();
+        } catch (err) {
+            console.error("Stop error:", err);
+            setError(err.message || "Error al detener");
+        }
+        setLoading(false);
+    }
+
+    return (
+        &lt;div style={{ 
+            padding: "1rem", 
+            fontFamily: "sans-serif",
+            textAlign: "center"
+        }}>
+            {loading &amp;&amp; &lt;p>Cargando...&lt;/p>}
+            {error &amp;&amp; &lt;p style={{ color: "red" }}>{error}&lt;/p>}
+            
+            &lt;h2>Estado: {status?.running ? "🟢 En marcha" : "🔴 Detenido"}&lt;/h2>
+            
+            &lt;div style={{ margin: "1rem 0" }}>
+                &lt;button 
+                    onClick={handleStart} 
+                    disabled={loading || status?.running}
+                    style={{
+                        padding: "0.5rem 1rem",
+                        margin: "0 0.5rem",
+                        backgroundColor: "#2ecc71",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer"
+                    }}
+                >
+                    Iniciar
+                &lt;/button>
+                &lt;button 
+                    onClick={handleStop} 
+                    disabled={loading || !status?.running}
+                    style={{
+                        padding: "0.5rem 1rem",
+                        margin: "0 0.5rem",
+                        backgroundColor: "#e74c3c",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer"
+                    }}
+                >
+                    Detener
+                &lt;/button>
+            &lt;/div>
+
+            &lt;div style={{ 
+                marginTop: "2rem",
+                padding: "1rem",
+                backgroundColor: "#f0f0f0",
+                borderRadius: "4px"
+            }}>
+                &lt;h3>Estadísticas&lt;/h3>
+                {stats ? (
+                    &lt;ul style={{ listStyle: "none", padding: 0 }}>
+                        &lt;li>Total sesiones: {stats.totalSessions || 0}&lt;/li>
+                        &lt;li>Tiempo total: {stats.totalMinutes || 0} minutos&lt;/li>
+                    &lt;/ul>
+                ) : (
+                    &lt;p>No hay datos de sesiones disponibles&lt;/p>
+                )}
+            &lt;/div>
+        &lt;/div>
+    );
+} 
+
+
+
+
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AsideNavbar">AsideNavbar</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Browser">Browser</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#DragableList">DragableList</a></li><li><a href="global.html#DropdownMenu">DropdownMenu</a></li><li><a href="global.html#FetchData">FetchData</a></li><li><a href="global.html#HomeNavbar">HomeNavbar</a></li><li><a href="global.html#Homepage">Homepage</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#NavbarProjects">NavbarProjects</a></li><li><a href="global.html#NewList">NewList</a></li><li><a href="global.html#NewTask">NewTask</a></li><li><a href="global.html#PomellodoroChrono">PomellodoroChrono</a></li><li><a href="global.html#Project">Project</a></li><li><a href="global.html#ProjectList">ProjectList</a></li><li><a href="global.html#Root">Root</a></li><li><a href="global.html#SessionChart">SessionChart</a></li><li><a href="global.html#ShowLists">ShowLists</a></li><li><a href="global.html#ShowTasks">ShowTasks</a></li><li><a href="global.html#SortableList">SortableList</a></li><li><a href="global.html#TopNavbar">TopNavbar</a></li><li><a href="global.html#createList">createList</a></li><li><a href="global.html#createProject">createProject</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#getAllLists">getAllLists</a></li><li><a href="global.html#getAllProjects">getAllProjects</a></li><li><a href="global.html#getAllTasks">getAllTasks</a></li><li><a href="global.html#getAllUsers">getAllUsers</a></li><li><a href="global.html#getChronoStats">getChronoStats</a></li><li><a href="global.html#getFromLocalStorage">getFromLocalStorage</a></li><li><a href="global.html#getListById">getListById</a></li><li><a href="global.html#getListByProjectId">getListByProjectId</a></li><li><a href="global.html#getProjectById">getProjectById</a></li><li><a href="global.html#getProjectsByUserId">getProjectsByUserId</a></li><li><a href="global.html#getProjectsFullInfo">getProjectsFullInfo</a></li><li><a href="global.html#getStatus">getStatus</a></li><li><a href="global.html#getTaskById">getTaskById</a></li><li><a href="global.html#getTaskByListId">getTaskByListId</a></li><li><a href="global.html#getToken">getToken</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#removeFromLocalStorage">removeFromLocalStorage</a></li><li><a href="global.html#removeList">removeList</a></li><li><a href="global.html#removeProject">removeProject</a></li><li><a href="global.html#removeTask">removeTask</a></li><li><a href="global.html#removeToken">removeToken</a></li><li><a href="global.html#removeUser">removeUser</a></li><li><a href="global.html#saveToLocalStorage">saveToLocalStorage</a></li><li><a href="global.html#saveToken">saveToken</a></li><li><a href="global.html#saveUser">saveUser</a></li><li><a href="global.html#startChrono">startChrono</a></li><li><a href="global.html#stopChrono">stopChrono</a></li><li><a href="global.html#updateList">updateList</a></li><li><a href="global.html#updateListPositions">updateListPositions</a></li><li><a href="global.html#updateProject">updateProject</a></li><li><a href="global.html#updateTask">updateTask</a></li><li><a href="global.html#updateTaskPositions">updateTaskPositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue May 27 2025 16:08:51 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
