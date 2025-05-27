@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/list/NewList.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/list/NewList.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState } from "react";
+import { useRevalidator, useParams } from "react-router-dom";
+
+import { createList } from "../../utils/list.js";
+
+/**
+ * Component to create a new list within a project.
+ * @param {Function} setLists Function to update the list of lists.
+ * @returns A JSX element that renders a form to create a new list.
+ */
+
+function NewList({ setLists }) {
+  const revalidator = useRevalidator();
+  const { id } = useParams();
+
+  const [showForm, setShowForm] = useState(false);
+  const [newListTitle, setNewListTitle] = useState("");
+
+
+  /**
+   * Handle the submission of a new list form.
+   * @param {Event} e Form submission event.
+   * @returns {Promise&lt;void>} Resolves when the list is created and the form is cleaned up.
+   */
+  const handleCreateList = async (e) => {
+    e.preventDefault();
+    if (!newListTitle.trim()) return;
+
+    const newList = await createList({ title: newListTitle, project: id });
+
+    setLists((prev) => [...prev, newList]);
+    // Limpiar formulario
+    setNewListTitle("");
+    setShowForm(false);
+    revalidator.revalidate();
+  };
+
+  return (
+    &lt;div className="mr-16">
+      {!showForm ? (
+        &lt;div
+          onClick={() => setShowForm(true)}
+          className="flex flex-row text-white gap-4 text-lg mb-2 bg-gray-500/50 h-18 rounded-xl w-64 p-4 cursor-pointer hover:bg-gray-500/60 transition-colors duration-300 ease-in-out shadow-lg hover:scale-105"
+        >
+          &lt;svg viewBox="0 0 448 512" fill="white" height="24px" width="24px">
+            &lt;path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
+          &lt;/svg>
+          New List
+        &lt;/div>
+      ) : (
+        &lt;form
+          onSubmit={handleCreateList}
+          className="bg-gray-500/30 rounded-xl p-4 w-64 flex flex-col gap-2 shadow-md"
+        >
+          &lt;textarea
+            autoFocus
+            type="text"
+            name="title"
+            value={newListTitle}
+            onChange={(e) => setNewListTitle(e.target.value)}
+            placeholder="Nombre de la lista"
+            className="px-3 py-2 rounded-lg text-black outline-none"
+            required
+          />
+          &lt;div className="flex justify-end gap-2">
+            &lt;button
+              type="button"
+              onClick={() => {
+                setShowForm(false);
+                setNewListTitle("");
+              }}
+              className="text-sm bg-gray-500 text-white px-3 py-1 rounded-lg hover:bg-gray-600"
+            >
+              Cancel
+            &lt;/button>
+            &lt;button
+              type="submit"
+              className="text-sm bg-[#f56b79] text-white px-3 py-1 rounded-lg"
+            >
+              Create
+            &lt;/button>
+          &lt;/div>
+        &lt;/form>
+      )}
+    &lt;/div>
+  );
+}
+
+export default NewList;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AsideNavbar">AsideNavbar</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Browser">Browser</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#DragableList">DragableList</a></li><li><a href="global.html#DropdownMenu">DropdownMenu</a></li><li><a href="global.html#FetchData">FetchData</a></li><li><a href="global.html#HomeNavbar">HomeNavbar</a></li><li><a href="global.html#Homepage">Homepage</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#NavbarProjects">NavbarProjects</a></li><li><a href="global.html#NewList">NewList</a></li><li><a href="global.html#NewTask">NewTask</a></li><li><a href="global.html#PomellodoroChrono">PomellodoroChrono</a></li><li><a href="global.html#Project">Project</a></li><li><a href="global.html#ProjectList">ProjectList</a></li><li><a href="global.html#Root">Root</a></li><li><a href="global.html#SessionChart">SessionChart</a></li><li><a href="global.html#ShowLists">ShowLists</a></li><li><a href="global.html#ShowTasks">ShowTasks</a></li><li><a href="global.html#SortableList">SortableList</a></li><li><a href="global.html#TopNavbar">TopNavbar</a></li><li><a href="global.html#createList">createList</a></li><li><a href="global.html#createProject">createProject</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#getAllLists">getAllLists</a></li><li><a href="global.html#getAllProjects">getAllProjects</a></li><li><a href="global.html#getAllTasks">getAllTasks</a></li><li><a href="global.html#getAllUsers">getAllUsers</a></li><li><a href="global.html#getChronoStats">getChronoStats</a></li><li><a href="global.html#getFromLocalStorage">getFromLocalStorage</a></li><li><a href="global.html#getListById">getListById</a></li><li><a href="global.html#getListByProjectId">getListByProjectId</a></li><li><a href="global.html#getProjectById">getProjectById</a></li><li><a href="global.html#getProjectsByUserId">getProjectsByUserId</a></li><li><a href="global.html#getProjectsFullInfo">getProjectsFullInfo</a></li><li><a href="global.html#getStatus">getStatus</a></li><li><a href="global.html#getTaskById">getTaskById</a></li><li><a href="global.html#getTaskByListId">getTaskByListId</a></li><li><a href="global.html#getToken">getToken</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#removeFromLocalStorage">removeFromLocalStorage</a></li><li><a href="global.html#removeList">removeList</a></li><li><a href="global.html#removeProject">removeProject</a></li><li><a href="global.html#removeTask">removeTask</a></li><li><a href="global.html#removeToken">removeToken</a></li><li><a href="global.html#removeUser">removeUser</a></li><li><a href="global.html#saveToLocalStorage">saveToLocalStorage</a></li><li><a href="global.html#saveToken">saveToken</a></li><li><a href="global.html#saveUser">saveUser</a></li><li><a href="global.html#startChrono">startChrono</a></li><li><a href="global.html#stopChrono">stopChrono</a></li><li><a href="global.html#updateList">updateList</a></li><li><a href="global.html#updateListPositions">updateListPositions</a></li><li><a href="global.html#updateProject">updateProject</a></li><li><a href="global.html#updateTask">updateTask</a></li><li><a href="global.html#updateTaskPositions">updateTaskPositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue May 27 2025 16:08:51 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

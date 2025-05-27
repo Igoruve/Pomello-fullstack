@@ -16,6 +16,16 @@ function Browser() {
   const navigate = useNavigate();
 
   useEffect(() => {
+/**
+ * Fetches projects associated with the current user and updates the state.
+ *
+ * Uses the `getProjectsByUserId` function to retrieve the projects from the server.
+ * On success, sets the fetched projects to the `projects` state.
+ * Logs an error message to the console if fetching fails.
+ * 
+ * @returns {Promise<void>} Resolves when projects are fetched and state is updated.
+ */
+
     const fetchProjects = async () => {
       try {
         const userProjects = await getProjectsByUserId();
@@ -47,16 +57,40 @@ function Browser() {
     setIsOpen(true);
   };
 
+  /**
+   * Toggles the open state of the dropdown menu.
+   *
+   * Resets the search term to an empty string.
+   */
+
   const handleClick = () => {
     setIsOpen((prev) => !prev);
     setSearchTerm("");
   };
 
+  /**
+   * Handles a blur event for the search input.
+   *
+   * Resets the component state as follows:
+   * - Sets `isOpen` to false after a 100ms delay to prevent accidental closes.
+   * - Sets `searchTerm` to an empty string.
+   */
   const handleBlur = () => {
     setTimeout(() => setIsOpen(false), 100);
     setSearchTerm("");
   };
 
+  /**
+   * Handles a selection event from the dropdown menu.
+   *
+   * Resets the component state as follows:
+   * - Sets `searchTerm` to an empty string.
+   * - Sets `results` to an empty array.
+   * - Sets `isOpen` to false.
+   * - Navigates to the selected project page.
+   *
+   * @param {string} id - The ID of the selected project.
+   */
   const handleSelect = (id) => {
     setSearchTerm("");
     setResults([]);

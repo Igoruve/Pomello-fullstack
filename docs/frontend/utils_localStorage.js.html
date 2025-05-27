@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: utils/localStorage.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: utils/localStorage.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
+/**
+ * Saves a given value to localStorage.
+ * If the value is null or undefined, it removes the item from localStorage instead.
+ * @param {string} key The key to store the value under.
+ * @param {*} value The value to store.
+ */
+function saveToLocalStorage(key, value) {
+    if(value!== null &amp;&amp; value !== undefined) {
+        localStorage.setItem(key, JSON.stringify(value));
+        
+  } else {
+    localStorage.removeItem(key);
+  }
+}
+  
+  /**
+   * Retrieves a value from localStorage.
+   * If the value doesn't exist, returns the defaultValue instead.
+   * If the value exists but is not a valid JSON, removes it from localStorage
+   * and returns the defaultValue.
+   * @param {string} key The key to retrieve the value from.
+   * @param {*} [defaultValue=null] The value to return if the key doesn't exist.
+   * @returns {*} The value stored in localStorage, or the defaultValue.
+   */
+  function getFromLocalStorage(key, defaultValue = null) {
+    const result = localStorage.getItem(key);
+    if (result) {
+        try{
+            return JSON.parse(result); //intentamos parsear el resultado
+        } catch (error) {
+            console.error("Error parsing JSON from localStorage:", error);
+            localStorage.removeItem(key); // eliminamos el item si no se puede parsear  
+            return defaultValue;
+        }
+    } else {
+      return defaultValue;
+    }
+  }
+  
+  /**
+   * Removes a given key from localStorage.
+   * @param {string} key The key to remove from localStorage.
+   */
+  function removeFromLocalStorage(key) {
+    localStorage.removeItem(key);
+  }
+
+  
+  /**
+   * Saves a given token to localStorage.
+   * If the token is null or undefined, it removes the token from localStorage instead.
+   * @param {string} token The token to store in localStorage.
+   */
+  function saveToken(token) {
+    if(token){
+        saveToLocalStorage("token", token);
+    }
+  }
+  
+  /**
+   * Retrieves the token from localStorage.
+   * If the token doesn't exist, returns null instead.
+   * @returns {string|null} The token stored in localStorage, or null.
+   */
+  function getToken() {
+    return getFromLocalStorage("token", null);
+  }
+  
+  /**
+   * Removes the token from localStorage.
+   */
+  function removeToken() {
+    removeFromLocalStorage("token");
+  }
+
+
+  /**
+   * Saves a given user object to localStorage.
+   * If the user is null or undefined, it removes the user from localStorage instead.
+   * @param {Object} user The user object to store in localStorage.
+   */
+  function saveUser(user) {
+    saveToLocalStorage("user", user);
+  }
+  
+  /**
+   * Retrieves the user object from localStorage.
+   * If the user object doesn't exist, returns null instead.
+   * @returns {Object|null} The user object stored in localStorage, or null.
+   */
+  function getUser() {
+    return getFromLocalStorage("user", null);
+  }
+  
+/**
+ * Removes the user object from localStorage.
+ */
+
+  function removeUser() {
+    removeFromLocalStorage("user");
+  }
+  
+  export { saveToLocalStorage, getFromLocalStorage, saveToken, getToken, removeToken, saveUser, getUser, removeUser };
+  </code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AsideNavbar">AsideNavbar</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Browser">Browser</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#DragableList">DragableList</a></li><li><a href="global.html#DropdownMenu">DropdownMenu</a></li><li><a href="global.html#FetchData">FetchData</a></li><li><a href="global.html#HomeNavbar">HomeNavbar</a></li><li><a href="global.html#Homepage">Homepage</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#NavbarProjects">NavbarProjects</a></li><li><a href="global.html#NewList">NewList</a></li><li><a href="global.html#NewTask">NewTask</a></li><li><a href="global.html#PomellodoroChrono">PomellodoroChrono</a></li><li><a href="global.html#Project">Project</a></li><li><a href="global.html#ProjectList">ProjectList</a></li><li><a href="global.html#Root">Root</a></li><li><a href="global.html#SessionChart">SessionChart</a></li><li><a href="global.html#ShowLists">ShowLists</a></li><li><a href="global.html#ShowTasks">ShowTasks</a></li><li><a href="global.html#SortableList">SortableList</a></li><li><a href="global.html#TopNavbar">TopNavbar</a></li><li><a href="global.html#createList">createList</a></li><li><a href="global.html#createProject">createProject</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#getAllLists">getAllLists</a></li><li><a href="global.html#getAllProjects">getAllProjects</a></li><li><a href="global.html#getAllTasks">getAllTasks</a></li><li><a href="global.html#getAllUsers">getAllUsers</a></li><li><a href="global.html#getChronoStats">getChronoStats</a></li><li><a href="global.html#getFromLocalStorage">getFromLocalStorage</a></li><li><a href="global.html#getListById">getListById</a></li><li><a href="global.html#getListByProjectId">getListByProjectId</a></li><li><a href="global.html#getProjectById">getProjectById</a></li><li><a href="global.html#getProjectsByUserId">getProjectsByUserId</a></li><li><a href="global.html#getProjectsFullInfo">getProjectsFullInfo</a></li><li><a href="global.html#getStatus">getStatus</a></li><li><a href="global.html#getTaskById">getTaskById</a></li><li><a href="global.html#getTaskByListId">getTaskByListId</a></li><li><a href="global.html#getToken">getToken</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#removeFromLocalStorage">removeFromLocalStorage</a></li><li><a href="global.html#removeList">removeList</a></li><li><a href="global.html#removeProject">removeProject</a></li><li><a href="global.html#removeTask">removeTask</a></li><li><a href="global.html#removeToken">removeToken</a></li><li><a href="global.html#removeUser">removeUser</a></li><li><a href="global.html#saveToLocalStorage">saveToLocalStorage</a></li><li><a href="global.html#saveToken">saveToken</a></li><li><a href="global.html#saveUser">saveUser</a></li><li><a href="global.html#startChrono">startChrono</a></li><li><a href="global.html#stopChrono">stopChrono</a></li><li><a href="global.html#updateList">updateList</a></li><li><a href="global.html#updateListPositions">updateListPositions</a></li><li><a href="global.html#updateProject">updateProject</a></li><li><a href="global.html#updateTask">updateTask</a></li><li><a href="global.html#updateTaskPositions">updateTaskPositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue May 27 2025 16:08:51 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

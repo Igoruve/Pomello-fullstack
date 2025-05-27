@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>Pomello</h1>
+<h2>Task Manager with Pomodoro Integration</h2>
+<p><strong>Pomello</strong> is a full-stack task management application that blends the organizational structure of <strong>Trello</strong> with the productivity rhythm of the <strong>Pomodoro technique</strong>. It implements a dropdown component that enhances user interaction by allowing dynamic selection of task-related options.</p>
+<h2>Contributors</h2>
+<ul>
+<li><a href="https://github.com/Igoruve">Igor Aparicio</a></li>
+<li><a href="https://github.com/darroyo083">Daniel Arroyo</a></li>
+<li><a href="https://github.com/crdalila">Dalila Cabrera</a></li>
+<li><a href="https://github.com/javierlla">Javier Llarena</a></li>
+<li><a href="https://github.com/IndiraSierra">Indira Sierra</a></li>
+</ul>
+<hr>
+<hr>
+<h2>Features</h2>
+<h3>Core Functionality</h3>
+<ul>
+<li><strong>Task Boards:</strong> Create projects, lists, and tasks. Drag-and-drop capabilities for smooth workflow management.</li>
+<li><strong>Pomodoro Timer:</strong> Fully integrated timer with customizable focus and break intervals. Automates the start-stop cycle for deep work sessions.</li>
+<li><strong>Statistics Tracking:</strong> Backend logic stores usage and session data of the timer for analytics and productivity feedback.</li>
+<li><strong>Responsive UI:</strong> Built with React and TailwindCSS.</li>
+</ul>
+<hr>
+<h2>🚀 Tech Stack</h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Technology</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frontend</td>
+<td>React + TailwindCSS</td>
+</tr>
+<tr>
+<td>Backend</td>
+<td>Node.js + Express</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>MongoDB + Mongoose</td>
+</tr>
+<tr>
+<td>Auth &amp; Tokens</td>
+<td>JWT</td>
+</tr>
+<tr>
+<td>Dev Tools</td>
+<td>Vite</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>Project Structure</h2>
+<pre class="prettyprint source lang-bash"><code>Pomello/
+├── client/
+│   ├── src/
+│   │   ├── components/           # Small components
+│   │   ├── context/              # Auth context
+│   │   ├── data/                 # Example data          
+│   │   ├── pages/                # Main components
+│   │   ├── styles/               # Custom styles
+│   │   ├── utils/
+│   │   ├── styles/  
+├── server/
+│   ├── docs                      # Documentation  
+│   ├── src/
+│   │   ├── config/               # Mongoose configuration
+│   │   ├── controllers/
+│   │   ├── middlewares/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── utils/                # Errors, token and bcrypt
+│   │   ├── index.js
+│   ├── package.json              # Server dependencies
+</code></pre>
+<hr>
+<h2>Installation</h2>
+<pre class="prettyprint source lang-bash"><code># Clone repository
+git clone https://github.com/Igoruve/Pomello-fullstack.git
+cd Pomello-fullstack
+
+# Install client dependencies
+cd client
+npm install
+
+# Install server dependencies
+cd ../server
+npm install
+</code></pre>
+<hr>
+<h2>Usage</h2>
+<h3>Start the server (backend):</h3>
+<pre class="prettyprint source lang-bash"><code>cd server
+docker compose up
+</code></pre>
+<h3>Start the client (frontend):</h3>
+<pre class="prettyprint source lang-bash"><code>cd client
+npm run dev
+</code></pre></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ListTitleNotProvided.html">ListTitleNotProvided</a></li><li><a href="ProjectTitleNotProvided.html">ProjectTitleNotProvided</a></li><li><a href="TaskTitleNotProvided.html">TaskTitleNotProvided</a></li><li><a href="UserNameNotProvided.html">UserNameNotProvided</a></li></ul><h3>Global</h3><ul><li><a href="global.html#compare">compare</a></li><li><a href="global.html#connectDB">connectDB</a></li><li><a href="global.html#createList">createList</a></li><li><a href="global.html#createProject">createProject</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#createToken">createToken</a></li><li><a href="global.html#deleteList">deleteList</a></li><li><a href="global.html#deleteTask">deleteTask</a></li><li><a href="global.html#deleteUser">deleteUser</a></li><li><a href="global.html#getFullUserData">getFullUserData</a></li><li><a href="global.html#getListById">getListById</a></li><li><a href="global.html#getLists">getLists</a></li><li><a href="global.html#getListsByProject">getListsByProject</a></li><li><a href="global.html#getPomellodoroStatus">getPomellodoroStatus</a></li><li><a href="global.html#getProjectbyId">getProjectbyId</a></li><li><a href="global.html#getProjects">getProjects</a></li><li><a href="global.html#getProjectsByUser">getProjectsByUser</a></li><li><a href="global.html#getTaskbyId">getTaskbyId</a></li><li><a href="global.html#getTasks">getTasks</a></li><li><a href="global.html#getTasksByList">getTasksByList</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#getUsers">getUsers</a></li><li><a href="global.html#hash">hash</a></li><li><a href="global.html#isLoggedInAPI">isLoggedInAPI</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#startChrono">startChrono</a></li><li><a href="global.html#startPomellodoroCycle">startPomellodoroCycle</a></li><li><a href="global.html#stopChrono">stopChrono</a></li><li><a href="global.html#stopPomellodoroCycle">stopPomellodoroCycle</a></li><li><a href="global.html#updateList">updateList</a></li><li><a href="global.html#updateListPositions">updateListPositions</a></li><li><a href="global.html#updateProject">updateProject</a></li><li><a href="global.html#updateTask">updateTask</a></li><li><a href="global.html#updateTaskPositions">updateTaskPositions</a></li><li><a href="global.html#updateUser">updateUser</a></li><li><a href="global.html#verifyToken">verifyToken</a></li><li><a href="global.html#visualPomellodoroStatus">visualPomellodoroStatus</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue May 27 2025 16:11:35 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
