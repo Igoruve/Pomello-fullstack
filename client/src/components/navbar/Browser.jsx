@@ -3,6 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 import { getProjectsByUserId } from "../../utils/project.js";
 
+  /**
+   * Component for searching projects by title.
+   *
+   * @returns The Browser component.
+   */
 function Browser() {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState([]);
@@ -22,6 +27,16 @@ function Browser() {
     fetchProjects();
   }, []);
 
+  /**
+   * Handles a change event for the search input.
+   *
+   * Updates the component state as follows:
+   * - Sets `searchTerm` to the new value of the input.
+   * - Sets `results` to the projects that match the search term.
+   * - Sets `isOpen` to true.
+   *
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The change event.
+   */
   const handleChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);

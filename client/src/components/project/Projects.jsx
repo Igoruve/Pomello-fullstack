@@ -4,6 +4,28 @@ import { useState } from "react";
 
 import { createProject, removeProject } from "../../utils/project.js";
 
+/**
+ * Component to render a list of projects and provide functionality to create new projects.
+ *
+ * Props:
+ * - loaderData: array of projects
+ *
+ * State:
+ * - projectToDelete: id of project to delete
+ * - expanded: is the creation form expanded
+ * - selectedProject: id of selected project
+ * - projects: array of projects
+ * - setError: error message
+ * - titleInput: value of title input
+ * - descriptionInput: value of description input
+ *
+ * Functions:
+ * - handleCreateProject: create a new project
+ * - handleRemoveProject: remove a project
+ *
+ * Returns:
+ * - JSX element with a list of projects and a creation form
+ */
 function ProjectList() {
   const [projectToDelete, setProjectToDelete] = useState(null);
 
@@ -23,6 +45,11 @@ function ProjectList() {
     return <div>Error: {loaderData?.message || "Unexpected error"}</div>;
   }
 
+  /**
+   * Handle the submission of a new project form.
+   * @param {Event} e Form submission event.
+   * @returns {Promise<void>} Resolves when the project is created and the form is cleaned up.
+   */
   const handleCreateProject = async (e) => {
     e.preventDefault();
     const title = e.target.title.value.trim(); // Eliminar espacios en blanco
@@ -51,6 +78,11 @@ function ProjectList() {
     }
   };
 
+  /**
+   * Remove a project.
+   * @param {string} projectId - ID of project to remove
+   * @returns {Promise<void>} Resolves when the project is removed and the route is revalidated.
+   */
   const handleRemoveProject = async (projectId) => {
     try {
       const result = await removeProject(projectId);

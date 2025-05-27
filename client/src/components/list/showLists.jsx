@@ -19,6 +19,13 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
+/**
+ * Component to show a list of lists and their tasks.
+ * Handles deleting a list and updating the order of lists.
+ * @param {Object[]} lists - The list of lists to be displayed.
+ * @param {Function} onAddTask - Callback to handle adding a new task.
+ * @returns {JSX.Element} The rendered component.
+ */
 function ShowLists({ lists: initialLists, onAddTask }) {
   const [lists, setLists] = useState([]);
   const [isReady, setIsReady] = useState(false); // Estado para controlar el renderizado
@@ -46,6 +53,16 @@ function ShowLists({ lists: initialLists, onAddTask }) {
     }
   }, [editedTitle, editingListId]);
 
+  /**
+   * Handles the removal of a list.
+   * Removes the list with the given ID from the state and calls the removeList
+   * function to send the removal request to the backend. If the selected list is
+   * the one being removed, it resets the selected list to null. Then, it
+   * revalidates the route. If there is an error, it sets an error message in the
+   * state.
+   * @param {string} listId - The ID of the list to be removed.
+   * @returns {Promise<void>} Resolves when the list is removed and the route is revalidated.
+   */
   const handleRemoveList = async (listId) => {
     try {
       const result = await removeList(listId);
@@ -66,6 +83,13 @@ function ShowLists({ lists: initialLists, onAddTask }) {
     setListToDelete(null);
   };
 
+  /**
+   * Saves the edited title for the list with the given ID.
+   * Updates the edited title in the state and calls the updateList function
+   * to send the new title to the backend. Then, it revalidates the route.
+   * @param {string} listId - The ID of the list to be saved.
+   * @returns {Promise<void>} Resolves when the list title is updated and the route is revalidated.
+   */
   const handleTitleSave = async (listId) => {
     await updateList(listId, { title: editedTitle });
     setEditingListId(null);
@@ -73,6 +97,16 @@ function ShowLists({ lists: initialLists, onAddTask }) {
   };
 
   const sensors = useSensors(useSensor(PointerSensor));
+
+/**
+ * Handles the drag-and-drop end event for reordering lists.
+ * Updates the order of lists based on the drag operation and
+ * sends the new list positions to the backend.
+ *
+ * @param {Object} event - The event object from the drag-and-drop interaction.
+ * @param {Object} event.active - The currently dragged item.
+ * @param {Object} event.over - The item over which the dragged item is currently positioned.
+ */
 
   const handleDragEnd = async (event) => {
     const { active, over } = event;

@@ -3,6 +3,16 @@ import PomellodoroChrono from "../PomellodoroChrono";
 
 import Browser from "./Browser.jsx";
 
+/**
+ * Component to render the top navigation bar of the application.
+ *
+ * This component displays the Pomello logo with a link to the homepage,
+ * a browser component, and a logout option with an accompanying icon.
+ * It is styled to be fixed at the top of the screen.
+ *
+ * @returns {JSX.Element} The rendered top navigation bar.
+ */
+
 function TopNavbar() {
   return (
     <section className="flex flex-row bg-gray-800 border border-b-gray-200/20 h-16 w-full shadow-lg fixed top-0 z-50">

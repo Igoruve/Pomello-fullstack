@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { startChrono, stopChrono, getChronoStats, getStatus } from "../utils/chrono.js";
 
+/**
+ * PomodoroTimer is a React component that manages a pomodoro timer session.
+ * It provides functionality to start and stop the timer, displaying the current status,
+ * and shows statistics for the sessions.
+ * The component handles loading states and displays error messages when necessary.
+ * It uses effect hooks to fetch initial data when mounted and updates the display based
+ * on the running state of the timer.
+ */
+
 export default function PomodoroTimer() {
     const [status, setStatus] = useState({ running: false });
     const [stats, setStats] = useState(null);
@@ -12,6 +21,12 @@ export default function PomodoroTimer() {
         fetchData();
     }, []);
 
+    /**
+     * fetchData is an async function that fetches the current status and stats from the API,
+     * and updates the state of the component accordingly.
+     * It sets the loading state to true before the requests, and sets it back to false after.
+     * If any of the requests fail, it sets the error state with the error message.
+     */
     async function fetchData() {
         try {
             setLoading(true);
@@ -29,6 +44,14 @@ export default function PomodoroTimer() {
             setLoading(false);
         }
     }
+
+/**
+ * Initiates a new Pomodoro session with predefined focus and break durations.
+ * Sets the loading state to true during the process. If successful, updates the
+ * component's status and statistics by fetching data from the API. If an error
+ * occurs, logs the error and updates the error state with an appropriate message.
+ * Finally, ensures the loading state is set to false.
+ */
 
     async function handleStart() {
         setLoading(true);

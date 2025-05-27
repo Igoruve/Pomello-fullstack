@@ -1,6 +1,21 @@
 import React, { useEffect, useRef } from "react";
 import { Chart } from "chart.js/auto";
 
+/**
+ * SessionChart is a React functional component that visualizes session data using Chart.js.
+ * It displays three charts: a doughnut chart for completed vs interrupted sessions,
+ * a bar chart for focus and break durations per session, and a line chart for
+ * sessions per day over the current week.
+ *
+ * @param {Object} props - The component props.
+ * @param {Object} props.data - The data used for generating the charts. Contains
+ * session statistics such as total sessions, completed sessions, interrupted sessions,
+ * and individual session details.
+ *
+ * If no data is available or if totalSessions is zero, a message is displayed
+ * indicating that no statistics are available.
+ */
+
 const SessionChart = ({ data }) => {
   const doughnutChartRef = useRef(null);
   const barChartRef = useRef(null);

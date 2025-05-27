@@ -4,6 +4,17 @@ import { useState } from "react";
 
 import { createProject } from "../../utils/project.js";
 
+/**
+ * NavbarProjects component displays a list of projects and provides
+ * functionality to create new projects. It uses loader data to
+ * initialize the list of projects and provides an expandable form
+ * to create a new project. The component manages state for form
+ * visibility, project list, and form inputs.
+ *
+ * @returns {JSX.Element} The NavbarProjects component with a list
+ * of projects and a form to create new projects.
+ */
+
 function NavbarProjects() {
   const loaderData = useLoaderData();
   const [expanded, setExpanded] = useState(false);
@@ -17,6 +28,11 @@ function NavbarProjects() {
     return <div>Error: {loaderData?.message || "Unexpected error"}</div>;
   }
 
+  /**
+   * Handles the submission of a new project form.
+   * @param {Event} e Form submission event.
+   * @returns {Promise<void>} Resolves when the project is created and the form is cleaned up.
+   */
   const handleCreateProject = async (e) => {
     e.preventDefault();
     const title = e.target.title.value;

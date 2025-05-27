@@ -4,6 +4,17 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import HomeNavbar from "../../components/navbar/HomeNavbar";
 
+/**
+ * Component to render the register or login page.
+ *
+ * This component renders a form to register or login to the app,
+ * depending on the value of the `isRegister` prop.
+ *
+ * @param {boolean} isRegister - `true` if the component should render a
+ * registration form, `false` otherwise
+ *
+ * @returns {JSX.Element} The rendered register or login page
+ */
 function Auth({ isRegister }) {
   const [error, setError] = useState(null);
   const { onLogin, onRegister } = useContext(AuthContext);
@@ -12,16 +23,35 @@ function Auth({ isRegister }) {
     password: "",
   });
 
+/**
+ * Updates the user's password in the userData state.
+ *
+ * @param {Event} e - The event triggered by the user's input in the password field.
+ */
+
   const handleUserPassword = (e) => {
     const newPassword = e.target.value;
     const newState = { ...userData, password: newPassword };
     setUserData(newState);
   };
+  /**
+   * Updates the user's email in the userData state.
+   *
+   * @param {Event} e - The event triggered by the user's input in the email field.
+   */
   const handleUserEmail = (e) => {
     const newEmail = e.target.value;
     const newState = { ...userData, email: newEmail };
     setUserData(newState);
   };
+  /**
+   * Handles the submission of the login or register form.
+   *
+   * Calls the `onLogin` or `onRegister` function from the `AuthContext` based on the value of `isRegister`.
+   * The function is called with the current `email` and `password` values from the `userData` state.
+   * If the function returns an error, it is saved in the `error` state.
+   * @param {Event} e - The event triggered by the form submission.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     const action = isRegister ? onRegister : onLogin;
