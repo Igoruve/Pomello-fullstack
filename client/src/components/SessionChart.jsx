@@ -198,7 +198,16 @@ const SessionChart = ({ data }) => {
   return (
     <section className="bg-gray-800 h-full">
       <section className="p-4 pt-18 ml-64">
-        <h1 className="text-2xl font-bold text-white/80 mb-8 pl-24 pt-2">Stats</h1>
+        <h1 className="text-2xl font-bold text-white/80 mb-8 pl-24 pt-2">
+          Stats
+        </h1>
+        <p className="text-white/80 mb-8 pl-24 text-lg">
+          These stats show the pomodoros you’ve completed and the ones that were
+          interrupted. You can see your progress clearly through the numbers and
+          bar charts that track the duration of each session. <br /> Keep it up — every
+          session, completed or interrupted, is a step forward toward your
+          goals!
+        </p>
         <div className="flex flex-col gap-8 items-center">
           {[doughnutChartRef, barChartRef, weeklyChartRef].map((ref, index) => (
             <div
