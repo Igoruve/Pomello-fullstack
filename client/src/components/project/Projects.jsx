@@ -71,7 +71,7 @@ function ProjectList() {
   };
 
   return (
-    <section className="min-h-screen max-w-screen bg-gray-800 px-10 py-10 mt-16 ml-64 overflow-x-hidden">
+    <section className="min-h-screen max-w-screen bg-gray-800 px-10 py-10 mt-16 ml-42 overflow-x-hidden">
       <h2 className="text-2xl font-bold mb-4 mx-4 text-slate-100 opacity-80 ml-36 pb-8">
         Projects
       </h2>

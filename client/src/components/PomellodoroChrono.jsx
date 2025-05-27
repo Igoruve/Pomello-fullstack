@@ -304,6 +304,10 @@ const PomellodoroChrono = () => {
         >
           {isRunning ? "Stop" : "Start"}
         </button>
+        <p className="text-center text-white/80 px-4">Want to get extra help to focus? Start your pomodoro chrono and work more effectively.</p>
+        <a className="text-[#f56b79] underline " href="https://en.wikipedia.org/wiki/Pomodoro_Technique" target="_blank" rel="noopener noreferrer">
+          Learn More
+        </a>
       </div>
     </div>
   );

@@ -85,7 +85,7 @@ function Project() {
   };
 
   return (
-    <section className="min-h-screen min-w-full bg-gradient-to-r from-[#fcab51] to-[#f56b79] px-72 py-16 overflow-x-auto scrollbar-thumb scrollbar-track scrollbar-thin">
+    <section className="min-h-screen min-w-full bg-gradient-to-r from-[#fcab51] to-[#f56b79] pl-72 py-16 overflow-x-auto scrollbar-thumb scrollbar-track scrollbar-thin">
       <div className="w-full fixed top-0 left-0 bg-white/20 backdrop-blur-md z-10 px-8 py-4 mt-16 ml-64">
         <div className="flex flex-row gap-4 items-center">
           <svg

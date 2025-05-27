@@ -10,7 +10,7 @@ function DropdownMenu() {
         isMenuOpen ? "-translate-x-0" : "translate-x-11/12"
       }`}
     >
-      <div className="flex flex-col items-center justify-center h-full pb-43">
+      <div className="flex flex-col items-center justify-center h-full pb-18">
       <svg
         viewBox="0 0 512 512"
         height={36}
