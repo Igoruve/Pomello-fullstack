@@ -18,6 +18,7 @@ const PomellodoroChrono = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
+  const [notification, setNotification] = useState("");
 
   /**
    * Calcula la duración del descanso en minutos.
@@ -178,6 +179,7 @@ const PomellodoroChrono = () => {
     running: false,
     phase: null,
   });
+
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
@@ -197,28 +199,29 @@ const PomellodoroChrono = () => {
         const { running, phase } = data;
 
         // start of pomellodoro notification
+        // start of pomellodoro notification
         if (!previousStatus.current.running && running && phase === "focus") {
-          alert("🍅 ¡Pomellodoro Suscesfully started!");
+          setNotification("Chrono started successfully!");
         }
 
         // Cphase change notification
         if (
           previousStatus.current.phase !== phase &&
-          previousStatus.current.running // if is running
+          previousStatus.current.running
         ) {
           if (phase === "break") {
-            alert("🛌 ¡Good job, now take a break!.");
+            setNotification("Good job! Time for a break!");
           } else if (phase === "focus") {
-            alert("🔥 ¡Back to focus!");
+            setNotification("Back to work!");
           }
         }
 
         // end of pomellodoro notification
         if (previousStatus.current.running && !running) {
           if (String(data.manuallyStopped) === "true") {
-            alert("⏹️ Pomellodoro manually stopped.");
+            setNotification("Chrono stoped manually.");
           } else {
-            alert("🎉 Pomellodoro suscessfully finished");
+            setNotification("Pomodoro finished! Time to relax!");
           }
         }
 
@@ -231,11 +234,26 @@ const PomellodoroChrono = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (notification) {
+      const timeout = setTimeout(() => {
+        setNotification("");
+      }, 5000);
+      return () => clearTimeout(timeout);
+    }
+  }, [notification]);
+
   return (
     <div
       ref={menuRef}
       className="flex flex-col gap-8 items-center justify-center text-white/80 w-full"
     >
+      {notification && (
+        <p className="bg-white/50 text-black absolute -left-64 top-6 px-4 py-2 rounded-lg ">
+          {notification}
+        </p>
+      )}
+
       <img
         src={tomateIcon}
         alt="Pomellodoro Icon"

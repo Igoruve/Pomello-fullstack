@@ -28,11 +28,11 @@ function Homepage() {
             <p className="text-xl pt-4">
               <span className="font-bold text-[#f56b79]">Pomello </span>is a
               task manager that helps you stay on top of your to-dos. Organize
-              your tasks into lists and use the chronometer to stay focus on
+              your tasks into lists and use the chronometer to stay focused on
               your work.{" "}
             </p>
             <p className="pt-10 text-2xl font-bold text-white">
-              Wanna get <span className="text-[#f56b79]">started?</span>
+              Do you want to get <span className="text-[#f56b79]">started?</span>
             </p>
             <Link to="/register">
               <div className="relative group mt-6 w-fit">

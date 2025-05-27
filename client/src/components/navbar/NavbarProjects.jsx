@@ -21,16 +21,18 @@ function NavbarProjects() {
     e.preventDefault();
     const title = e.target.title.value;
     const description = e.target.description.value;
-
-    e.target.reset(); // Limpia el formulario
-
+  
     setExpanded(false); // Cierra el formulario
-
+    e.target.reset();   // Limpia el formulario (DOM)
+    setTitle("");       // Limpia el input controlado
+    setDescription(""); // Limpia el textarea controlado
+  
     const newProject = await createProject({ title, description });
     console.log("newProject", newProject);
     setProjects((prev) => [...prev, newProject[0]]);
-    navigate(`/project/${newProject[0]._id}`, { replace: true });
+    navigate(`/project/${newProject._id}`, { replace: true });
   };
+  
 
   return (
     <>
