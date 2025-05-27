@@ -21,32 +21,36 @@ function NavbarProjects() {
     e.preventDefault();
     const title = e.target.title.value;
     const description = e.target.description.value;
-  
+
     setExpanded(false); // Cierra el formulario
-    e.target.reset();   // Limpia el formulario (DOM)
-    setTitle("");       // Limpia el input controlado
+    e.target.reset(); // Limpia el formulario (DOM)
+    setTitle(""); // Limpia el input controlado
     setDescription(""); // Limpia el textarea controlado
-  
+
     const newProject = await createProject({ title, description });
     console.log("newProject", newProject);
     setProjects((prev) => [...prev, newProject[0]]);
     navigate(`/project/${newProject._id}`, { replace: true });
   };
-  
 
   return (
     <>
       <div className="flex flex-row justify-between items-center mt-2 rounded-xl transition duration-300">
         <div className="flex flex-row gap-2 items-center ">
           <svg
-            height="16px"
-            viewBox="0 -960 960 960"
-            width="16px"
-            fill="white"
-            className="cursor-pointer "
+            width={32}
+            height={32}
+            viewBox="0 0 960 960"
+            className="text-white/80"
           >
-            <path d="M168-144q-29.7 0-50.85-21.15Q96-186.3 96-216v-432q0-29.7 21.15-50.85Q138.3-720 168-720h168v-72.21Q336-822 357.18-843q21.17-21 50.91-21h144.17Q582-864 603-842.85q21 21.15 21 50.85v72h168q29.7 0 50.85 21.15Q864-677.7 864-648v432q0 29.7-21.15 50.85Q821.7-144 792-144H168Zm0-72h624v-432H168v432Zm240-504h144v-72H408v72ZM168-216v-432 432Z" />
+            <g transform="translate(240, 240)">
+              <path
+                fill="currentColor"
+                d="M184 48l144 0c4.4 0 8 3.6 8 8l0 40L176 96l0-40c0-4.4 3.6-8 8-8zm-56 8l0 40L64 96C28.7 96 0 124.7 0 160l0 96 192 0 128 0 192 0 0-96c0-35.3-28.7-64-64-64l-64 0 0-40c0-30.9-25.1-56-56-56L184 0c-30.9 0-56 25.1-56 56zM512 288l-192 0 0 32c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32-14.3-32-32l0-32L0 288 0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-128z"
+              />
+            </g>
           </svg>
+
           <p>Projects</p>
         </div>
         <div
