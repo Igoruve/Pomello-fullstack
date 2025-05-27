@@ -28,6 +28,9 @@ const PomellodoroChrono = () => {
   const calculateBreak = (focus) => {
     const breakValue = Math.round((focus * 0.2 + Number.EPSILON) * 100) / 100;
     setBreakDuration(breakValue);
+
+    // Guardar el valor en localStorage
+    localStorage.setItem("breakDuration", breakValue);
   };
 
   /**
@@ -42,6 +45,9 @@ const PomellodoroChrono = () => {
     const value = Number(e.target.value);
     setFocusDuration(value);
     calculateBreak(value);
+
+    // Guardar el valor en localStorage
+    localStorage.setItem("focusDuration", value);
   };
 
   /**
@@ -198,13 +204,16 @@ const PomellodoroChrono = () => {
         const data = await res.json();
         const { running, phase } = data;
 
-        // start of pomellodoro notification
-        // start of pomellodoro notification
-        if (!previousStatus.current.running && running && phase === "focus") {
-          setNotification("Chrono started successfully!");
+        // show if chrono is already running
+        if (!previousStatus.current.running && running) {
+          if (previousStatus.current.phase === null) {
+            // setNotification("Chrono is already running!");
+          } else if (phase === "focus") {
+            setNotification("Chrono started successfully!");
+          }
         }
 
-        // Cphase change notification
+        // phase change notification
         if (
           previousStatus.current.phase !== phase &&
           previousStatus.current.running
@@ -219,7 +228,7 @@ const PomellodoroChrono = () => {
         // end of pomellodoro notification
         if (previousStatus.current.running && !running) {
           if (String(data.manuallyStopped) === "true") {
-            setNotification("Chrono stoped manually.");
+            setNotification("Chrono stopped manually.");
           } else {
             setNotification("Pomodoro finished! Time to relax!");
           }
@@ -242,6 +251,48 @@ const PomellodoroChrono = () => {
       return () => clearTimeout(timeout);
     }
   }, [notification]);
+
+  useEffect(() => {
+    const fetchPomellodoroStatus = async () => {
+      try {
+        const token = getToken();
+        const response = await fetch(
+          "http://localhost:3013/chrono/pomellodoro/status",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          console.warn("Error checking Pomellodoro status:", response.statusText);
+          return;
+        }
+
+        const data = await response.json();
+        setIsRunning(data.running); // Sincronizar el estado con el backend
+      } catch (error) {
+        console.error("Error fetching Pomellodoro status:", error);
+      }
+    };
+
+    fetchPomellodoroStatus();
+  }, []);
+
+  useEffect(() => {
+    const savedFocusDuration = localStorage.getItem("focusDuration");
+    const savedBreakDuration = localStorage.getItem("breakDuration");
+
+    if (savedFocusDuration) {
+      setFocusDuration(Number(savedFocusDuration));
+    }
+
+    if (savedBreakDuration) {
+      setBreakDuration(Number(savedBreakDuration));
+    }
+  }, []);
 
   return (
     <div
@@ -271,7 +322,10 @@ const PomellodoroChrono = () => {
               min="1"
               step="1"
               onChange={handleFocusChange}
-              className="w-full pr-10 text-center bg-gray-700 border border-gray-200/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f56b79] transition-colors duration-300 py-1"
+              disabled={isRunning} // Deshabilitar si el cronómetro está activo
+              className={`w-full pr-10 text-center bg-gray-700 border border-gray-200/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f56b79] transition-colors duration-300 py-1 ${
+                isRunning ? "cursor-not-allowed opacity-50" : ""
+              }`}
             />
             <span className="absolute right-2 top-1/2 -translate-y-1/2 text-white/60 text-sm pointer-events-none">
               mins
