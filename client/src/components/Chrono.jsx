@@ -3,12 +3,25 @@ import pomeloImg from '../assets/pomelo.png';
 import relojArenaImg from '../assets/reloj_arena.png';
 import '../styles/chronoStyles.css';
 
+/**
+ * PomellodoroChrono is a React component that visually represents the Pomellodoro cycle.
+ * It allows users to start and stop a Pomellodoro session by clicking an icon.
+ * The component manages its running state and updates its icon and message accordingly.
+ * It communicates with the backend to toggle the Pomellodoro cycle and displays
+ * the response message or error in the UI.
+ */
+
 function PomellodoroChrono() {
   const [isRunning, setIsRunning] = useState(false);
   const [message, setMessage] = useState('');
   const [icon, setIcon] = useState(pomeloImg);
   const [rotationClass, setRotationClass] = useState('');
 
+  /**
+   * Toggles the Pomellodoro cycle by making a POST request to /pomellodoro/start or /pomellodoro/stop.
+   * Updates the component's running state, message and icon accordingly.
+   * If the response is not ok, displays the error message.
+   */
   const handleClick = async () => {
     const endpoint = isRunning ? '/pomellodoro/stop' : '/pomellodoro/start';
     const method = 'POST';

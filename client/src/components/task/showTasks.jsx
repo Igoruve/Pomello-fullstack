@@ -18,6 +18,13 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
+/**
+ * Component to show a list of tasks and handle editing, deleting, and reordering
+ * of tasks.
+ * @param {Object[]} tasks - The list of tasks to be displayed.
+ * @param {Function} setTasks - Function to update the parent component's tasks state.
+ * @returns {JSX.Element} The rendered component.
+ */
 function ShowTasks({ tasks = [], setTasks }) {
   const [editedTitle, setEditedTitle] = useState("");
   const [isEditingTaskId, setIsEditingTaskId] = useState(null);
@@ -34,6 +41,11 @@ function ShowTasks({ tasks = [], setTasks }) {
       return acc;
     }, {})
   );
+  /**
+   * Toggles the completion state of a task and updates the backend.
+   * @param {Object} task - The task to be toggled.
+   * @returns {Promise<void>} Resolves when the task is updated.
+   */
   const handleToggle = async (task) => {
     const taskId = task._id.$oid || task._id;
     const newCompleted = !checkedTasks[taskId];
@@ -47,12 +59,25 @@ function ShowTasks({ tasks = [], setTasks }) {
     }
   };
 
+  /**
+   * Sets the task ID that is currently being edited and sets the edited title to the
+   * task's current title.
+   * @param {Object} task - The task to be edited.
+   * @returns {void}
+   */
   const startEditing = (task) => {
     const taskId = task._id.$oid || task._id;
     setIsEditingTaskId(taskId);
     setEditedTitle(task.title || "");
   };
 
+  /**
+   * Handles blurring the title input field.
+   * Calls `updateTask` to save the new title to the server and close the input field.
+   * @async
+   * @param {string} taskId - The ID of the task to be updated.
+   * @returns {Promise<void>} Resolves when the title is saved and the input field is closed.
+   */
   const handleBlur = async (taskId) => {
     if (!editedTitle.trim()) return;
 
@@ -73,6 +98,15 @@ function ShowTasks({ tasks = [], setTasks }) {
     }
   };
 
+/**
+ * Handles the keydown event for task editing.
+ * If the Enter key is pressed, it prevents the default behavior and calls `handleBlur`
+ * to save the changes and exit the editing mode.
+ * 
+ * @param {KeyboardEvent} e - The keydown event object.
+ * @param {string} taskId - The ID of the task being edited.
+ */
+
   const handleKeyDown = (e, taskId) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -80,6 +114,13 @@ function ShowTasks({ tasks = [], setTasks }) {
     }
   };
 
+  /**
+   * Handles the drag end event for tasks.
+   * Updates the state of the tasks component with the new order of tasks
+   * and sends the new order to the backend using `updateTaskPositions`.
+   * @param {Object} event - The drag end event object.
+   * @returns {Promise<void>} Resolves when the tasks positions are updated.
+   */
   const handleDragEnd = async (event) => {
     const { active, over } = event;
 

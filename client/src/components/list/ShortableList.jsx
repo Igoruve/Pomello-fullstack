@@ -3,6 +3,21 @@ import { CSS } from "@dnd-kit/utilities";
 import ShowTasks from "../task/showTasks.jsx";
 import NewTask from "../task/NewTask.jsx";
 
+/**
+ * Component for a sortable list that allows tasks to be displayed, edited, and added.
+ * Integrates with drag-and-drop functionality to reorder lists.
+ *
+ * @param {Object} list - The list object containing tasks and metadata.
+ * @param {Function} onAddTask - Callback function to handle adding a new task.
+ * @param {Function} setEditingListId - Function to set the ID of the list being edited.
+ * @param {string} editingListId - ID of the list currently being edited.
+ * @param {string} editedTitle - The title being edited for the list.
+ * @param {Function} setEditedTitle - Function to set the title being edited.
+ * @param {Function} handleTitleSave - Function to save the edited title.
+ * @param {Function} setListToDelete - Callback function to mark a list for deletion.
+ * @param {Object} textareaRef - React ref object for the textarea element.
+ */
+
 function SortableList({
   list,
   onAddTask,

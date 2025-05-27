@@ -4,14 +4,16 @@ import tomateIcon from "/assets/icon_01.png";
 import relojIcon from "/assets/reloj_arena.png";
 import { getToken } from "../utils/localStorage.js";
 
+
 /**
- * Componente que renderiza un Pomellodoro con una interfaz de usuario simple.
- * El Pomellodoro se puede iniciar y parar con el botón central y ajustar
- * la duración del trabajo y el descanso con los campos de entrada numérica.
- * El componente utiliza el token de autenticación guardado en el almacenamiento
- * local para autenticar las solicitudes al backend.
- * @returns Un JSX element que renderiza el Pomellodoro.
+ * PomellodoroChrono is a React component that manages and visualizes the Pomellodoro technique.
+ * It allows users to start and stop a Pomellodoro session, toggling between work and break periods.
+ * The component syncs its state with a backend service and provides feedback through notifications.
+ * It also saves and retrieves session durations from local storage for persistence.
+ *
+ * @component
  */
+
 const PomellodoroChrono = () => {
   const [focusDuration, setFocusDuration] = useState(25);
   const [breakDuration, setBreakDuration] = useState(5);
@@ -20,10 +22,13 @@ const PomellodoroChrono = () => {
   const menuRef = useRef(null);
   const [notification, setNotification] = useState("");
 
+
   /**
-   * Calcula la duración del descanso en minutos.
-   * @param {number} focus - La duración del trabajo en minutos.
-   * @returns {undefined}
+   * Calculates the break duration from the focus duration value.
+   * The break duration is set to 20% of the focus duration.
+   * The calculated value is then rounded to 2 decimal places and set as the break duration.
+   * The value is also saved in localStorage.
+   * @param {number} focus the focus duration value.
    */
   const calculateBreak = (focus) => {
     const breakValue = Math.round((focus * 0.2 + Number.EPSILON) * 100) / 100;

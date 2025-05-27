@@ -2,6 +2,17 @@ import React, { useState, useEffect } from "react";
 import SessionChart from "../components/SessionChart";
 import { getChronoStats } from "../utils/chrono.js";
 
+/**
+ * Dashboard is a React component that displays the user's session statistics.
+ * It fetches session data from the server asynchronously and manages loading
+ * and error states. If data is successfully retrieved, it renders the SessionChart
+ * component with the session data. If there's an error or no data, it displays
+ * an appropriate message to the user.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered dashboard UI.
+ */
+
 const Dashboard = () => {
   const [sessionData, setSessionData] = useState(null);
   const [loading, setLoading] = useState(true);

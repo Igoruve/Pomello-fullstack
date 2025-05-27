@@ -2,6 +2,12 @@ import { Link } from "react-router-dom";
 
 import HomeNavbar from "../../components/navbar/HomeNavbar";
 
+/**
+ * Homepage component that displays the Pomello logo, a descriptive
+ * text about the application and a call-to-action to register.
+ *
+ * @returns {JSX.Element} The rendered homepage.
+ */
 function Homepage() {
   return (
     <section className="bg-gray-900 h-screen py-24">

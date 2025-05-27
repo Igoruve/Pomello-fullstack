@@ -2,6 +2,14 @@ import PomellodoroChrono from "../PomellodoroChrono";
 
 import { useState } from "react";
 
+/**
+ * A dropdown menu that contains the PomellodoroChrono component.
+ * The menu is hidden by default and can be toggled by clicking
+ * the hamburger menu icon in the top right corner of the screen.
+ * The menu is fixed to the top right corner of the screen and
+ * has a width of 64 pixels. The menu is also responsive and
+ * will adjust its width based on the screen size.
+ */
 function DropdownMenu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (

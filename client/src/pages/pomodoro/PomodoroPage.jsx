@@ -1,6 +1,13 @@
 import PomodoroTimer from "../../components/PomodoroTimer";
 
 
+/**
+ * PomodoroPage is a React functional component that renders the main Pomodoro timer page.
+ * It displays a styled container with a title "Temporizador Pomodoro" and includes the PomodoroTimer component.
+ * The page is styled with padding, border, and background color to provide a visually distinct section.
+ * The PomodoroTimer component is responsible for handling the timer functionality.
+ */
+
 export default function PomodoroPage() {
   console.log("PomodoroPage rendering"); 
   

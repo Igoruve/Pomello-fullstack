@@ -1,6 +1,23 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
+/**
+ * Component for rendering a sortable task item with editing capabilities.
+ * Provides drag-and-drop functionality for reordering tasks, and supports
+ * editing the task title and toggling task completion.
+ *
+ * @param {Object} task - The task object containing task details.
+ * @param {boolean} isEditing - Flag indicating if the task is currently being edited.
+ * @param {boolean} isChecked - Flag indicating if the task is completed.
+ * @param {string} editedTitle - The title of the task being edited.
+ * @param {Function} setEditedTitle - Function to set the title being edited.
+ * @param {Function} startEditing - Function to initiate editing of the task.
+ * @param {Function} handleBlur - Function to handle losing focus from the input area.
+ * @param {Function} handleKeyDown - Function to handle keydown events, primarily the Enter key.
+ * @param {Function} handleToggle - Function to toggle the completion state of the task.
+ * @returns {JSX.Element} The rendered sortable task component.
+ */
+
 export default function SortableTask({
   task,
   isEditing,

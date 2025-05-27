@@ -4,6 +4,14 @@ import { updateProject } from "../../utils/project.js";
 import NewList from "../list/NewList.jsx";
 import ShowLists from "../list/showLists.jsx";
 
+/**
+ * Component for displaying and editing project details.
+ * Allows the user to view, edit the title and description, and manage lists within a project.
+ * Handles updating the project information on the server and manages local state for UI interactions.
+ * 
+ * @returns {JSX.Element} The rendered project component.
+ */
+
 function Project() {
   const project = useLoaderData();
   const { id } = useParams();
@@ -27,20 +35,45 @@ function Project() {
     }
   }, [project?.title, project?.lists, id]);
 
+/**
+ * Handles changes to the project title input field.
+ * Updates the `editedTitle` state to reflect the new value.
+ * 
+ * @param {React.ChangeEvent<HTMLInputElement>} e - The change event from the input field.
+ */
+
   const handleTitleChange = (e) => {
     setEditedTitle(e.target.value);
   };
 
+  /**
+   * Handles saving the new title for the project.
+   * Updates the project on the server with the new title and closes the title input field.
+   * Revalidates the route to fetch the latest project data.
+   */
   const handleSaveTitle = async () => {
     await updateProject(id, { title: editedTitle });
     setIsEditing(false);
     revalidator.revalidate();
   };
 
+  /**
+   * Handles blurring the title input field.
+   * Calls `handleSaveTitle` to save the new title to the server and close the input field.
+   * @async
+   * @returns {Promise<void>} Resolves when the title is saved and the input field is closed.
+   */
   const handleBlur = async () => {
     await handleSaveTitle();
   };
 
+  /**
+   * Updates the state by adding a new task to the specified list.
+   * The new task is added to the end of the list of tasks for the given list.
+   * @param {string} listId - The ID of the list to add the new task to.
+   * @param {Object} newTask - The new task to be added to the list.
+   * @returns {void}
+   */
   const handleAddTask = (listId, newTask) => {
     setLists((prevLists) =>
       prevLists.map((list) =>
@@ -52,6 +85,13 @@ function Project() {
   };
 
   useEffect(() => {
+  /**
+   * Handles clicks outside the modal window.
+   * If the modal window is expanded and the click is outside the window,
+   * the window is closed by setting the `expanded` state to `false`.
+   * @param {Event} e - The mouse event that triggered the function.
+   * @returns {void}
+   */
     const handleClickOutside = (e) => {
       if (
         expanded &&
@@ -74,10 +114,22 @@ function Project() {
     }
   }, [project?.description]);
 
+  /**
+   * Handles changes to the project description input field.
+   * Updates the `editedDesc` state to reflect the new value.
+   * 
+   * @param {React.ChangeEvent<HTMLInputElement>} e - The change event from the input field.
+   */
   const handleDescChange = (e) => {
     setEditedDesc(e.target.value);
   };
 
+  /**
+   * Handles saving the project description.
+   * Updates the project description in the backend and revalidates the route.
+   * Then, it sets the `isEditingDesc` state to `false` to close the input field.
+   * @returns {Promise<void>} Resolves when the project description is updated and the route is revalidated.
+   */
   const handleSaveDesc = async () => {
     await updateProject(id, { description: editedDesc });
     setIsEditingDesc(false);

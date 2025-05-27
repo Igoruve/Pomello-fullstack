@@ -3,6 +3,12 @@ import { useRevalidator, useParams } from "react-router-dom";
 
 import { createList } from "../../utils/list.js";
 
+/**
+ * Component to create a new list within a project.
+ * @param {Function} setLists Function to update the list of lists.
+ * @returns A JSX element that renders a form to create a new list.
+ */
+
 function NewList({ setLists }) {
   const revalidator = useRevalidator();
   const { id } = useParams();
@@ -10,6 +16,12 @@ function NewList({ setLists }) {
   const [showForm, setShowForm] = useState(false);
   const [newListTitle, setNewListTitle] = useState("");
 
+
+  /**
+   * Handle the submission of a new list form.
+   * @param {Event} e Form submission event.
+   * @returns {Promise<void>} Resolves when the list is created and the form is cleaned up.
+   */
   const handleCreateList = async (e) => {
     e.preventDefault();
     if (!newListTitle.trim()) return;
