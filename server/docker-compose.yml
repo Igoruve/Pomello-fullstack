@@ -21,10 +21,13 @@ services:
       MONGO_INITDB_DATABASE: ${DB_NAME}
     ports:
       - ${DB_PORT}:27017
+    volumes:
+      - ./mongo-seed:/docker-entrypoint-initdb.d:ro
     networks:
       - pomello_network
 
 volumes:
   node_modules:
+  
 networks:
   pomello_network:
