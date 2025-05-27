@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/navbar/Browser.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/navbar/Browser.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { getProjectsByUserId } from "../../utils/project.js";
+
+  /**
+   * Component for searching projects by title.
+   *
+   * @returns The Browser component.
+   */
+function Browser() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [results, setResults] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+/**
+ * Fetches projects associated with the current user and updates the state.
+ *
+ * Uses the `getProjectsByUserId` function to retrieve the projects from the server.
+ * On success, sets the fetched projects to the `projects` state.
+ * Logs an error message to the console if fetching fails.
+ * 
+ * @returns {Promise&lt;void>} Resolves when projects are fetched and state is updated.
+ */
+
+    const fetchProjects = async () => {
+      try {
+        const userProjects = await getProjectsByUserId();
+        setProjects(userProjects);
+      } catch (error) {
+        console.error("Error loading projects: ", error);
+      }
+    };
+    fetchProjects();
+  }, []);
+
+  /**
+   * Handles a change event for the search input.
+   *
+   * Updates the component state as follows:
+   * - Sets `searchTerm` to the new value of the input.
+   * - Sets `results` to the projects that match the search term.
+   * - Sets `isOpen` to true.
+   *
+   * @param {React.ChangeEvent&lt;HTMLInputElement>} e - The change event.
+   */
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    const filtered = projects.filter((project) =>
+      project.title.toLowerCase().includes(value.toLowerCase())
+    );
+    setResults(filtered);
+    setIsOpen(true);
+  };
+
+  /**
+   * Toggles the open state of the dropdown menu.
+   *
+   * Resets the search term to an empty string.
+   */
+
+  const handleClick = () => {
+    setIsOpen((prev) => !prev);
+    setSearchTerm("");
+  };
+
+  /**
+   * Handles a blur event for the search input.
+   *
+   * Resets the component state as follows:
+   * - Sets `isOpen` to false after a 100ms delay to prevent accidental closes.
+   * - Sets `searchTerm` to an empty string.
+   */
+  const handleBlur = () => {
+    setTimeout(() => setIsOpen(false), 100);
+    setSearchTerm("");
+  };
+
+  /**
+   * Handles a selection event from the dropdown menu.
+   *
+   * Resets the component state as follows:
+   * - Sets `searchTerm` to an empty string.
+   * - Sets `results` to an empty array.
+   * - Sets `isOpen` to false.
+   * - Navigates to the selected project page.
+   *
+   * @param {string} id - The ID of the selected project.
+   */
+  const handleSelect = (id) => {
+    setSearchTerm("");
+    setResults([]);
+    setIsOpen(false);
+    navigate(`/project/${id}`);
+  };
+
+  return (
+    &lt;div className="relative w-80">
+      &lt;div className="relative">
+        &lt;input
+          type="text"
+          placeholder="Search a project"
+          value={searchTerm}
+          onChange={handleChange}
+          onClick={handleClick}
+          onBlur={handleBlur}
+          className="pl-10 pr-4 py-1 rounded-md border border-gray-300/50 focus:outline-none focus:border-[#f56b79] w-full"
+        />
+        &lt;div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+          &lt;svg
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+            fill="#e3e3e3"
+          >
+            &lt;path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
+          &lt;/svg>
+        &lt;/div>
+      &lt;/div>
+
+      {isOpen &amp;&amp; results.length > 0 &amp;&amp; (
+        &lt;ul className="absolute top-full left-0 bg-gray-800/80 text-gray-200 border border-gray-100/50 shadow-md w-full z-100 max-h-60 overflow-y-auto rounded-b-md no-scrollbar">
+          {results.map((project) => (
+            &lt;li
+              key={project._id}
+              onMouseDown={() => handleSelect(project._id)}
+              className="px-2 py-1 hover:bg-gray-700 cursor-pointer bg-gray-600 truncate"
+              title={project.title}
+            >
+              {project.title}
+            &lt;/li>
+          ))}
+        &lt;/ul>
+      )}
+    &lt;/div>
+  );
+}
+
+export default Browser;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AsideNavbar">AsideNavbar</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Browser">Browser</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#DragableList">DragableList</a></li><li><a href="global.html#DropdownMenu">DropdownMenu</a></li><li><a href="global.html#FetchData">FetchData</a></li><li><a href="global.html#HomeNavbar">HomeNavbar</a></li><li><a href="global.html#Homepage">Homepage</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#NavbarProjects">NavbarProjects</a></li><li><a href="global.html#NewList">NewList</a></li><li><a href="global.html#NewTask">NewTask</a></li><li><a href="global.html#PomellodoroChrono">PomellodoroChrono</a></li><li><a href="global.html#Project">Project</a></li><li><a href="global.html#ProjectList">ProjectList</a></li><li><a href="global.html#Root">Root</a></li><li><a href="global.html#SessionChart">SessionChart</a></li><li><a href="global.html#ShowLists">ShowLists</a></li><li><a href="global.html#ShowTasks">ShowTasks</a></li><li><a href="global.html#SortableList">SortableList</a></li><li><a href="global.html#TopNavbar">TopNavbar</a></li><li><a href="global.html#createList">createList</a></li><li><a href="global.html#createProject">createProject</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#getAllLists">getAllLists</a></li><li><a href="global.html#getAllProjects">getAllProjects</a></li><li><a href="global.html#getAllTasks">getAllTasks</a></li><li><a href="global.html#getAllUsers">getAllUsers</a></li><li><a href="global.html#getChronoStats">getChronoStats</a></li><li><a href="global.html#getFromLocalStorage">getFromLocalStorage</a></li><li><a href="global.html#getListById">getListById</a></li><li><a href="global.html#getListByProjectId">getListByProjectId</a></li><li><a href="global.html#getProjectById">getProjectById</a></li><li><a href="global.html#getProjectsByUserId">getProjectsByUserId</a></li><li><a href="global.html#getProjectsFullInfo">getProjectsFullInfo</a></li><li><a href="global.html#getStatus">getStatus</a></li><li><a href="global.html#getTaskById">getTaskById</a></li><li><a href="global.html#getTaskByListId">getTaskByListId</a></li><li><a href="global.html#getToken">getToken</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#removeFromLocalStorage">removeFromLocalStorage</a></li><li><a href="global.html#removeList">removeList</a></li><li><a href="global.html#removeProject">removeProject</a></li><li><a href="global.html#removeTask">removeTask</a></li><li><a href="global.html#removeToken">removeToken</a></li><li><a href="global.html#removeUser">removeUser</a></li><li><a href="global.html#saveToLocalStorage">saveToLocalStorage</a></li><li><a href="global.html#saveToken">saveToken</a></li><li><a href="global.html#saveUser">saveUser</a></li><li><a href="global.html#startChrono">startChrono</a></li><li><a href="global.html#stopChrono">stopChrono</a></li><li><a href="global.html#updateList">updateList</a></li><li><a href="global.html#updateListPositions">updateListPositions</a></li><li><a href="global.html#updateProject">updateProject</a></li><li><a href="global.html#updateTask">updateTask</a></li><li><a href="global.html#updateTaskPositions">updateTaskPositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue May 27 2025 16:08:51 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -16,4 +16,6 @@ router.put("/:id", /* isLoggedInAPI, */taskController.updateTask);
 
 router.delete("/:id", /* isLoggedInAPI, */taskController.deleteTask);
 
+router.put("/tasks/positions", taskController.updateTaskPositions);
+
 export default router;

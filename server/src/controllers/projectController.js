@@ -1,43 +1,55 @@
 import projectModel from "../models/projectModel.js";
 import userModel from "../models/userModel.js";
-import {
-  ProjectTitleNotProvided,
-  ProjectDescriptionNotProvided,
-  ProjectNotFound,
-  UserNotFound,
-} from "../utils/errors.js";
+import Errors from "../utils/errors.js"; // ✅ Importamos el default
+
 import listModel from "../models/listModel.js";
 import taskModel from "../models/taskModel.js";
 
+// ✅ Destructuramos solo los errores que usamos
+const {
+  ProjectTitleNotProvided,
+  ProjectDescriptionNotProvided,
+  ProjectNotFound,
+  UserNotFound
+} = Errors;
+
+
+/**
+ * Creates a new project and assigns it to the authenticated user.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @throws {ProjectTitleNotProvided} - If the title is not provided.
+ * @returns {Promise<void>} Resolves when the project is created and the user is assigned.
+ */
 const createProject = async (req, res) => {
   try {
-    if (!req.body || !req.body.length) {
+    const { title, description } = req.body;
+
+    if (!title) {
       throw new ProjectTitleNotProvided();
     }
 
-    const data = req.body.map((item) => {
-      if (!item.title) {
-        throw new ProjectTitleNotProvided();
-      }
+    const projectData = {
+      title,
+      description,
+      user: req.user.id, // Asegúrate de que el usuario autenticado esté asignado
+    };
 
-      if (!item.description) {
-        throw new ProjectDescriptionNotProvided();
-      }
-
-      return {
-        ...item,
-        user: req.user._id,
-      };
-    });
-
-    const projectCreated = await projectModel.create(data);
-    res.json(projectCreated);
+    const projectCreated = await projectModel.create(projectData);
+    res.status(201).json(projectCreated);
   } catch (error) {
     console.error(error);
     res.status(error.statusCode || 500).json({ message: error.message });
   }
 };
 
+/**
+ * Returns all projects in the database.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @throws {Error} - If the operation fails.
+ * @returns {Promise<void>} Resolves when the projects are retrieved.
+ */
 const getProjects = async (req, res) => {
   try {
     const projects = await projectModel.find();
@@ -47,6 +59,13 @@ const getProjects = async (req, res) => {
   }
 };
 
+/**
+ * Returns a single project by ID, with all its lists and tasks.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @throws {ProjectNotFound} - If the project does not exist.
+ * @returns {Promise<void>} Resolves when the project is retrieved.
+ */
 const getProjectbyId = async (req, res) => {
   try {
     const projectId = req.params.id.trim();
@@ -83,23 +102,24 @@ const getProjectbyId = async (req, res) => {
   }
 };
 
+/**
+ * Returns all projects associated with the authenticated user.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @throws {UserNotFound} - If the user is not found.
+ * @returns {Promise<void>} Resolves when the projects are retrieved.
+ */
 const getProjectsByUser = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     if (!userId) {
-      throw new UserNotFound();
-    }
-
-    // Verificar si el usuario existe
-    const userExists = await userModel.findById(userId);
-    if (!userExists) {
-      throw new UserNotFound();
+      throw new Errors.UserNotFound();
     }
 
     const projects = await projectModel.find({ user: userId });
 
-    if (projects.length === 0) {
+    if (!projects.length) {
       return res.status(200).json([]);
     }
 
@@ -109,6 +129,13 @@ const getProjectsByUser = async (req, res) => {
   }
 };
 
+/**
+ * Returns all projects, lists and tasks associated with the specified user ID.
+ * @param {Object} req - The request object. Must include the user ID in params.
+ * @param {Object} res - The response object.
+ * @throws {UserNotFound} - If the user is not found.
+ * @returns {Promise<void>} Resolves when the user data is retrieved.
+ */
 const getFullUserData = async (req, res) => {
   try {
     const userId = req.params.userId.trim();
@@ -148,6 +175,14 @@ const getFullUserData = async (req, res) => {
   }
 };
 
+/**
+ * Updates a project by its ID.
+ * @param {Object} req - The request object. Must contain the project ID in the URL parameters
+ * and the updated project data in the request body.
+ * @param {Object} res - The response object.
+ * @throws {ProjectNotFound} - If the project is not found.
+ * @returns {Promise<void>} Resolves with the updated project object.
+ */
 const updateProject = async (req, res) => {
   try {
     // if (req.body.title === '') {

@@ -2,6 +2,16 @@ import { useState, useEffect, useRef } from "react";
 import { useRevalidator } from "react-router-dom";
 import { createTask } from "../../utils/task.js";
 
+/**
+ * Component for creating a new task within a list.
+ * Provides an input area that appears when clicked, allowing the
+ * user to enter a task title. Submits the new task upon pressing
+ * enter or losing focus from the input area.
+ *
+ * @param {string} listId - The ID of the list to which the new task will be added.
+ * @param {Function} onTaskCreated - Callback function to handle the newly created task.
+ */
+
 function NewTask({ listId, onTaskCreated }) {
   const revalidator = useRevalidator();
   const [showInput, setShowInput] = useState(false);
@@ -10,6 +20,11 @@ function NewTask({ listId, onTaskCreated }) {
 
   const textareaRef = useRef(null);
 
+  /**
+   * Callback function to handle losing focus from the input area.
+   * If the entered title is not empty, it creates the new task and calls the onTaskCreated callback.
+   * If there is an error, it logs the error to the console. Finally, it resets the state.
+   */
   const handleBlur = async () => {
     const title = newTaskTitle.trim();
     if (!title) {
@@ -31,6 +46,11 @@ function NewTask({ listId, onTaskCreated }) {
     }
   };
 
+  /**
+   * Callback function to handle pressing the Enter key.
+   * Prevents the default event behavior and calls handleBlur to create the new task.
+   * @param {KeyboardEvent} e - The Enter keydown event.
+   */
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();

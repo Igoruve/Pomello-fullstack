@@ -4,6 +4,28 @@ import { useState } from "react";
 
 import { createProject, removeProject } from "../../utils/project.js";
 
+/**
+ * Component to render a list of projects and provide functionality to create new projects.
+ *
+ * Props:
+ * - loaderData: array of projects
+ *
+ * State:
+ * - projectToDelete: id of project to delete
+ * - expanded: is the creation form expanded
+ * - selectedProject: id of selected project
+ * - projects: array of projects
+ * - setError: error message
+ * - titleInput: value of title input
+ * - descriptionInput: value of description input
+ *
+ * Functions:
+ * - handleCreateProject: create a new project
+ * - handleRemoveProject: remove a project
+ *
+ * Returns:
+ * - JSX element with a list of projects and a creation form
+ */
 function ProjectList() {
   const [projectToDelete, setProjectToDelete] = useState(null);
 
@@ -23,30 +45,44 @@ function ProjectList() {
     return <div>Error: {loaderData?.message || "Unexpected error"}</div>;
   }
 
+  /**
+   * Handle the submission of a new project form.
+   * @param {Event} e Form submission event.
+   * @returns {Promise<void>} Resolves when the project is created and the form is cleaned up.
+   */
   const handleCreateProject = async (e) => {
     e.preventDefault();
-    const title = e.target.title.value;
-    const description = e.target.description.value;
+    const title = e.target.title.value.trim(); // Eliminar espacios en blanco
+    const description = e.target.description.value.trim(); // Eliminar espacios en blanco
 
-    e.target.reset();
+    if (!title) {
+      console.error("Project title is required");
+      return;
+    }
 
-    setTitleInput("");
-    setDescriptionInput("");
+    e.target.reset(); // Limpia el formulario
 
-    setExpanded(false);
+    setExpanded(false); // Cierra el formulario
 
-    const newProject = await createProject({ title, description });
-    console.log("newProject", newProject);
-    setProjects((prev) => {
-      const updated = [...prev, newProject[0]];
-      return updated.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-    });
+    try {
+      const newProject = await createProject({ title, description });
+      if (newProject.error) {
+        console.error("Error creating project:", newProject.error);
+        return;
+      }
 
-    navigate(`/project/${newProject[0]._id}`, { replace: true });
+      setProjects((prev) => [...prev, newProject]);
+      navigate(`/project/${newProject._id}`, { replace: true });
+    } catch (error) {
+      console.error("Error creating project:", error);
+    }
   };
 
+  /**
+   * Remove a project.
+   * @param {string} projectId - ID of project to remove
+   * @returns {Promise<void>} Resolves when the project is removed and the route is revalidated.
+   */
   const handleRemoveProject = async (projectId) => {
     try {
       const result = await removeProject(projectId);
@@ -67,21 +103,11 @@ function ProjectList() {
   };
 
   return (
-    <section className="min-h-screen w-full bg-gray-800 px-10 py-10 mt-16 ml-64 overflow-x-hidden">
-      <h2 className="text-2xl font-bold mb-4 mx-4 text-slate-100 opacity-80">
+    <section className="min-h-screen max-w-screen bg-gray-800 px-10 py-10 mt-16 ml-42 overflow-x-hidden">
+      <h2 className="text-2xl font-bold mb-4 mx-4 text-slate-100 opacity-80 ml-36 pb-8">
         Projects
       </h2>
-      <section className="gap-8 px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-full">
-        <div
-          onClick={() => setExpanded(!expanded)}
-          className="flex flex-row text-white gap-4 text-lg mb-2 bg-gray-500/50 h-42 rounded-xl w-80 p-4 cursor-pointer hover:bg-gray-500/60 transition-colors duration-300 ease-in-out shadow-lg hover:scale-105"
-        >
-          <svg viewBox="0 0 448 512" fill="white" height="24px" width="24px">
-            <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
-          </svg>
-          New project
-        </div>
-
+      <section className="gap-8 px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-full ml-32 no-scrollbar">
         {projects
           .slice()
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -96,7 +122,7 @@ function ProjectList() {
                 className=" h-full "
               >
                 <div className="max-w-full overflow-hidden">
-                  <p className="font-bold overflow-hidden text-ellipsis whitespace-nowrap">
+                  <p className="font-bold line-clamp-2 ">
                     {project.title}
                   </p>
                 </div>
@@ -110,7 +136,7 @@ function ProjectList() {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setProjectToDelete(project); 
+                  setProjectToDelete(project);
                 }}
               >
                 {" "}
@@ -118,6 +144,15 @@ function ProjectList() {
               </svg>
             </div>
           ))}
+        <div
+          onClick={() => setExpanded(!expanded)}
+          className="flex flex-row text-white gap-4 text-lg mb-2 bg-gray-500/50 h-48 rounded-xl w-80 p-4 cursor-pointer hover:bg-gray-500/60 transition-colors duration-300 ease-in-out shadow-lg hover:scale-105"
+        >
+          <svg viewBox="0 0 448 512" fill="white" height="24px" width="24px">
+            <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
+          </svg>
+          New project
+        </div>
       </section>
       {projectToDelete && (
         <div
@@ -191,12 +226,13 @@ function ProjectList() {
                   type="text"
                   name="description"
                   id="description"
-                  maxLength={200}
+                  maxLength={120}
                   value={descriptionInput}
                   onChange={(e) => setDescriptionInput(e.target.value)}
+                  required
                 />
                 <p className="text-sm text-white/50 self-end">
-                  {descriptionInput.length}/40
+                  {descriptionInput.length}/120
                 </p>
               </div>
             </article>

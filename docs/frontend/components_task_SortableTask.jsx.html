@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/task/SortableTask.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/task/SortableTask.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+/**
+ * Component for rendering a sortable task item with editing capabilities.
+ * Provides drag-and-drop functionality for reordering tasks, and supports
+ * editing the task title and toggling task completion.
+ *
+ * @param {Object} task - The task object containing task details.
+ * @param {boolean} isEditing - Flag indicating if the task is currently being edited.
+ * @param {boolean} isChecked - Flag indicating if the task is completed.
+ * @param {string} editedTitle - The title of the task being edited.
+ * @param {Function} setEditedTitle - Function to set the title being edited.
+ * @param {Function} startEditing - Function to initiate editing of the task.
+ * @param {Function} handleBlur - Function to handle losing focus from the input area.
+ * @param {Function} handleKeyDown - Function to handle keydown events, primarily the Enter key.
+ * @param {Function} handleToggle - Function to toggle the completion state of the task.
+ * @returns {JSX.Element} The rendered sortable task component.
+ */
+
+export default function SortableTask({
+  task,
+  isEditing,
+  isChecked,
+  editedTitle,
+  setEditedTitle,
+  startEditing,
+  handleBlur,
+  handleKeyDown,
+  handleToggle,
+}) {
+  const taskId = task._id.$oid || task._id;
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: taskId });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    &lt;li
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      className="flex items-center bg-gray-700 py-2 px-4 rounded-lg shadow-sm text-sm text-white gap-2"
+    >
+      &lt;input
+        type="checkbox"
+        className="w-4 h-4 rounded border-gray-300 text-[#f56b79] focus:ring-[#f56b79] accent-[#f56b79]"
+        checked={isChecked}
+        onChange={() => handleToggle(task)}
+      />
+
+      {isEditing ? (
+        &lt;textarea
+          value={editedTitle}
+          onChange={(e) => setEditedTitle(e.target.value)}
+          onBlur={() => handleBlur(taskId)}
+          onKeyDown={(e) => handleKeyDown(e, taskId)}
+          autoFocus
+          className="bg-gray-800 text-white text-sm rounded px-2 py-1 min-w-0 w-full resize-none"
+          maxLength={80}
+        />
+      ) : (
+        &lt;span
+          onClick={() => {
+            if (!isChecked) startEditing(task);
+          }}
+          className={`cursor-pointer transition-all break-all whitespace-pre-wrap w-full ${
+            isChecked ? "line-through opacity-60 cursor-not-allowed" : ""
+          }`}
+        >
+          {task.title}
+        &lt;/span>
+      )}
+      &lt;svg
+        height="24px"
+        viewBox="0 -960 960 960"
+        width="24px"
+        fill="#e3e3e3"
+        {...listeners}
+        className="cursor-grab ml-auto"
+      >
+        &lt;path d="M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320q33 0 56.5 23.5T440-240q0 33-23.5 56.5T360-160Zm240 0q-33 0-56.5-23.5T520-240q0-33 23.5-56.5T600-320q33 0 56.5 23.5T680-240q0 33-23.5 56.5T600-160ZM360-400q-33 0-56.5-23.5T280-480q0-33 23.5-56.5T360-560q33 0 56.5 23.5T440-480q0 33-23.5 56.5T360-400Zm240 0q-33 0-56.5-23.5T520-480q0-33 23.5-56.5T600-560q33 0 56.5 23.5T680-480q0 33-23.5 56.5T600-400ZM360-640q-33 0-56.5-23.5T280-720q0-33 23.5-56.5T360-800q33 0 56.5 23.5T440-720q0 33-23.5 56.5T360-640Zm240 0q-33 0-56.5-23.5T520-720q0-33 23.5-56.5T600-800q33 0 56.5 23.5T680-720q0 33-23.5 56.5T600-640Z" />
+      &lt;/svg>
+    &lt;/li>
+  );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AsideNavbar">AsideNavbar</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Browser">Browser</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#DragableList">DragableList</a></li><li><a href="global.html#DropdownMenu">DropdownMenu</a></li><li><a href="global.html#FetchData">FetchData</a></li><li><a href="global.html#HomeNavbar">HomeNavbar</a></li><li><a href="global.html#Homepage">Homepage</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#NavbarProjects">NavbarProjects</a></li><li><a href="global.html#NewList">NewList</a></li><li><a href="global.html#NewTask">NewTask</a></li><li><a href="global.html#PomellodoroChrono">PomellodoroChrono</a></li><li><a href="global.html#Project">Project</a></li><li><a href="global.html#ProjectList">ProjectList</a></li><li><a href="global.html#Root">Root</a></li><li><a href="global.html#SessionChart">SessionChart</a></li><li><a href="global.html#ShowLists">ShowLists</a></li><li><a href="global.html#ShowTasks">ShowTasks</a></li><li><a href="global.html#SortableList">SortableList</a></li><li><a href="global.html#TopNavbar">TopNavbar</a></li><li><a href="global.html#createList">createList</a></li><li><a href="global.html#createProject">createProject</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#getAllLists">getAllLists</a></li><li><a href="global.html#getAllProjects">getAllProjects</a></li><li><a href="global.html#getAllTasks">getAllTasks</a></li><li><a href="global.html#getAllUsers">getAllUsers</a></li><li><a href="global.html#getChronoStats">getChronoStats</a></li><li><a href="global.html#getFromLocalStorage">getFromLocalStorage</a></li><li><a href="global.html#getListById">getListById</a></li><li><a href="global.html#getListByProjectId">getListByProjectId</a></li><li><a href="global.html#getProjectById">getProjectById</a></li><li><a href="global.html#getProjectsByUserId">getProjectsByUserId</a></li><li><a href="global.html#getProjectsFullInfo">getProjectsFullInfo</a></li><li><a href="global.html#getStatus">getStatus</a></li><li><a href="global.html#getTaskById">getTaskById</a></li><li><a href="global.html#getTaskByListId">getTaskByListId</a></li><li><a href="global.html#getToken">getToken</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#removeFromLocalStorage">removeFromLocalStorage</a></li><li><a href="global.html#removeList">removeList</a></li><li><a href="global.html#removeProject">removeProject</a></li><li><a href="global.html#removeTask">removeTask</a></li><li><a href="global.html#removeToken">removeToken</a></li><li><a href="global.html#removeUser">removeUser</a></li><li><a href="global.html#saveToLocalStorage">saveToLocalStorage</a></li><li><a href="global.html#saveToken">saveToken</a></li><li><a href="global.html#saveUser">saveUser</a></li><li><a href="global.html#startChrono">startChrono</a></li><li><a href="global.html#stopChrono">stopChrono</a></li><li><a href="global.html#updateList">updateList</a></li><li><a href="global.html#updateListPositions">updateListPositions</a></li><li><a href="global.html#updateProject">updateProject</a></li><li><a href="global.html#updateTask">updateTask</a></li><li><a href="global.html#updateTaskPositions">updateTaskPositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue May 27 2025 16:08:51 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,5 +1,13 @@
 import { Link } from "react-router-dom";
 
+/**
+ * Component to render the navbar for the homepage.
+ *
+ * This component renders a horizontal bar with the Pomello logo on the left,
+ * and a register and a login button on the right.
+ *
+ * @returns {JSX.Element} The rendered navbar.
+ */
 function HomeNavbar() {
 
   return (
@@ -16,7 +24,7 @@ function HomeNavbar() {
             </Link>
 
             <Link to="/login">
-              <button className="hover:text-[#f56b79] cursor-pointer">Login</button>
+              <button className="hover:text-[#f56b79] cursor-pointer">Log In</button>
             </Link>
           </section>
         </div>

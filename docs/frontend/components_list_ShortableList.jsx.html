@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/list/ShortableList.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/list/ShortableList.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import ShowTasks from "../task/showTasks.jsx";
+import NewTask from "../task/NewTask.jsx";
+
+/**
+ * Component for a sortable list that allows tasks to be displayed, edited, and added.
+ * Integrates with drag-and-drop functionality to reorder lists.
+ *
+ * @param {Object} list - The list object containing tasks and metadata.
+ * @param {Function} onAddTask - Callback function to handle adding a new task.
+ * @param {Function} setEditingListId - Function to set the ID of the list being edited.
+ * @param {string} editingListId - ID of the list currently being edited.
+ * @param {string} editedTitle - The title being edited for the list.
+ * @param {Function} setEditedTitle - Function to set the title being edited.
+ * @param {Function} handleTitleSave - Function to save the edited title.
+ * @param {Function} setListToDelete - Callback function to mark a list for deletion.
+ * @param {Object} textareaRef - React ref object for the textarea element.
+ */
+
+function SortableList({
+  list,
+  onAddTask,
+  setEditingListId,
+  editingListId,
+  editedTitle,
+  setEditedTitle,
+  handleTitleSave,
+  setListToDelete,
+  textareaRef,
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: list._id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    &lt;div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="text-white max-w-64 bg-gray-900 rounded-xl p-4 shadow-md h-fit min-w-[300px] flex-shrink-0"
+    >
+      &lt;div className="flex flex-row justify-between items-center mb-6">
+        {editingListId === list._id ? (
+          &lt;textarea
+            ref={textareaRef}
+            value={editedTitle}
+            onChange={(e) => {
+              setEditedTitle(e.target.value);
+              if (textareaRef.current) {
+                textareaRef.current.style.height = "auto";
+                textareaRef.current.style.height =
+                  textareaRef.current.scrollHeight + "px";
+              }
+            }}
+            onBlur={() => handleTitleSave(list._id)}
+            onKeyDown={async (e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                await handleTitleSave(list._id);
+              }
+            }}
+            autoFocus
+            className="w-full text-white/80 text-xl font-bold bg-transparent resize-none outline-none overflow-hidden border border-gray-500/20 rounded-xl leading-tight"
+            maxLength={40}
+            rows={1}
+          />
+        ) : (
+          &lt;h3
+            className="w-full text-white/80 text-xl font-bold bg-transparent leading-tight line-clamp-2"
+            onClick={() => {
+              setEditingListId(list._id);
+              setEditedTitle(list.title);
+            }}
+          >
+            {list.title}
+          &lt;/h3>
+        )}
+
+        &lt;svg
+          viewBox="0 0 448 512"
+          fill="white"
+          height="12px"
+          width="12px"
+          className="cursor-pointer ml-4"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setListToDelete(list);
+          }}
+        >
+          &lt;path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z" />
+        &lt;/svg>
+      &lt;/div>
+
+      &lt;div className="flex flex-col gap-2 relative">
+        &lt;ShowTasks tasks={list.tasks} />
+        &lt;NewTask
+          className="absolute bottom-0 left-0"
+          listId={list._id}
+          onTaskCreated={(newTask) => onAddTask(list._id, newTask)}
+        />
+      &lt;/div>
+    &lt;/div>
+  );
+}
+
+export default SortableList;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AsideNavbar">AsideNavbar</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Browser">Browser</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#DragableList">DragableList</a></li><li><a href="global.html#DropdownMenu">DropdownMenu</a></li><li><a href="global.html#FetchData">FetchData</a></li><li><a href="global.html#HomeNavbar">HomeNavbar</a></li><li><a href="global.html#Homepage">Homepage</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#NavbarProjects">NavbarProjects</a></li><li><a href="global.html#NewList">NewList</a></li><li><a href="global.html#NewTask">NewTask</a></li><li><a href="global.html#PomellodoroChrono">PomellodoroChrono</a></li><li><a href="global.html#Project">Project</a></li><li><a href="global.html#ProjectList">ProjectList</a></li><li><a href="global.html#Root">Root</a></li><li><a href="global.html#SessionChart">SessionChart</a></li><li><a href="global.html#ShowLists">ShowLists</a></li><li><a href="global.html#ShowTasks">ShowTasks</a></li><li><a href="global.html#SortableList">SortableList</a></li><li><a href="global.html#TopNavbar">TopNavbar</a></li><li><a href="global.html#createList">createList</a></li><li><a href="global.html#createProject">createProject</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#getAllLists">getAllLists</a></li><li><a href="global.html#getAllProjects">getAllProjects</a></li><li><a href="global.html#getAllTasks">getAllTasks</a></li><li><a href="global.html#getAllUsers">getAllUsers</a></li><li><a href="global.html#getChronoStats">getChronoStats</a></li><li><a href="global.html#getFromLocalStorage">getFromLocalStorage</a></li><li><a href="global.html#getListById">getListById</a></li><li><a href="global.html#getListByProjectId">getListByProjectId</a></li><li><a href="global.html#getProjectById">getProjectById</a></li><li><a href="global.html#getProjectsByUserId">getProjectsByUserId</a></li><li><a href="global.html#getProjectsFullInfo">getProjectsFullInfo</a></li><li><a href="global.html#getStatus">getStatus</a></li><li><a href="global.html#getTaskById">getTaskById</a></li><li><a href="global.html#getTaskByListId">getTaskByListId</a></li><li><a href="global.html#getToken">getToken</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#removeFromLocalStorage">removeFromLocalStorage</a></li><li><a href="global.html#removeList">removeList</a></li><li><a href="global.html#removeProject">removeProject</a></li><li><a href="global.html#removeTask">removeTask</a></li><li><a href="global.html#removeToken">removeToken</a></li><li><a href="global.html#removeUser">removeUser</a></li><li><a href="global.html#saveToLocalStorage">saveToLocalStorage</a></li><li><a href="global.html#saveToken">saveToken</a></li><li><a href="global.html#saveUser">saveUser</a></li><li><a href="global.html#startChrono">startChrono</a></li><li><a href="global.html#stopChrono">stopChrono</a></li><li><a href="global.html#updateList">updateList</a></li><li><a href="global.html#updateListPositions">updateListPositions</a></li><li><a href="global.html#updateProject">updateProject</a></li><li><a href="global.html#updateTask">updateTask</a></li><li><a href="global.html#updateTaskPositions">updateTaskPositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue May 27 2025 16:08:51 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

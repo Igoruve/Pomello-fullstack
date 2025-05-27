@@ -1,0 +1,16 @@
+{
+  "tags": {
+    "allowUnknownTags": true
+  },
+  "source": {
+    "include": ["client/src"],
+    "includePattern": ".+\\.(js|jsx)$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "plugins": [],
+  "opts": {
+    "destination": "docs/frontend",
+    "recurse": true,
+    "readme": "README.md"
+  }
+}

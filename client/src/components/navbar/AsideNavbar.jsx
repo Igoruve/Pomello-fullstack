@@ -2,10 +2,18 @@ import { NavLink } from "react-router-dom";
 
 import NavbarProjects from "./NavbarProjects";
 
+/**
+ * Renders the aside navigation bar for the application.
+ * This component includes links to the user's projects and dashboard.
+ * It is styled to be fixed on the left side of the screen and visible at all times.
+ *
+ * @returns {React.ReactElement} The AsideNavbar component.
+ */
+
 function AsideNavbar() {
   return (
     <section className="flex flex-col bg-gray-800 border border-r-gray-100/5 fixed top-16 left-0 h-screen z-50 shadow-lg pb-24">
-      <nav className="h-full flex flex-col w-64 opacity-90 text-white/80 text-lg px-6 gap-4 pt-6">
+      <nav className="h-full flex flex-col w-64 text-white/80 text-lg px-6 gap-4 pt-6">
         <section className="border-b border-gray-200/20 pb-4 flex flex-col gap-4">
           <NavLink
             to="/project/user"
@@ -26,7 +34,7 @@ function AsideNavbar() {
             Home
           </NavLink>
           <NavLink
-            to="/"
+            to="/dashboard"
             className={({ isActive }) =>
               `flex flex-row items-center gap-3 rounded-xl p-2 hover:bg-gray-500/20 ${
                 isActive ? "text-[#f56b79]" : "text-white/80"

@@ -13,6 +13,20 @@ const AuthContext = createContext({
     onRegister: async () => { }
 });
 
+
+/**
+ * AuthProvider component that provides authentication context to its children components.
+ * It manages user data and authentication actions such as login, logout, and register.
+ * 
+ * - Loads user data from local storage on initialization if available.
+ * - Provides `handleRegister`, `handleLogin`, and `handleLogout` functions to manage user authentication.
+ * - Uses `AuthContext` to share authentication state and actions with descendant components.
+ * - Redirects users to different routes based on authentication actions.
+ * 
+ * @param {Object} props - The component props.
+ * @param {React.ReactNode} props.children - The children components that require access to the authentication context.
+ */
+
 const AuthProvider = ({ children }) => {
     const [userData, setUserData] = useState(null);
     const navigate = useNavigate();
@@ -26,7 +40,16 @@ const AuthProvider = ({ children }) => {
     }, []);
 
 
-    // Registro
+
+    /**
+     * Registers a new user using the provided email and password.
+     * 
+     * @param {String} email - The user's email address.
+     * @param {String} password - The user's password.
+     * 
+     * @returns {Promise<String>} A promise that resolves with an error message if there was an issue with the registration
+     * or null if the registration was successful.
+     */
     const handleRegister = async (email, password) => {
         try {
             const result = await register(email, password);
@@ -50,7 +73,16 @@ const AuthProvider = ({ children }) => {
         }
     };
 
-    // Login
+
+    /**
+     * Logs in an existing user using the provided email and password.
+     * 
+     * @param {String} email - The user's email address.
+     * @param {String} password - The user's password.
+     * 
+     * @returns {Promise<String>} A promise that resolves with an error message if there was an issue with the login
+     * or null if the login was successful.
+     */
     const handleLogin = async (email, password) => {
         try {
             const result = await login(email, password);
@@ -74,7 +106,18 @@ const AuthProvider = ({ children }) => {
     }
 }
 
-// LogOut
+
+    /**
+     * Logs out the current user.
+     * 
+     * - Calls the logout endpoint on the server to invalidate the user's session.
+     * - Removes the user's session token from local storage.
+     * - Removes the user's data from local storage.
+     * - Sets the user data to null in the state.
+     * - Navigates to the root route.
+     * 
+     * @returns {Promise<void>} A promise that resolves when the logout is complete.
+     */
 const handleLogout = async () => {
     try {
         await logout();

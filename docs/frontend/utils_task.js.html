@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: utils/task.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: utils/task.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import listsData from "../data/listsData.js";
+import tasksData from "../data/tasksData.js";
+import FetchData from "./fetch.js";
+
+/**
+ * Simulates a network request to fetch all tasks.
+ *
+ * @return {Promise} Resolves to an array of tasks, or rejects with an error.
+ */
+const getAllTasks = async () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(tasksData);
+    }, 500);
+  });
+};
+
+/**
+ * Simulates a network request to fetch a task by its ID.
+ *
+ * @param {string} id - The ID of the task to fetch.
+ * @return {Promise&lt;Object|null>} Resolves to the task object if found, or null if not found.
+ */
+
+const getTaskById = async (id) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const taskItem = tasksData.find((task) => task._id.$oid === id);
+      resolve(taskItem);
+    }, 500);
+  });
+};
+
+/**
+ * Simulates a network request to fetch all tasks for a given list.
+ *
+ * @param {string} listId - The ID of the list to fetch tasks for.
+ * @return {Promise&lt;Object[]>} Resolves to an array of tasks, or an empty array if the list was not found.
+ */
+const getTaskByListId = async (listId) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const list = listsData.find((list) => list._id.$oid === listId);
+      
+      if (!list) return resolve([]);
+
+      const listTaskIds = list.tasks.map((task) => task.$oid);
+
+      const listTasks = tasksData.filter((task) =>
+        listTaskIds.includes(task._id.$oid)
+      );
+
+      resolve(listTasks);
+    }, 500);
+  });
+};
+
+/**
+ * Simulates a network request to create a new task.
+ *
+ * @param {Object} task - The task object to create.
+ * @return {Promise&lt;Object>} Resolves to the newly created task object.
+ */
+const createTask = async (task) => {
+  const newTask = await FetchData("/task", "POST", task);
+  return newTask;
+};
+
+/**
+ * Simulates a network request to delete a task by its ID.
+ *
+ * @param {string} taskId - The ID of the task to be deleted.
+ * @return {Promise&lt;void>} Resolves when the task is successfully deleted.
+ */
+
+const removeTask = async (taskId) => {
+  await FetchData(`/task/${taskId}`, "DELETE");
+};
+
+/**
+ * Simulates a network request to update a task by its ID.
+ *
+ * @param {string} taskId - The ID of the task to be updated.
+ * @param {Object} task - The updated task object.
+ * @return {Promise&lt;void>} Resolves when the task is successfully updated.
+ */
+const updateTask = async (taskId, task) => {
+  await FetchData(`/task/${taskId}`, "PUT", task);
+};
+
+/**
+ * Simulates a network request to update the positions of multiple tasks at once.
+ *
+ * @param {Object[]} tasks - An array of task objects with their new positions.
+ * @return {Promise&lt;void>} Resolves when the task positions are successfully updated.
+ */
+const updateTaskPositions = async (tasks) => {
+ return  await FetchData("/task/tasks/positions", "PUT", { tasks });
+};
+
+export { getAllTasks, getTaskById, getTaskByListId, createTask, removeTask, updateTask, updateTaskPositions };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AsideNavbar">AsideNavbar</a></li><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Browser">Browser</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#DragableList">DragableList</a></li><li><a href="global.html#DropdownMenu">DropdownMenu</a></li><li><a href="global.html#FetchData">FetchData</a></li><li><a href="global.html#HomeNavbar">HomeNavbar</a></li><li><a href="global.html#Homepage">Homepage</a></li><li><a href="global.html#Layout">Layout</a></li><li><a href="global.html#NavbarProjects">NavbarProjects</a></li><li><a href="global.html#NewList">NewList</a></li><li><a href="global.html#NewTask">NewTask</a></li><li><a href="global.html#PomellodoroChrono">PomellodoroChrono</a></li><li><a href="global.html#Project">Project</a></li><li><a href="global.html#ProjectList">ProjectList</a></li><li><a href="global.html#Root">Root</a></li><li><a href="global.html#SessionChart">SessionChart</a></li><li><a href="global.html#ShowLists">ShowLists</a></li><li><a href="global.html#ShowTasks">ShowTasks</a></li><li><a href="global.html#SortableList">SortableList</a></li><li><a href="global.html#TopNavbar">TopNavbar</a></li><li><a href="global.html#createList">createList</a></li><li><a href="global.html#createProject">createProject</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#getAllLists">getAllLists</a></li><li><a href="global.html#getAllProjects">getAllProjects</a></li><li><a href="global.html#getAllTasks">getAllTasks</a></li><li><a href="global.html#getAllUsers">getAllUsers</a></li><li><a href="global.html#getChronoStats">getChronoStats</a></li><li><a href="global.html#getFromLocalStorage">getFromLocalStorage</a></li><li><a href="global.html#getListById">getListById</a></li><li><a href="global.html#getListByProjectId">getListByProjectId</a></li><li><a href="global.html#getProjectById">getProjectById</a></li><li><a href="global.html#getProjectsByUserId">getProjectsByUserId</a></li><li><a href="global.html#getProjectsFullInfo">getProjectsFullInfo</a></li><li><a href="global.html#getStatus">getStatus</a></li><li><a href="global.html#getTaskById">getTaskById</a></li><li><a href="global.html#getTaskByListId">getTaskByListId</a></li><li><a href="global.html#getToken">getToken</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserById">getUserById</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#removeFromLocalStorage">removeFromLocalStorage</a></li><li><a href="global.html#removeList">removeList</a></li><li><a href="global.html#removeProject">removeProject</a></li><li><a href="global.html#removeTask">removeTask</a></li><li><a href="global.html#removeToken">removeToken</a></li><li><a href="global.html#removeUser">removeUser</a></li><li><a href="global.html#saveToLocalStorage">saveToLocalStorage</a></li><li><a href="global.html#saveToken">saveToken</a></li><li><a href="global.html#saveUser">saveUser</a></li><li><a href="global.html#startChrono">startChrono</a></li><li><a href="global.html#stopChrono">stopChrono</a></li><li><a href="global.html#updateList">updateList</a></li><li><a href="global.html#updateListPositions">updateListPositions</a></li><li><a href="global.html#updateProject">updateProject</a></li><li><a href="global.html#updateTask">updateTask</a></li><li><a href="global.html#updateTaskPositions">updateTaskPositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue May 27 2025 16:08:51 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
